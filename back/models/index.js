@@ -1,7 +1,13 @@
 import dotenv from 'dotenv';
-import { sequelize } from '../models/sequelize.js';
+import { sequelize } from './sequelize.js';
 
 dotenv.config();
+
+import { Users } from './users.js';
+import { Reviews } from './reviews.js';
+import { Reservations } from './reservations.js';
+import { Attractions } from './attractions.js';
+import { Categories } from './categories.js';
 
 Users.hasMany(Reviews, {
   foreignKey: {
@@ -12,8 +18,8 @@ Users.hasMany(Reviews, {
 
 Reviews.belongsTo(Users, {
   foreignKey: {
-    name : "userId",
-    allowNull: false  
+    name: "userId",
+    allowNull: false
   }
 })
 
@@ -26,8 +32,8 @@ Users.hasMany(Reservations, {
 
 Reservations.belongsTo(Users, {
   foreignKey: {
-    name : "userId",
-    allowNull: false  
+    name: "userId",
+    allowNull: false
   }
 })
 
@@ -40,8 +46,8 @@ Attractions.hasMany(Reviews, {
 
 Reviews.belongsTo(Attractions, {
   foreignKey: {
-    name : "attractionId",
-    allowNull: false  
+    name: "attractionId",
+    allowNull: false
   }
 })
 
@@ -57,19 +63,4 @@ Categories.belongsToMany(Attractions, {
   otherKey: 'attractionId'
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export { sequelize };
+export { sequelize, Users, Reservations, Attractions, Reviews, Categories };
