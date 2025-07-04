@@ -1,8 +1,9 @@
 "use client";
 
-import { Menu, User, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import BurgerProfil from "./BurgerProfil";
 
 /* Les props pour injecter les liens depuis Header */
 export default function Burger({
@@ -19,18 +20,12 @@ export default function Burger({
 
 	return (
 		<>
-			{/* Boutons visibles uniquement en mobile (lg:hidden)*/}
+			{/* Boutons visibles uniquement en mobile */}
 
 			<div className="flex items-center gap-3 lg:hidden">
 				{/* Connexion (placeholder) */}
 				<div className="hidden sm:block">
-					<button
-						type="button"
-						aria-label="Connexion"
-						className="rounded-full p-2 transition"
-					>
-						<User className="h-6 w-6 text-primary " />
-					</button>
+					<BurgerProfil />
 				</div>
 
 				{/* Burger */}
@@ -38,7 +33,7 @@ export default function Burger({
 					type="button"
 					aria-label="Ouvrir le menu"
 					onClick={() => setOpen(true)}
-					className="rounded p-2 transition"
+					className="rounded p-2  active:bg-primary/40 "
 				>
 					<Menu className="h-7 w-7 text-primary" />
 				</button>
@@ -54,7 +49,7 @@ export default function Burger({
 						onClick={() => setOpen(false)}
 						className="self-end rounded p-2 transition"
 					>
-						<X className="h-7 w-7 text-primary" />
+						<X className="h-7 w-7 text-primary  active:bg-primary/40" />
 					</button>
 
 					<ul className="mt-8 flex flex-grow flex-col gap-6">
@@ -70,14 +65,7 @@ export default function Burger({
 							</li>
 						))}
 						<li className="block sm:hidden">
-							<Link
-								href="/profil"
-								onClick={() => setOpen(false)}
-								className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
-							>
-								<User className="h-6 w-6" />
-								Profil
-							</Link>
+							<BurgerProfil />
 						</li>
 					</ul>
 				</div>

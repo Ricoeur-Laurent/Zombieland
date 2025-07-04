@@ -60,3 +60,7 @@ header {
 [id] {
 	scroll-margin-top: 73px; /* ajuste selon la hauteur de ton header sticky */
 }
+nextjs-portal,
+nextjs-portal * {
+	display: none;
+}

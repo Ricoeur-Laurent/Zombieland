@@ -1,6 +1,6 @@
-import { User } from "lucide-react";
 import Link from "next/link";
 import Burger from "./Burger";
+import BurgerProfil from "./BurgerProfil";
 
 /* Liens qui DOIVENT apparaître dans la nav (et le burger) */
 const links = [
@@ -53,13 +53,9 @@ export default function Header() {
 							Réserver
 						</Link>
 						{/* Icône user */}
-						<button
-							type="button"
-							aria-label="Connexion"
-							className="rounded-full p-2 transition "
-						>
-							<User className="h-6 w-6 text-primary " />
-						</button>
+						<div className="rounded-full p-2 transition ">
+							<BurgerProfil />
+						</div>
 					</div>
 				</div>
 			</nav>
