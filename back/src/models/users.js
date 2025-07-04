@@ -22,6 +22,10 @@ Users.init({
     allowNull: false,
     unique: true,
   },
+  password: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
   phone: {
     type: DataTypes.TEXT,
     allowNull: false,
@@ -30,7 +34,7 @@ Users.init({
   admin: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
-    default: false,
+    defaultValue: false,
   },
 }, {
   sequelize,
