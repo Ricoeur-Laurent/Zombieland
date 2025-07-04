@@ -2,6 +2,7 @@ import { User } from "lucide-react";
 import Link from "next/link";
 import Burger from "./Burger";
 
+/* Liens qui DOIVENT apparaître dans la nav (et le burger) */
 const links = [
 	{ href: "/attractions", label: "Attractions" },
 	{ href: "/infos-pratiques", label: "Infos pratiques" },
@@ -10,9 +11,9 @@ const links = [
 
 export default function Header() {
 	return (
-		<header className="sticky top-0 z-50 w-full bg-surface/80 backdrop-blur shadow-lg">
+		<header className="sticky top-0 z-50 w-full  shadow-lg">
 			<nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 lg:px-6">
-				{/* Logo */}
+				{/* Logo  */}
 				<Link
 					href="/"
 					className="text-4xl font-title tracking-widest text-primary"
@@ -20,41 +21,47 @@ export default function Header() {
 					ZombieLand
 				</Link>
 
-				{/* Burger (mobile) */}
-				<Burger />
-
-				{/* Nav desktop */}
-				<ul className="hidden items-center gap-8 text-lg font-subtitle uppercase lg:flex">
-					{links.map(({ href, label }) => (
-						<li key={href}>
-							<Link
-								href={href}
-								className="transition-colors hover:text-primary"
-							>
-								{label}
-							</Link>
-						</li>
-					))}
-
-					<li>
+				{/* Bouton “Réserver” — visible partout  */}
+				<div className="flex gap-6">
+					<Link
+						href="/reservations"
+						className="rounded-lg bg-primary px-5 py-2 font-bold text-bg transition hover:bg-primary-dark lg:hidden"
+					>
+						Réserver
+					</Link>
+					{/* Burger (mobile only) */}
+					<Burger links={links} />
+					{/* Nav desktop  */}
+					<div className="hidden items-center gap-6 lg:flex">
+						<ul className="flex items-center gap-8 text-lg font-subtitle uppercase">
+							{links.map(({ href, label }) => (
+								<li key={href}>
+									<Link
+										href={href}
+										className="transition-colors text-primary-light hover:text-primary"
+									>
+										{label}
+									</Link>
+								</li>
+							))}
+						</ul>
+						{/* Bouton “Réserver” desktop */}
 						<Link
 							href="/reservations"
 							className="rounded-lg bg-primary px-5 py-2 font-bold text-bg transition hover:bg-primary-dark"
 						>
 							Réserver
 						</Link>
-					</li>
-
-					<li>
+						{/* Icône user */}
 						<button
 							type="button"
 							aria-label="Connexion"
-							className="rounded-full p-2 transition hover:bg-surface/60"
+							className="rounded-full p-2 transition "
 						>
-							<User className="h-6 w-6" />
+							<User className="h-6 w-6 text-primary " />
 						</button>
-					</li>
-				</ul>
+					</div>
+				</div>
 			</nav>
 		</header>
 	);

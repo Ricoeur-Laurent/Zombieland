@@ -49,3 +49,14 @@ body {
 	background-position: center;
 	background-repeat: no-repeat;
 }
+
+header {
+	background-image: url("/images/bg-zombie.png");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+/* on commence le scroll a partir de 73px pour se trouver au bon endroit */
+[id] {
+	scroll-margin-top: 73px; /* ajuste selon la hauteur de ton header sticky */
+}

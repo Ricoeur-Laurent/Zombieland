@@ -3,6 +3,17 @@
 import { Facebook, Home, Instagram, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
+// on crée les links de mentions légales  qui vont toutes renvoyer sur la même page  mais avec une ancre # sur la page mentions-legales et on va mapper dessu ensuite.
+const legalLinks = [
+	{ href: "/mentions-legales#mentions-legales", label: ". Mentions légales" },
+	{ href: "/mentions-legales#cgu", label: ". Conditions" },
+	{
+		href: "/mentions-legales#confidentialite",
+		label: ". Politique de confidentialité",
+	},
+	{ href: "/mentions-legales#accessibilite", label: ". Accessibilité" },
+];
+
 export default function Footer() {
 	return (
 		<footer className="py-8 px-6">
@@ -12,7 +23,7 @@ export default function Footer() {
 					<h3 className="text-primary-light font-subtitle uppercase mb-4">
 						Zombieland
 					</h3>
-					<p className="max-w-xs">
+					<p className="text-text font-body max-w-xs">
 						ZombieLand, une expérience post-apocalyptique qui ne vous lâchera
 						pas... même en bas de page
 					</p>
@@ -23,7 +34,7 @@ export default function Footer() {
 					<h3 className="text-primary-light font-subtitle uppercase mb-4">
 						Nous contacter
 					</h3>
-					<ul className="space-y-2">
+					<ul className="text-text font-body space-y-2">
 						<li className="flex items-center gap-2">
 							<Phone className="text-primary w-5 h-5" />
 							<span>0666.66.66.66</span>
@@ -63,39 +74,17 @@ export default function Footer() {
 					<h3 className="text-primary-light font-subtitle uppercase mb-4">
 						Infos légales
 					</h3>
-					<ul className="space-y-2">
-						<li>
-							<Link
-								href="/infos-pratiques"
-								className="hover:text-primary transition-colors"
-							>
-								. Mentions légales
-							</Link>
-						</li>
-						<li>
-							<Link
-								href="/infos-pratiques"
-								className="hover:text-primary transition-colors"
-							>
-								. Conditions
-							</Link>
-						</li>
-						<li>
-							<Link
-								href="/infos-pratiques"
-								className="hover:text-primary transition-colors"
-							>
-								. Politique de confidentialité
-							</Link>
-						</li>
-						<li>
-							<Link
-								href="/infos-pratiques"
-								className="hover:text-primary transition-colors"
-							>
-								. Accessibilité
-							</Link>
-						</li>
+					<ul className="text-text font-body space-y-2">
+						{legalLinks.map(({ href, label }) => (
+							<li key={href}>
+								<Link
+									href={href}
+									className="hover:text-primary transition-colors"
+								>
+									{label}
+								</Link>
+							</li>
+						))}
 					</ul>
 				</div>
 			</div>
