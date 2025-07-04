@@ -1,28 +1,18 @@
 import dotenv from 'dotenv';
 import express from 'express'
-import { sequelize } from './models/index.js';
+import router from "./src/routers/router.js";
 
 dotenv.config();
 
 const app = express();
+
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
+
+app.use(router);
 const PORT = process.env.PORT || 5000;
 
-app.get('/', (req, res) => {
-  res.json({ message: 'Hello from Express' });
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// Connexion + sync avant démarrage serveur
-sequelize.authenticate()
-  .then(() => {
-    console.log('✅ Connexion à la BDD réussie');
-    return sequelize.sync({ force: true });
-  })
-  .then(() => {
-    console.log('✅ Synchronisation réussie');
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  })
-  .catch(error => {
-    console.error('❌ Erreur :', error.message);
-  });
