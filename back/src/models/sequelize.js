@@ -4,11 +4,11 @@ import { Sequelize } from 'sequelize';
 dotenv.config();
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
-  dialect: 'postgres',
-  logging: false,
-  define: {
-    underscored: true
-  }
+	dialect: 'postgres',
+	logging: console.log,
+	define: {
+		underscored: true,
+	},
 });
 
 export { sequelize };
