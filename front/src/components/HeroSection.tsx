@@ -8,7 +8,7 @@ export default function HeroSection() {
 		<section className="relative w-full h-[90vh] flex items-center justify-center">
 			{/* Image */}
 			<Image
-				src="/images/heros-zombie.png"
+				src="/images/mobile/entree.webp"
 				alt="ZombieLand - Parc post-apocalyptique"
 				fill
 				className="object-cover"
