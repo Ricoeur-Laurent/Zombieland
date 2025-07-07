@@ -10,12 +10,12 @@ router.get('/', reservationsControllers.getAllReservations);
 router.get('/:id', reservationsControllers.getOneReservation);
 
 // create one reservation
-router.post('/', reservationsControllers.reservationsCreate);
+router.post('/', reservationsControllers.createReservation);
 
 // update a reservation based on its id
-router.patch('/:id', reservationsControllers.reservationUpdate)
+router.patch('/:id', reservationsControllers.updateReservation)
 
 // delete a reservation based on its id
-router.delete('/:id', reservationsControllers.reservationDelete)
+router.delete('/:id', reservationsControllers.deleteReservation)
 
 export default router;
