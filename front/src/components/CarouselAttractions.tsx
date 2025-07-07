@@ -13,19 +13,23 @@ interface CarouselAttractionsProps {
 export default function CarouselAttractions({
 	items,
 }: CarouselAttractionsProps) {
+	/*Embla initialisation*/
 	const [emblaRef, emblaApi] = useEmblaCarousel({
 		loop: true,
 		align: "start",
 		skipSnaps: false,
 	});
 
+	/* Track the currently visible slide for the dots indicator */
 	const [selectedIndex, setSelectedIndex] = useState(0);
 
+	/* Callback fired whenever Embla changes slide */
 	const onSelect = useCallback(() => {
 		if (!emblaApi) return;
 		setSelectedIndex(emblaApi.selectedScrollSnap());
 	}, [emblaApi]);
 
+	/* Register / unregister the “select” listener on mount / unmount */
 	useEffect(() => {
 		if (!emblaApi) return undefined;
 
@@ -48,6 +52,7 @@ export default function CarouselAttractions({
 			>
 				Toutes nos attractions
 			</Link>
+			{/* Embla viewport */}
 			<div ref={emblaRef} className="overflow-hidden w-full mx-auto px-4">
 				<div className="flex gap-4">
 					{items.map((a) => (
@@ -67,7 +72,7 @@ export default function CarouselAttractions({
 										className="object-cover"
 									/>
 
-									{/* Overlay titre */}
+									{/* Title overlay at the bottom */}
 									<span
 										className="absolute inset-0 flex items-end justify-center p-4 text-center bg-gradient-to-t from-black/80 to-transparent
             		 text-white text-xl font-title tracking-wider"

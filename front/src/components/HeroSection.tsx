@@ -18,7 +18,7 @@ export default function HeroSection() {
 			{/* Overlay */}
 			<div className="absolute inset-0 bg-black/40 flex items-center justify-center px-4">
 				<div className="bg-surface/80 p-6 sm:p-10 max-w-xl text-center rounded-lg">
-					<h2 className="text-primary-light font-subtitle uppercase text-2xl sm:text-3xl mb-4">
+					<h2 className="text-primary-light font-subtitle uppercase text-2xl sm:text-4xl mb-4">
 						BIENVENUE À ZOMBIELAND
 					</h2>
 					<p className="text-text font-body text-sm sm:text-base mb-6">
