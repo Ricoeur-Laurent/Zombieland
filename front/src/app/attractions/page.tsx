@@ -60,7 +60,7 @@ export default function AttractionsPage() {
 			{/* filter list */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				{visibleItems.map((a) => (
-					<Link key={a.id} href={`/${a.slug}`} className="block">
+					<Link key={a.id} href={`/attractions/${a.slug}`} className="block">
 						<article className="aspect-video relative overflow-hidden rounded-lg border-2 border-primary">
 							<Image
 								src={a.image}
