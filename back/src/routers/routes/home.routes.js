@@ -1,8 +1,8 @@
 import express from 'express';
-import homeControllers from '../../controllers/homeControllers.js';
+import attractionsController from '../../controllers/attractionsControllers.js';
 
 const router = express.Router();
 
-router.get('/', homeControllers.getAllAttractions);
+router.get('/', attractionsController.getAllAttractions);
 
 export default router;

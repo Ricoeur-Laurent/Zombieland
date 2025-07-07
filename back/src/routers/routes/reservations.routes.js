@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.get('/', reservationsControllers.getAllReservations);
 router.post('/', reservationsControllers.reservationsCreate);
+router.get('/:id', reservationsControllers.getOneReservation);
 
 export default router;

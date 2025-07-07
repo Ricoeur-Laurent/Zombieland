@@ -2,17 +2,6 @@ import bcrypt from 'bcrypt';
 import { Users } from '../models/users.js';
 
 const loginControllers = {
-	async getAllUsers(req, res) {
-		try {
-			const users = await Users.findAll();
-			res.json(users);
-		} catch (error) {
-			console.error('Erreur lors de la récupération des users :', error);
-			res.status(500).json({
-				error: 'Erreur serveur lors de la récupération des users',
-			});
-		}
-	},
 
 	async getOneUser(req, res) {
 		const { email, password } = req.body;

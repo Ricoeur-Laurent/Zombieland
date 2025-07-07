@@ -17,6 +17,22 @@ const reservationsControllers = {
 		}
 	},
 
+// retrieve one reservation by id
+    async getOneReservation(req, res) {
+        const { id } = req.params
+        try {
+            const oneReservation = await Reservations.findByPk(id)
+            if (!oneReservation) {
+                console.log(`La reservation n°${id} est introuvable`)
+                return res.status(404).json({ message: `La reservation n°${id} est introuvable` })
+            }
+            res.json(oneReservation)
+        } catch (error) {
+            console.error(`Erreur lors de la récupération de la réservation n° ${id} `, error)
+            res.status(500).json({ message: `Erreur serveur interne lors de la récupération de la réservation n° ${id}`})
+        }
+    },
+
 	async reservationsCreate(req, res) {
 		try {
 			const { visit_date, nb_participants, amount, user_id } = req.body;
