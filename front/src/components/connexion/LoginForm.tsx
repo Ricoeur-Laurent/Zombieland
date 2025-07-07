@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LogIn } from "lucide-react";
-import { useTokenContext } from "@/context/ TokenProvider";
+import { useTokenContext } from "@/context/TokenProvider";
 
 export default function ConnexionForm() {
   const { setToken } = useTokenContext();
