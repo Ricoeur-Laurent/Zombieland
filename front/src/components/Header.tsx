@@ -22,7 +22,7 @@ export default function Header() {
 				</Link>
 
 				{/* Bouton “Réserver” — visible partout  */}
-				<div className="flex gap-6">
+				<div className="flex gap-3 sm:gap-6">
 					<Link
 						href="/reservations"
 						className=" flex items-center justify-center rounded-lg bg-primary font-bold text-bg transition hover:bg-primary-dark lg:hidden px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base "
