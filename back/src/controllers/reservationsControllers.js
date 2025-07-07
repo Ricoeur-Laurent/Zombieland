@@ -20,6 +20,7 @@ const reservationsControllers = {
 				.json({
 					error: 'Erreur serveur lors de la récupération des réservations.',
 				});
+
 		}
 	},
 
@@ -43,6 +44,7 @@ const reservationsControllers = {
 			res
 				.status(500)
 				.json({ message: `Erreur serveur interne lors de la récupération de la réservation n° ${id}` })
+
 		}
 	},
 
@@ -50,10 +52,12 @@ const reservationsControllers = {
 	async createReservation(req, res) {
 		try {
 			const { visit_date, nb_participants, amount, user_id } = req.body;
+
 			if (!visit_date || !nb_participants || !amount || !user_id) {
 				return res
 					.status(400)
 					.json({ error: 'Tous les champs sont requis.' });
+
 			}
 			const reservation = await Reservations.create({
 				visit_date,
@@ -61,13 +65,12 @@ const reservationsControllers = {
 				amount,
 				userId: user_id,
 			});
-			return res
-				.status(201)
-				.json({
-					message: 'Réservation créée avec succès.',
-					reservation,
-				});
+			return res.status(201).json({
+				message: 'Réservation créée avec succès.',
+				reservation,
+			});
 		} catch (error) {
+
 			console
 				.error('Erreur lors de la création de la réservation :', error,
 				);

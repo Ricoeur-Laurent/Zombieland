@@ -1,7 +1,6 @@
-import { Attractions } from "../models/attractions.js";
+import { Attractions } from '../models/attractions.js';
 
 const attractionsController = {
-
     // retrieve all attractions
     async getAllAttractions(req, res) {
         try {
@@ -116,4 +115,4 @@ const attractionsController = {
     }
 }
 
-export default attractionsController
+export default attractionsController;

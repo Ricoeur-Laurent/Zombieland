@@ -2,26 +2,20 @@ import bcrypt from 'bcrypt';
 import { Users } from '../models/users.js';
 
 const loginControllers = {
-
+	// Get one user by email and password
 	async getOneUser(req, res) {
 		const { email, password } = req.body;
 		if (!email || !password) {
-			return res
-				.status(400)
-				.json({ error: 'Email et mot de passe requis' });
+			return res.status(400).json({ error: 'Email et mot de passe requis' });
 		}
 		try {
 			const user = await Users.findOne({ where: { email } });
 			if (!user) {
-				return res
-					.status(401)
-					.json({ error: 'Identifiants invalides' });
+				return res.status(401).json({ error: 'Identifiants invalides' });
 			}
 			const passwordMatch = await bcrypt.compare(password, user.password);
 			if (!passwordMatch) {
-				return res
-					.status(401)
-					.json({ error: 'Identifiants invalides' });
+				return res.status(401).json({ error: 'Identifiants invalides' });
 			}
 			const { id, name, email: safeEmail, created_at } = user;
 			res.status(200).json({
