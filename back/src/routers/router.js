@@ -17,4 +17,12 @@ router.use('/categories', categoriesRoutes);
 router.use('/admin/users', signUpRoutes);
 router.use('/admin/categories', categoriesRoutes);
 
+
+// =================== Admin routes =====================
+
+router.use('/admin/reservations', reservationsRoutes)
+router.use('/admin/attractions', attractionsRoutes)
+
+
 export default router;
+
