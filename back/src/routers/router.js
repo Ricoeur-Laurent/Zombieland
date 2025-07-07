@@ -13,5 +13,9 @@ router.use("/login", loginRoutes);
 router.use("/reservations", reservationsRoutes);
 router.use("/attractions", attractionsRoutes);
 
+// =================== Admin routes =====================
+
+router.use('/admin/reservations', reservationsRoutes)
+
 
 export default router;

@@ -1,38 +1,56 @@
 import { Reservations } from '../models/reservations.js';
 
 const reservationsControllers = {
+
+	// retrieve all reservations
 	async getAllReservations(req, res) {
 		try {
 			const reservations = await Reservations.findAll();
-
-			res.json(reservations);
+			return res
+				.status(200)
+				.json({
+					message: 'Attractions récupérées avec succès',
+					reservations,
+				});
 		} catch (error) {
-			console.error(
-				'Erreur lors de la récupération des réservations :',
-				error,
-			);
-			res.status(500).json({
-				error: 'Erreur serveur lors de la récupération des réservations.',
-			});
+			console
+				.error(
+					'Erreur lors de la récupération des réservations :',
+					error,
+				);
+			res
+				.status(500)
+				.json({
+					error: 'Erreur serveur lors de la récupération des réservations.',
+				});
 		}
 	},
 
-// retrieve one reservation by id
-    async getOneReservation(req, res) {
-        const { id } = req.params
-        try {
-            const oneReservation = await Reservations.findByPk(id)
-            if (!oneReservation) {
-                console.log(`La reservation n°${id} est introuvable`)
-                return res.status(404).json({ message: `La reservation n°${id} est introuvable` })
-            }
-            res.json(oneReservation)
-        } catch (error) {
-            console.error(`Erreur lors de la récupération de la réservation n° ${id} `, error)
-            res.status(500).json({ message: `Erreur serveur interne lors de la récupération de la réservation n° ${id}`})
-        }
-    },
+	// retrieve one reservation by id
+	async getOneReservation(req, res) {
+		const { id } = req.params
+		try {
+			const oneReservation = await Reservations.findByPk(id)
+			if (!oneReservation) {
+				console.log(`La reservation n°${id} est introuvable`)
+				return res.status(404).json({ message: `La reservation n°${id} est introuvable` })
+			}
+			return res
+				.status(200)
+				.json({
+					message: 'Attraction récupérée avec succès',
+					oneReservation,
+				});
+		} catch (error) {
+			console
+				.error(`Erreur lors de la récupération de la réservation n° ${id} `, error)
+			res
+				.status(500)
+				.json({ message: `Erreur serveur interne lors de la récupération de la réservation n° ${id}` })
+		}
+	},
 
+	// Create a reservation
 	async reservationsCreate(req, res) {
 		try {
 			const { visit_date, nb_participants, amount, user_id } = req.body;
@@ -54,15 +72,87 @@ const reservationsControllers = {
 					reservation,
 				});
 		} catch (error) {
-			console.error(
-				'Erreur lors de la création de la réservation :',
-				error,
-			);
-			res.status(500).json({
-				error: 'Erreur serveur lors de la création de la réservation.',
-			});
+			console
+				.error(
+					'Erreur lors de la création de la réservation :',
+					error,
+				);
+			res
+				.status(500)
+				.json({
+					error: 'Erreur serveur lors de la création de la réservation.',
+				});
 		}
 	},
+
+	// Update a reservation
+	async reservationUpdate(req, res) {
+		const { id } = req.params
+		const { visit_date, nb_participants, amount, user_id } = req.body;
+		if (!visit_date || !nb_participants || !amount || !user_id) {
+			return res
+				.status(400)
+				.json({ error: 'Tous les champs sont requis.' });
+		}
+		const data = req.body
+		try {
+			const reservation = await Reservations.findByPk(id)
+			if (!reservation) {
+				return res
+					.status(404)
+					.json({ error: "reservation non trouvée" })
+			}
+			await reservation.update(data)
+			return res
+				.status(200)
+				.json({
+					message: 'Réservation modifiée avec succès.',
+					reservation,
+				});
+		} catch (error) {
+			console
+				.error(
+					'Erreur lors de la modification de la réservation :',
+					error,
+				);
+			res
+				.status(500)
+				.json({
+					error: 'Erreur serveur lors de la modification de la réservation.',
+				});
+		}
+	},
+
+	// delete a reservation
+	async reservationDelete(req, res) {
+		const { id } = req.params
+		try {
+			const reservation = await Reservations.findByPk(id)
+			if (!id) {
+				return res
+					.status(400)
+					.json({ error: "La réservation demandée n'existe pas" });
+			}
+			await reservation.destroy()
+			return res
+				.status(200)
+				.json({
+					message: 'Réservation supprimée avec succès.'
+				});
+		} catch (error) {
+			console
+				.error(
+					'Erreur lors de la suppression de la réservation :',
+					error,
+				);
+			res
+				.status(500)
+				.json({
+					error: 'Erreur serveur lors de la suppression de la réservation.',
+				});
+		}
+	}
+
 };
 
 export default reservationsControllers;
