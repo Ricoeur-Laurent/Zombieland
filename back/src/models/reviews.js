@@ -34,9 +34,9 @@ Reviews.init(
 			references: {
 				model: Attractions,
 				key: 'id',
+				onDelete: 'CASCADE',
 			},
 		},
-		onDelete: 'CASCADE',
 	},
 	{
 		sequelize,

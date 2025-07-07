@@ -29,8 +29,8 @@ Reservations.init(
 			references: {
 				model: Users,
 				key: 'id',
+				onDelete: 'CASCADE',
 			},
-			onDelete: 'CASCADE',
 		},
 	},
 	{
