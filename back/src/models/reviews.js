@@ -42,7 +42,6 @@ Reviews.init(
 		sequelize,
 		tableName: 'reviews',
 		timestamps: true,
-		createdAt: 'created_at',
-		updatedAt: 'updated_at',
+		underscored: true,
 	},
 );

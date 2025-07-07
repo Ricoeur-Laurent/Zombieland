@@ -93,7 +93,7 @@ const reservationsControllers = {
 		try {
 			const { visit_date, nb_participants, amount, user_id } = req.body;
 			const userId = req.user.id;
-			if (!visit_date || !nb_participants || !amount || !user_id) {
+			if (!visit_date || !nb_participants || !amount) {
 				return res.status(400).json({ error: 'Tous les champs sont requis.' });
 			}
 			const reservation = await Reservations.create({

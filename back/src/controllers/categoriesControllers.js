@@ -1,6 +1,7 @@
 import { Categories } from '../models/categories.js';
 
 const categoriesControllers = {
+	// Retrieve all categories
 	async getAllCategories(req, res) {
 		try {
 			const categories = await Categories.findAll();
@@ -14,6 +15,7 @@ const categoriesControllers = {
 		}
 	},
 
+	// Retrieve one category by ID
 	async getOneCategory(req, res) {
 		const { id } = req.params;
 		try {
@@ -33,6 +35,7 @@ const categoriesControllers = {
 		}
 	},
 
+	// Create a new category
 	async createCategory(req, res) {
 		try {
 			const { name } = req.body;
@@ -58,6 +61,7 @@ const categoriesControllers = {
 		}
 	},
 
+	// Update an existing category by ID
 	async updateCategory(req, res) {
 		try {
 			const { id } = req.params;
@@ -86,7 +90,8 @@ const categoriesControllers = {
 			});
 		}
 	},
-
+	
+	// Delete a category by ID
 	async deleteCategory(req, res) {
 		try {
 			const { id } = req.params;

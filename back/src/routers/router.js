@@ -14,10 +14,10 @@ const router = express.Router();
 router.use('/', homeRoutes);
 router.use('/signUp', signUpRoutes);
 router.use('/login', loginRoutes);
-router.use('/reservations', reservationsRoutes);
+router.use('/reservations', verifyToken, reservationsRoutes);
 router.use('/attractions', attractionsRoutes);
 router.use('/categories', categoriesRoutes);
-router.use("/myReservations", reservationsRoutes);
+router.use("/myReservations", verifyToken, reservationsRoutes);
 
 
 // =================== Admin routes =====================

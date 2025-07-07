@@ -4,9 +4,6 @@ import reservationsControllers from '../../controllers/reservationsControllers.j
 
 const router = express.Router();
 
-// Middleware pour vérifier le token JWT et protéger toutes les routes de ce router
-router.use(verifyToken);
-
 // get all reservations
 router.get('/', reservationsControllers.getAllReservations);
 
