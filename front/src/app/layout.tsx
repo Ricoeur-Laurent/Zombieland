@@ -18,14 +18,13 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="fr">
-			<body>
+    	<body className="min-h-screen flex flex-col bg-bg text-text">
 				<Providers>
-				<Header />
-				{children}
-				<Footer />
+					<Header />
+					<main className="flex-1">{children}</main>
+					<Footer />
 				</Providers>
-				
-			</body>
+			</body
 		</html>
 	);
 }
