@@ -44,27 +44,27 @@ export default function ConnexionForm() {
 
   // handle submit for testing
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError("");
+  // const handleSubmit = async (e: FormEvent) => {
+  //   e.preventDefault();
+  //   setError("");
   
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // simulation of an api call
+  //   try {
+  //     await new Promise((resolve) => setTimeout(resolve, 1000)); // simulation of an api call
   
-      // simulation working :
-      const fakeToken = "token_de_test_zombieland";
-      setToken(fakeToken);
+  //     // simulation working :
+  //     const fakeToken = "token_de_test_zombieland";
+  //     setToken(fakeToken);
   
-      const redirectPath = searchParams.get("redirect");
-      router.push(redirectPath || "/reservations");
+  //     const redirectPath = searchParams.get("redirect");
+  //     router.push(redirectPath || "/reservations");
   
-      // // error testing , comment lines above and active line under:
-      // throw new Error("Erreur simulée");
-    } catch (e: any) {
-      console.error(e);
-      setError("Identifiants invalides ou erreur serveur simulée.");
-    }
-  };
+  //     // // error testing , comment lines above and active line under:
+  //     // throw new Error("Erreur simulée");
+  //   } catch (e: any) {
+  //     console.error(e);
+  //     setError("Identifiants invalides ou erreur serveur simulée.");
+  //   }
+  // };
   
 
   return (
