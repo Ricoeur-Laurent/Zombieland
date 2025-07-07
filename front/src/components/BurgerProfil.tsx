@@ -1,4 +1,3 @@
-// src/components/BurgerProfil.tsx
 "use client";
 
 import { User, X } from "lucide-react";
