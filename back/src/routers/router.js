@@ -5,7 +5,6 @@ import reservationsRoutes from './routes/reservations.routes.js';
 import signUpRoutes from './routes/signUp.routes.js';
 import attractionsRoutes from './routes/attractions.routes.js';
 import categoriesRoutes from './routes/categories.routes.js';
-import adminUsersRoutes from './routes/adminUsers.routes.js';
 
 const router = express.Router();
 
@@ -15,6 +14,7 @@ router.use('/login', loginRoutes);
 router.use('/reservations', reservationsRoutes);
 router.use('/attractions', attractionsRoutes);
 router.use('/categories', categoriesRoutes);
-router.use('/admin', adminUsersRoutes);
+router.use('/admin/users', signUpRoutes);
+router.use('/admin/categories', categoriesRoutes);
 
 export default router;

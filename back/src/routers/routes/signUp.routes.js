@@ -4,7 +4,7 @@ import usersControllers from '../../controllers/usersControllers.js';
 const router = express.Router();
 
 // Get all users
-router.use('/', usersControllers.getAllUsers);
+router.get('/', usersControllers.getAllUsers);
 
 // Create one user
 router.post('/', usersControllers.userCreate);
