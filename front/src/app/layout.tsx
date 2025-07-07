@@ -20,11 +20,10 @@ export default function RootLayout({
 		<html lang="fr">
 			<body>
 				<Providers>
-				<Header />
-				{children}
-				<Footer />
+					<Header />
+					{children}
+					<Footer />
 				</Providers>
-				
 			</body>
 		</html>
 	);
