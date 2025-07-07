@@ -51,7 +51,7 @@ body {
 }
 
 header {
-	background-image: url("/images/bg-zombie.png");
+	background-image: url("/images/Background/bg-zombie.png");
 	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
