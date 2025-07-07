@@ -96,7 +96,7 @@ const sections = [
 export default function VisitorInfoPage() {
 	return (
 		<main className="max-w-4xl mx-auto px-4 py-12">
-			<h1 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary">
+			<h1 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				Infos pratiques
 			</h1>
 

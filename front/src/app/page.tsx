@@ -1,14 +1,10 @@
-import type { Attraction } from "@/@types";
 import CarouselAttractions from "@/components/CarouselAttractions";
 import HeroSection from "@/components/HeroSection";
 import PrepareVisit from "@/components/PrepareVisit";
 
-const attractions: Attraction[] = [
-	{ id: 1, title: "Le Manoir…", img: "/images/desktop/manoir.webp" },
-	{ id: 2, title: "Prison Hors du Temps", img: "/images/desktop/prison.webp" },
-	{ id: 3, title: "Tunnel Sans Retour", img: "/images/desktop/tunnel.webp" },
-	{ id: 4, title: "Tunnel Sans Retour", img: "/images/desktop/tunnel.webp" },
-];
+import { attractions } from "@/data/attractions";
+
+const carouselItems = attractions.slice(0, 4);
 
 export default function Home() {
 	return (
@@ -17,7 +13,7 @@ export default function Home() {
 			<main>
 				<HeroSection />
 				<section className="py-16">
-					<CarouselAttractions items={attractions} />
+					<CarouselAttractions items={carouselItems} />
 				</section>
 				<section className="py-16">
 					<PrepareVisit />

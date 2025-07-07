@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Attraction } from "@/@types";
 
 interface CarouselAttractionsProps {
-	items: Attraction[];
+	items: Pick<Attraction, "id" | "title" | "image">[];
 }
 
 export default function CarouselAttractions({
@@ -63,7 +63,7 @@ export default function CarouselAttractions({
 							<Link href={`/attractions/${a.id}`} className="block h-full">
 								<article className="relative aspect-video overflow-hidden border-2 border-primary rounded-lg m-3">
 									<Image
-										src={a.img}
+										src={a.image}
 										alt={a.title}
 										fill
 										sizes="(min-width:1024px) 33vw,
