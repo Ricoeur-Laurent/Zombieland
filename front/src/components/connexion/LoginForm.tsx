@@ -16,25 +16,31 @@ export default function ConnexionForm() {
   const [password, setPassword] = useState("password");
   const [error, setError] = useState("");
 
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   setError("");
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
 
-  //   try {
-  //     const response = await axios.post(
-  //       "https://api/login", // À remplacer par ton endpoint réel
-  //       { email, password }
-  //     );
+    try {
+      const response = await fetch("https://api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-  //     setToken(response.data.token);
+      if (!response.ok) {
+        throw new Error("Invalid credentials or server error");
+      }
 
-  //     const redirectPath = searchParams.get("redirect");
-  //     router.push(redirectPath || "/reservations");
-  //   } catch (e: any) {
-  //     console.error(e);
-  //     setError("Identifiants invalides ou erreur serveur.");
-  //   }
-  // };
+      const data = await response.json();
+      setToken(data.token);
+
+      const redirectPath = searchParams.get("redirect");
+      router.push(redirectPath || "/reservations");
+    } catch (e: any) {
+      console.error(e);
+      setError("Identifiants invalides ou erreur serveur.");
+    }
+  };
 
   // handle submit for testing
 
