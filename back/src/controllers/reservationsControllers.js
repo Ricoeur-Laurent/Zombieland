@@ -1,10 +1,23 @@
 import { Users } from '../models/index.js';
 import { Reservations } from '../models/index.js';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+	throw new Error('La clé JWT_SECRET est manquante dans le fichier .env');
+}
 
 const reservationsControllers = {
 	// retrieve all reservations
 	async getAllReservations(req, res) {
 		try {
+			if (req.user.admin !== 'true') {
+				return res.status(403).json({ error: 'Accès interdit : Admin uniquement.' });
+			}
 			const reservations = await Reservations.findAll();
 			return res.status(200).json({
 				message: 'Reservations récupérées avec succès',
@@ -21,11 +34,15 @@ const reservationsControllers = {
 	// retrieve one reservation by id
 	async getOneReservation(req, res) {
 		const { id } = req.params;
+		const userId = req.user.id;
 		try {
 			const oneReservation = await Reservations.findByPk(id);
 			if (!oneReservation) {
 				console.log(`La reservation n°${id} est introuvable`);
 				return res.status(404).json({ message: `La reservation n°${id} est introuvable` });
+			}
+			if (oneReservation.userId !== userId) {
+				return res.status(403).json({ message: 'Accès refusé à cette réservation' });
 			}
 			return res.status(200).json({
 				message: 'Reservation récupérée avec succès',
@@ -41,7 +58,7 @@ const reservationsControllers = {
 
 	// retrieve all reservations by user id
 	async getAllReservationsByUserId(req, res) {
-		const userId = req.params.userId;
+		const userId = req.user.id;
 		try {
 			const userReservations = await Reservations.findAll({
 				where: { userId },
@@ -75,7 +92,7 @@ const reservationsControllers = {
 	async createReservation(req, res) {
 		try {
 			const { visit_date, nb_participants, amount, user_id } = req.body;
-
+			const userId = req.user.id;
 			if (!visit_date || !nb_participants || !amount || !user_id) {
 				return res.status(400).json({ error: 'Tous les champs sont requis.' });
 			}
@@ -83,7 +100,7 @@ const reservationsControllers = {
 				visit_date,
 				nb_participants,
 				amount,
-				userId: user_id,
+				userId,
 			});
 			return res.status(201).json({
 				message: 'Réservation créée avec succès.',
@@ -100,10 +117,16 @@ const reservationsControllers = {
 	// Update a reservation
 	async updateReservation(req, res) {
 		const { id } = req.params;
+		const userId = req.user.id;
 		try {
 			const reservation = await Reservations.findByPk(id);
 			if (!reservation) {
 				return res.status(404).json({ error: 'reservation non trouvée' });
+			}
+			if (reservation.userId !== userId) {
+				return res
+					.status(403)
+					.json({ error: 'Accès refusé : vous ne pouvez modifier que vos propres réservations' });
 			}
 			await reservation.update(req.body);
 			return res.status(200).json({
@@ -121,10 +144,16 @@ const reservationsControllers = {
 	// delete a reservation
 	async deleteReservation(req, res) {
 		const { id } = req.params;
+		const userId = req.user.id;
 		try {
 			const reservation = await Reservations.findByPk(id);
 			if (!reservation) {
 				return res.status(404).json({ error: "La réservation demandée n'existe pas" });
+			}
+			if (reservation.userId !== userId) {
+				return res
+					.status(403)
+					.json({ error: 'Accès refusé : vous ne pouvez supprimer que vos propres réservations' });
 			}
 			await reservation.destroy();
 			return res.status(200).json({
