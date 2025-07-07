@@ -6,8 +6,8 @@ const router = express.Router();
 // get all reservations
 router.get('/', reservationsControllers.getAllReservations);
 
-// Get one reservation by its id
-router.get('/:id', reservationsControllers.getOneReservation);
+// Get one reservation by user's id
+router.get('/:userId', reservationsControllers.getAllReservationsByUserId);
 
 // create one reservation
 router.post('/', reservationsControllers.createReservation);
@@ -17,5 +17,7 @@ router.patch('/:id', reservationsControllers.updateReservation)
 
 // delete a reservation based on its id
 router.delete('/:id', reservationsControllers.deleteReservation)
+
+
 
 export default router;

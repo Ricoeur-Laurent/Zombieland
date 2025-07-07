@@ -1,4 +1,3 @@
-import e from 'express';
 import { Categories } from '../models/categories.js';
 
 const categoriesControllers = {
@@ -22,19 +21,19 @@ const categoriesControllers = {
 			if (!oneCategory) {
 				console.log(`La catégorie n°${id} est introuvable`);
 				return res.status(404).json({
-					message: `La catégorie n°${id} est introuvable`,
+					message: `La catégorie est introuvable`,
 				});
 			}
 			res.json(oneCategory);
 		} catch (error) {
 			console.error(`Erreur lors de la récupération de la catégorie n° ${id} `, error);
 			res.status(500).json({
-				message: `Erreur serveur interne lors de la récupération de la catégorie n° ${id}`,
+				message: `Erreur serveur interne lors de la récupération de la catégorie`,
 			});
 		}
 	},
 
-	async categoryCreate(req, res) {
+	async createCategory(req, res) {
 		try {
 			const { name } = req.body;
 			if (!name) {

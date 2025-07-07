@@ -9,6 +9,7 @@ import { Reservations } from './reservations.js';
 import { Attractions } from './attractions.js';
 import { Categories } from './categories.js';
 
+
 Users.hasMany(Reviews, {
 	foreignKey: {
 		name: 'userId',
@@ -57,18 +58,19 @@ Reviews.belongsTo(Attractions, {
 	onDelete: 'CASCADE',
 });
 
-Attractions.belongsToMany(Categories, {
-	through: 'attractions_has_categories',
-	foreignKey: 'attractionId',
-	otherKey: 'categoryId',
-	onDelete: 'CASCADE',
-});
 
 Categories.belongsToMany(Attractions, {
 	through: 'attractions_has_categories',
 	foreignKey: 'categoryId',
 	otherKey: 'attractionId',
-	onDelete: 'CASCADE',
+	as: 'attractions', 
 });
 
+Attractions.belongsToMany(Categories, {
+	through: 'attractions_has_categories',
+	foreignKey: 'attractionId',
+	otherKey: 'categoryId',
+	as: 'categories', 
+});
+console.log(Categories.associations.attractions);
 export { sequelize, Users, Reservations, Attractions, Reviews, Categories };
