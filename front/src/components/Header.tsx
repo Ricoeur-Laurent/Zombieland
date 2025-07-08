@@ -11,7 +11,7 @@ const links = [
 
 export default function Header() {
 	return (
-		<header className="sticky top-0 z-50 w-full  shadow-lg">
+		<header className="sticky top-0 z-50 w-full  shadow-lg border-b-2 border-b-primary">
 			<nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 lg:px-6">
 				{/* Logo  */}
 				<Link

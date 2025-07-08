@@ -1,13 +1,9 @@
 export interface Attraction {
 	id: number;
-	title: string;
+	name: string;
 	slug: string;
 	image: string;
 	category: string;
-	age: string;
-	duration: string;
-	players: string;
-	excerpt: string;
 	description: string;
 }
 
