@@ -19,51 +19,51 @@ export default function ConnexionForm() {
 	// 	e.preventDefault();
 	// 	setError("");
 
-	// 	try {
-	// 		const response = await fetch("https://api/login", {
-	// 			method: "POST",
-	// 			headers: { "Content-Type": "application/json" },
-	// 			body: JSON.stringify({ email, password }),
-	// 		});
+		try {
+			const response = await fetch("https://api/login", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+			});
 
-	// 		if (!response.ok) {
-	// 			throw new Error("Invalid credentials or server error");
-	// 		}
+			if (!response.ok) {
+				throw new Error("Invalid credentials or server error");
+			}
 
-	// 		const data = await response.json();
-	// 		setToken(data.token);
+			const data = await response.json();
+			setToken(data.token);
 
-	// 		const redirectPath = searchParams.get("redirect");
-	// 		router.push(redirectPath || "/paiement");
-	// 	} catch (e: any) {
-	// 		console.error(e);
-	// 		setError("Identifiants invalides ou erreur serveur.");
-	// 	}
-	// };
+			const redirectPath = searchParams.get("redirect");
+			router.push(redirectPath || "/paiement");
+		} catch (e: any) {
+			console.error(e);
+			setError("Identifiants invalides ou erreur serveur.");
+		}
+	};
 
 	//! handle submit for testing
 
-	const handleSubmit = async (e: FormEvent) => {
-	  e.preventDefault();
-	  setError("");
+	// const handleSubmit = async (e: FormEvent) => {
+	//   e.preventDefault();
+	//   setError("");
 
-	  try {
-	    await new Promise((resolve) => setTimeout(resolve, 1000)); // simulation of an api call
+	//   try {
+	//     await new Promise((resolve) => setTimeout(resolve, 1000)); // simulation of an api call
 
-	    // simulation working :
-	    const fakeToken = "token_de_test_zombieland";
-	    setToken(fakeToken);
+	//     // simulation working :
+	//     const fakeToken = "token_de_test_zombieland";
+	//     setToken(fakeToken);
 
-	    const redirectPath = searchParams.get("redirect");
-	    router.push(redirectPath || "/reservations");
+	//     const redirectPath = searchParams.get("redirect");
+	//     router.push(redirectPath || "/reservations");
 
-	    // // error testing , comment lines above and active line under:
-	    // throw new Error("Erreur simulée");
-	  } catch (e: any) {
-	    console.error(e);
-	    setError("Identifiants invalides ou erreur serveur simulée.");
-	  }
-	};
+	//     // // error testing , comment lines above and active line under:
+	//     // throw new Error("Erreur simulée");
+	//   } catch (e: any) {
+	//     console.error(e);
+	//     setError("Identifiants invalides ou erreur serveur simulée.");
+	//   }
+	// };
 
 	return (
 		<form
