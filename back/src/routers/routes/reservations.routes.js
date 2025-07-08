@@ -1,5 +1,4 @@
 import express from 'express';
-import { verifyToken } from '../../middlewares/verifyToken.js';
 import reservationsControllers from '../../controllers/reservationsControllers.js';
 
 const router = express.Router();
