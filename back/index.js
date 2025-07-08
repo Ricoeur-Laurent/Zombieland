@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 5000;
 async function startServer() {
 	try {
 		await initDatabase();
-		// await seed();
+		await seed();
 		app.listen(PORT, () => {
 			console.log(`Server running on http://localhost:${PORT}`);
 		});
