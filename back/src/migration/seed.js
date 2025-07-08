@@ -9,8 +9,8 @@ import {
 
 async function seed() {
   try {
-    await sequelize.sync({ force: true });
-    console.log('BDD synchronisée');
+    // await sequelize.sync({ force: true });
+    // console.log('BDD synchronisée');
 
     const categories = await Categories.bulkCreate([
   { name: 'Survival' },
@@ -145,11 +145,13 @@ await attractions[12].addCategories([categories[5]]);
 ]);
 
     console.log('Données insérées avec succès');
-    process.exit();
+    // process.exit();
   } catch (error) {
     console.error('Erreur pendant le seed :', error);
     process.exit(1);
   }
 }
 
-seed();
+// seed();
+
+export default seed
