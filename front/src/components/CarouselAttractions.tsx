@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Attraction } from "@/@types";
 
 interface CarouselAttractionsProps {
-	items: Pick<Attraction, "id" | "title" | "image">[];
+	items: Pick<Attraction, "id" | "title" | "image" | "slug">[];
 }
 
 export default function CarouselAttractions({
