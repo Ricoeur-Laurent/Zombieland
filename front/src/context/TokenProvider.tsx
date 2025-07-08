@@ -1,4 +1,5 @@
 "use client";
+
 // When to use use client in NextJs?
 // The 'use client' directive declares an entry point for the components to be rendered on the client side and should be used when creating interactive user interfaces (UI) that require client-side JavaScript capabilities, such as state management, event handling, and access to browser APIs.
 
@@ -23,7 +24,7 @@ export const TokenContext = createContext<
 export default function TokenProvider({ children }: { children: ReactNode }) {
 	const [token, setToken] = useState<string | null>(null);
 
-	// if there is a token , charge it in the localstorage
+	// if there is a token, charge it in the localstorage
 	useEffect(() => {
 		const storedToken = localStorage.getItem("token");
 		if (storedToken) {
@@ -31,7 +32,7 @@ export default function TokenProvider({ children }: { children: ReactNode }) {
 		}
 	}, []);
 
-	// update local storage as soon as the token change
+	// update local storage as soon as the token changes
 	useEffect(() => {
 		if (token) {
 			localStorage.setItem("token", token);

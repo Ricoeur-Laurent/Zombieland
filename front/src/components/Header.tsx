@@ -16,7 +16,7 @@ export default function Header() {
 				{/* Logo  */}
 				<Link
 					href="/"
-					className="text-4xl font-title tracking-widest text-primary"
+					className="text-4xl sm:text-6xl font-title tracking-widest text-primary"
 				>
 					ZombieLand
 				</Link>

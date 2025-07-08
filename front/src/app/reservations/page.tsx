@@ -3,7 +3,6 @@
 import ReservationForm from "@/components/reservations/ReservationForm";
 import { useTokenContext } from "@/context/TokenProvider";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export const metadata = {
 	title: "reservation–ZombieLand",
