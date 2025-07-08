@@ -152,4 +152,6 @@ await attractions[12].addCategories([categories[5]]);
   }
 }
 
-seed();
+// seed();
+
+export default seed

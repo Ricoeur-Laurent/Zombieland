@@ -11,14 +11,12 @@ import categoriesRoutes from './routes/categories.routes.js';
 
 const router = express.Router();
 
-router.use('/', homeRoutes);
 router.use('/signUp', signUpRoutes);
 router.use('/login', loginRoutes);
 router.use('/reservations', verifyToken, reservationsRoutes);
 router.use('/attractions', attractionsRoutes);
 router.use('/categories', categoriesRoutes);
 router.use("/myReservations", verifyToken, reservationsRoutes);
-
 
 // =================== Admin routes =====================
 
