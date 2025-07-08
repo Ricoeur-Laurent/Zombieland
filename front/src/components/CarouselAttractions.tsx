@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { Attraction } from "@/@types";
 
+
 export default function CarouselAttractions() {
+
 	/*Embla initialisation*/
 	const [emblaRef, emblaApi] = useEmblaCarousel({
 		loop: true,
