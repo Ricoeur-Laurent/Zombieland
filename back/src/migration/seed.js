@@ -9,8 +9,8 @@ import {
 
 async function seed() {
   try {
-    await sequelize.sync({ force: true });
-    console.log('BDD synchronisée');
+    // await sequelize.sync({ force: true });
+    // console.log('BDD synchronisée');
 
     const categories = await Categories.bulkCreate([
   { name: 'Survival' },
