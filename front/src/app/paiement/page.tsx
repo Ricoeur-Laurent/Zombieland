@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function PaiementPage() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-background text-text">
+    <div className="min-h-screen flex flex-col items-center justify-start px-4 py-12 bg-background text-text">
       <PaiementSection />
     </div>
   );
