@@ -145,7 +145,7 @@ await attractions[12].addCategories([categories[5]]);
 ]);
 
     console.log('Données insérées avec succès');
-    process.exit();
+    // process.exit();
   } catch (error) {
     console.error('Erreur pendant le seed :', error);
     process.exit(1);
