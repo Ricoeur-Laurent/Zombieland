@@ -1,0 +1,40 @@
+###
+# Get all attractions
+GET http://localhost:5000/attractions
+###
+
+###
+# Get one attraction by id
+GET http://localhost:5000/attractions/1
+###
+
+# Create one attraction
+POST http://localhost:5000/admin/attractions
+content-type: application/json
+
+{
+    "name" : "attraction n°5",
+    "image" : "encore une autre belle image",
+    "description" : "une attraction qui fait peur et qui est drôle en même temps"
+
+}
+###
+
+###
+# Delete one attraction
+DELETE http://localhost:5000/admin/attractions/6
+###
+
+###
+
+###
+# Update an attraction
+PATCH http://localhost:5000/admin/attractions/3
+content-type: application/json
+
+{
+
+    "name" : "la dernière attraction"
+
+}
+###

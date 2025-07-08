@@ -1,0 +1,40 @@
+###
+# Get all reservations
+GET http://localhost:5000/reservations
+###
+
+###
+# Get one reservation by id
+GET http://localhost:5000/reservations/1
+###
+
+# Create a reservation
+POST http://localhost:5000/admin/reservations
+content-type: application/json
+
+{
+    "visit_date" : "2025-12-12",
+    "nb_participants" : 5,
+    "amount" : 200.01,
+    "user_id" : 1
+}
+###
+
+###
+# Delete one reservation
+DELETE http://localhost:5000/admin/reservations/6
+###
+
+###
+
+###
+# Update a reservation
+PATCH http://localhost:5000/admin/reservations/9
+content-type: application/json
+
+{
+
+    "nb_participants" : 21
+
+}
+###

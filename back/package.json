@@ -1,17 +1,26 @@
 {
-  "name": "back",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "dev": "node --watch  index.js"
-  },
-  "type": "module",
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^5.1.0"
-  }
+	"name": "back",
+	"version": "1.0.0",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"dev": "node --watch  index.js",
+		"db:create": "node ./src/migration/sync.js",
+		"db:seed": "node ./src/migration/seed.js",
+		"db:reset": "npm run db:create && npm run db:seed"
+	},
+	"type": "module",
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"bcrypt": "^6.0.0",
+		"dayjs": "^1.11.13",
+		"dotenv": "^17.0.1",
+		"express": "^5.1.0",
+		"jsonwebtoken": "^9.0.2",
+		"pg": "^8.16.3",
+		"sequelize": "^6.37.7"
+	},
+	"description": ""
 }
