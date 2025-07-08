@@ -3,20 +3,62 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { attractions } from "@/data/attractions";
+import { useEffect, useState } from "react";
+import type { Attraction, Category } from "@/@types";
 
 export default function AttractionsPage() {
-	/* 1 · State search + category  */
+	/* State search + category  */
 	const [query, setQuery] = useState("");
-	const [category, setCategory] = useState("");
-
-	const [visible, setVisible] = useState(4); // on commence à 4
+	const [selectedCategory, setSelectedCategory] = useState("");
+	const [categories, setCategories] = useState<Category[]>([]);
+	const [attractions, setAttractions] = useState<Attraction[]>([]);
+	const [visible, setVisible] = useState(4);
 	const step = 4;
-	/* 2 · Filter */
+
+	/*fetch attractions */
+	useEffect(() => {
+		async function getAttractions() {
+			try {
+				const httpResponse = await fetch("http://localhost:5000/attractions");
+				const data = await httpResponse.json();
+
+				if (httpResponse.ok) {
+					setAttractions(data.allAttractions);
+				} else {
+					throw new Error("L'appel à l'API a échoué, veuillez réessayer...");
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		getAttractions();
+	}, []);
+
+	/*fetch categories */
+	useEffect(() => {
+		async function getCategories() {
+			try {
+				const httpResponse = await fetch("http://localhost:5000/categories");
+				const data = await httpResponse.json();
+
+				if (httpResponse.ok) {
+					setCategories(data);
+				} else {
+					throw new Error("L'appel à l'API a échoué, veuillez réessayer...");
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		getCategories();
+	}, []);
+
+	/* · Filter */
 	const filtered = attractions.filter((a) => {
-		const matchName = a.title.toLowerCase().includes(query.toLowerCase());
-		const matchCat = category ? a.category === category : true;
+		const matchName = a.name.toLowerCase().includes(query.toLowerCase());
+		const matchCat = selectedCategory
+			? a.categories.some((cat) => cat.name === selectedCategory)
+			: true;
 		return matchName && matchCat;
 	});
 
@@ -43,17 +85,16 @@ export default function AttractionsPage() {
 				</label>
 
 				<select
-					value={category}
-					onChange={(e) => setCategory(e.target.value)}
+					value={selectedCategory}
+					onChange={(e) => setSelectedCategory(e.target.value)}
 					className="w-full sm:w-1/2 px-3 py-2 rounded-md bg-surface text-text border border-muted"
 				>
 					<option value="">Catégories</option>
-					<option value="Survival">Survival</option>
-					<option value="Escape Game">Escape&nbsp;Game</option>
-					<option value="Manège">Manège</option>
-					<option value="Paintball">Paintball</option>
-					<option value="Simulation urbaine">Simulation urbaine</option>
-					<option value="VR">VR</option>
+					{categories.map((c) => (
+						<option key={c.id} value={c.name}>
+							{c.name}
+						</option>
+					))}
 				</select>
 			</div>
 
@@ -63,15 +104,15 @@ export default function AttractionsPage() {
 					<Link key={a.id} href={`/attractions/${a.slug}`} className="block">
 						<article className="aspect-video relative overflow-hidden rounded-lg border-2 border-primary">
 							<Image
-								src={a.image}
-								alt={a.title}
+								src={`/images/desktop/${a.id}.webp`}
+								alt={a.name}
 								fill
 								className="object-cover"
 								sizes="(max-width:640px)100vw,(max-width:1024px)50vw,33vw"
-								loading="lazy"
+								priority
 							/>
 							<div className="absolute inset-0 flex items-end p-4 bg-gradient-to-t from-black/70 to-transparent">
-								<h3 className="text-white text-xl font-title">{a.title}</h3>
+								<h3 className="text-white text-xl font-title">{a.name}</h3>
 							</div>
 						</article>
 					</Link>
