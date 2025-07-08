@@ -6,22 +6,35 @@ import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { Attraction } from "@/@types";
 
-interface CarouselAttractionsProps {
-	items: Pick<Attraction, "id" | "title" | "image">[];
-}
-
-export default function CarouselAttractions({
-	items,
-}: CarouselAttractionsProps) {
+export default function CarouselAttractions() {
 	/*Embla initialisation*/
 	const [emblaRef, emblaApi] = useEmblaCarousel({
 		loop: true,
 		align: "start",
 		skipSnaps: false,
 	});
-
 	/* Track the currently visible slide for the dots indicator */
 	const [selectedIndex, setSelectedIndex] = useState(0);
+	const [attractions, setAttractions] = useState<Attraction[]>([]);
+
+	// Fetch attractions
+	useEffect(() => {
+		async function getAttractions() {
+			try {
+				const httpResponse = await fetch("http://localhost:5000/attractions");
+				const data = await httpResponse.json();
+
+				if (httpResponse.ok) {
+					setAttractions(data.allAttractions);
+				} else {
+					throw new Error("L'appel à l'API a échoué, veuillez réessayer...");
+				}
+			} catch (error) {
+				console.log(error);
+			}
+		}
+		getAttractions();
+	}, []);
 
 	/* Callback fired whenever Embla changes slide */
 	const onSelect = useCallback(() => {
@@ -55,7 +68,7 @@ export default function CarouselAttractions({
 			{/* Embla viewport */}
 			<div ref={emblaRef} className="overflow-hidden w-full mx-auto px-4">
 				<div className="flex gap-4">
-					{items.map((a) => (
+					{attractions.map((a) => (
 						<div
 							key={a.id}
 							className="min-w-full md:min-w-[50%] lg:min-w-[33.3333%] flex-shrink-0"
@@ -63,8 +76,8 @@ export default function CarouselAttractions({
 							<Link href={`/attractions/${a.slug}`} className="block h-full">
 								<article className="relative aspect-video overflow-hidden border-2 border-primary rounded-lg m-3">
 									<Image
-										src={a.image}
-										alt={a.title}
+										src={`/images/desktop/${a.id}.webp`}
+										alt={a.name}
 										fill
 										sizes="(min-width:1024px) 33vw,
                        (min-width:768px) 50vw,
@@ -77,7 +90,7 @@ export default function CarouselAttractions({
 										className="absolute inset-0 flex items-end justify-center p-4 text-center bg-gradient-to-t from-black/80 to-transparent
             		 text-white text-xl font-title tracking-wider"
 									>
-										{a.title}
+										{a.name}
 									</span>
 								</article>
 							</Link>
@@ -85,23 +98,22 @@ export default function CarouselAttractions({
 					))}
 				</div>
 				{/* Pastilles */}
-				<div className="mt-4 flex justify-center gap-3">
-					<ul className="mt-4 flex justify-center gap-3">
-						{items.map((_, i) => (
-							// biome-ignore lint/suspicious/noArrayIndexKey: usage de l’index ok (liste statique, carrousel embla)
-							<li key={i}>
-								<button
-									type="button"
-									aria-label={`Aller au slide ${i + 1}`}
-									aria-current={selectedIndex === i ? "true" : undefined}
-									onClick={() => emblaApi?.scrollTo(i)}
-									className={`size-3 rounded-full transition
+
+				<ul className="mt-4 flex justify-center gap-3">
+					{attractions.map((_, i) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: usage de l’index ok (liste statique, carrousel embla)
+						<li key={i}>
+							<button
+								type="button"
+								aria-label={`Aller au slide ${i + 1}`}
+								aria-current={selectedIndex === i ? "true" : undefined}
+								onClick={() => emblaApi?.scrollTo(i)}
+								className={`size-3 rounded-full transition
           ${selectedIndex === i ? "bg-primary" : "bg-muted/50 hover:bg-muted"}`}
-								/>
-							</li>
-						))}
-					</ul>
-				</div>
+							/>
+						</li>
+					))}
+				</ul>
 			</div>
 		</div>
 	);
