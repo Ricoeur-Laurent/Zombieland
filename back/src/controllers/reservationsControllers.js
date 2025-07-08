@@ -1,6 +1,6 @@
 import { Users } from '../models/index.js';
 import { Reservations } from '../models/index.js';
-import jwt from 'jsonwebtoken';
+import dayjs from 'dayjs';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -91,7 +91,7 @@ const reservationsControllers = {
 	// Create a reservation
 	async createReservation(req, res) {
 		try {
-			const { visit_date, nb_participants, amount, user_id } = req.body;
+			const { visit_date, nb_participants, amount } = req.body;
 			const userId = req.user.id;
 			if (!visit_date || !nb_participants || !amount) {
 				return res.status(400).json({ error: 'Tous les champs sont requis.' });
@@ -128,6 +128,14 @@ const reservationsControllers = {
 					.status(403)
 					.json({ error: 'Accès refusé : vous ne pouvez modifier que vos propres réservations' });
 			}
+			const today = dayjs();
+			const visitDate = dayjs(reservation.visit_date);
+			if (visitDate.diff(today, 'day') < 10) {
+				return res.status(400).json({
+					error:
+						'La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.',
+				});
+			}
 			await reservation.update(req.body);
 			return res.status(200).json({
 				message: 'Réservation modifiée avec succès.',
@@ -154,6 +162,14 @@ const reservationsControllers = {
 				return res
 					.status(403)
 					.json({ error: 'Accès refusé : vous ne pouvez supprimer que vos propres réservations' });
+			}
+			const today = dayjs();
+			const visitDate = dayjs(reservation.visit_date);
+			if (visitDate.diff(today, 'day') < 10) {
+				return res.status(400).json({
+					error:
+						'La réservation ne peut pas être annulée moins de 10 jours avant la date de visite.',
+				});
 			}
 			await reservation.destroy();
 			return res.status(200).json({

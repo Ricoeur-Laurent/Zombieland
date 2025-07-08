@@ -7,6 +7,7 @@ const attractionsController = {
 			const allAttractions = await Attractions.findAll({
 				include: {
 					model: Categories,
+					as: 'categories',
 					attributes: ['id', 'name'],
 				},
 			});
