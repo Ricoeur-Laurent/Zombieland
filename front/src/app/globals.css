@@ -1,26 +1,66 @@
+/* src/app/globals.css */
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* --- Variables + génération des utilitaires --- */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+	/* Couleurs => classes bg-surface, text-primary, etc. */
+	--color-bg: #1e1e1e;
+	--color-surface: #292929;
+	--color-primary: #d2782c;
+	--color-primary-light: #e0c9a6;
+	--color-primary-dark: #a15811;
+	--color-text: #e4e4e4;
+	--color-muted: #8b8b8b;
+
+	/* Polices => classes font-title, font-subtitle, font-body */
+	--font-title: "Bad Grunge", sans-serif;
+	--font-subtitle: "Bebas Neue", sans-serif;
+	--font-body: "Roboto", sans-serif;
+
+	/* Divers */
+	--radius-lg: 0.75rem; /* utilisable via rounded-lg */
+	--ring: 2px; /* utilisable via ring */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Polices locales (facultatif si via @font-face) */
+@font-face {
+	font-family: "Bad Grunge";
+	src: url("/fonts/BadGrunge.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Bebas Neue";
+	src: url("/fonts/BebasNeue.woff2") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+}
+@font-face {
+	font-family: "Roboto";
+	src: url("/fonts/Roboto-Light.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+	min-height: 100vh;
+	background-image: url("/images/Background/bg-zombie.png");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+header {
+	background-image: url("/images/Background/bg-zombie.png");
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+/* on commence le scroll a partir de 73px pour se trouver au bon endroit */
+[id] {
+	scroll-margin-top: 73px; /* ajuste selon la hauteur de ton header sticky */
+}
+nextjs-portal,
+nextjs-portal * {
+	display: none;
 }
