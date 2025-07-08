@@ -5,6 +5,11 @@ import { useTokenContext } from "@/context/TokenProvider";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+export const metadata = {
+	title: "reservation–ZombieLand",
+	description: "page to buy a ticket for ZombieLand.",
+};
+
 export default function ReservationsPage() {
 	const { token } = useTokenContext();
 	const router = useRouter();

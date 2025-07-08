@@ -9,6 +9,7 @@ export default function ReservationForm() {
 	const router = useRouter();
 
 	const [date, setDate] = useState<string>("");
+	// we put undefined here so we can set a place holder in the input later
 	const [visitors, setVisitors] = useState<number | undefined>(undefined);
 	const [calculatedPrice, setCalculatedPrice] = useState<number>(0);
 
@@ -16,6 +17,7 @@ export default function ReservationForm() {
 
 	useEffect(() => {
 		const pricePerVisitor = 66;
+		// here we need to check if visitors is not undefined or 0
 		const visitorsNumber = visitors ?? 0;
 		const price = visitorsNumber * pricePerVisitor;
 		setCalculatedPrice(price);
@@ -25,6 +27,7 @@ export default function ReservationForm() {
 			visitors,
 			calculatedPrice: price,
 		};
+		// we store the data in the local storage so when the user is later redirected to "paiement" he won't have to do it all over again
 		localStorage.setItem(
 			"zombieland_reservation",
 			JSON.stringify(reservationData),
@@ -33,7 +36,7 @@ export default function ReservationForm() {
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-
+		// here we check if the user is connected with his token, if he got one he goes to the paiement page else, he need to connect before being redirected
 		if (token) {
 			router.push("/paiement");
 		} else {
@@ -60,6 +63,7 @@ export default function ReservationForm() {
 				id="visitors"
 				type="number"
 				min={1}
+				// we set the value so when the page is on visitors is undefenid so we got an empty string and we can use our place holder
 				value={visitors ?? ""}
 				onChange={(e) => {
 					const v = e.target.value;
