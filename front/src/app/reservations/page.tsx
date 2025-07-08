@@ -1,35 +1,24 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import ReservationForm from "@/components/reservations/ReservationForm";
 import { useTokenContext } from "@/context/TokenProvider";
+import { useRouter } from "next/navigation";
 
+export const metadata = {
+	title: "reservation–ZombieLand",
+	description: "page to buy a ticket for ZombieLand.",
+};
 
+export default function ReservationsPage() {
+	const { token } = useTokenContext();
+	const router = useRouter();
 
-export default function ReservationPage() {
-  const { token } = useTokenContext();
-  const router = useRouter();
-// need to put it where the payments submit 'll be done, need to change reservations to paiement
-  useEffect(() => {
-    if (!token) {
-      router.push("/connexion?redirect=/paiement");
-    }
-  }, [token, router]);
-
-  if (!token) {
-    return (
-      <div className="flex items-center justify-center min-h-screen text-text">
-        Redirection vers la page de connexion...
-      </div>
-    );
-  }
-
-  return (
-    <div className="p-8 text-text">
-      <h2 className="text-3xl font-subtitle text-primary-light mb-4">
-        Réservation
-      </h2>
-      <p>Contenu de la page de réservation ici (formulaire, sélection de créneaux, etc).</p>
-    </div>
-  );
+	return (
+		<div className="p-8 min-h-screen flex flex-col items-center justify-center text-text">
+			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
+				Réserver votre visite
+			</h2>
+			<ReservationForm />
+		</div>
+	);
 }
