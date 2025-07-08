@@ -1,7 +1,7 @@
-import e from 'express';
 import { Categories } from '../models/categories.js';
 
 const categoriesControllers = {
+	// Retrieve all categories
 	async getAllCategories(req, res) {
 		try {
 			const categories = await Categories.findAll();
@@ -15,6 +15,7 @@ const categoriesControllers = {
 		}
 	},
 
+	// Retrieve one category by ID
 	async getOneCategory(req, res) {
 		const { id } = req.params;
 		try {
@@ -22,19 +23,20 @@ const categoriesControllers = {
 			if (!oneCategory) {
 				console.log(`La catégorie n°${id} est introuvable`);
 				return res.status(404).json({
-					message: `La catégorie n°${id} est introuvable`,
+					message: `La catégorie est introuvable`,
 				});
 			}
 			res.json(oneCategory);
 		} catch (error) {
 			console.error(`Erreur lors de la récupération de la catégorie n° ${id} `, error);
 			res.status(500).json({
-				message: `Erreur serveur interne lors de la récupération de la catégorie n° ${id}`,
+				message: `Erreur serveur interne lors de la récupération de la catégorie`,
 			});
 		}
 	},
 
-	async categoryCreate(req, res) {
+	// Create a new category
+	async createCategory(req, res) {
 		try {
 			const { name } = req.body;
 			if (!name) {
@@ -59,6 +61,7 @@ const categoriesControllers = {
 		}
 	},
 
+	// Update an existing category by ID
 	async updateCategory(req, res) {
 		try {
 			const { id } = req.params;
@@ -87,7 +90,8 @@ const categoriesControllers = {
 			});
 		}
 	},
-
+	
+	// Delete a category by ID
 	async deleteCategory(req, res) {
 		try {
 			const { id } = req.params;
