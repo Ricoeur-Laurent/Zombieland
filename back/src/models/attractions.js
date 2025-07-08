@@ -24,6 +24,10 @@ Attractions.init(
 			type: DataTypes.TEXT,
 			allowNull: false,
 		},
+		slug :{
+			type: DataTypes.TEXT,
+			allowNull: false
+		}
 	},
 	{
 		sequelize,
