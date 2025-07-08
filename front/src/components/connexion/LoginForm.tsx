@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, FormEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-
 import { LogIn } from "lucide-react";
+
+import { useRouter, useSearchParams } from "next/navigation";
+import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
 
 export default function ConnexionForm() {
@@ -20,7 +20,7 @@ export default function ConnexionForm() {
 		setError("");
 
 		try {
-			const response = await fetch("https://api/login", {
+			const response = await fetch("http://localhost:5000/login", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ email, password }),
@@ -35,35 +35,16 @@ export default function ConnexionForm() {
 
 			const redirectPath = searchParams.get("redirect");
 			router.push(redirectPath || "/paiement");
-		} catch (e: any) {
-			console.error(e);
-			setError("Identifiants invalides ou erreur serveur.");
+		} catch (e) {
+			if (e instanceof Error) {
+				console.error(e);
+				setError("Identifiants invalides ou erreur serveur.");
+			} else {
+				console.error("Unknown error", e);
+				setError("Erreur inconnue.");
+			}
 		}
 	};
-
-	// handle submit for testing
-
-	// const handleSubmit = async (e: FormEvent) => {
-	//   e.preventDefault();
-	//   setError("");
-
-	//   try {
-	//     await new Promise((resolve) => setTimeout(resolve, 1000)); // simulation of an api call
-
-	//     // simulation working :
-	//     const fakeToken = "token_de_test_zombieland";
-	//     setToken(fakeToken);
-
-	//     const redirectPath = searchParams.get("redirect");
-	//     router.push(redirectPath || "/reservations");
-
-	//     // // error testing , comment lines above and active line under:
-	//     // throw new Error("Erreur simulée");
-	//   } catch (e: any) {
-	//     console.error(e);
-	//     setError("Identifiants invalides ou erreur serveur simulée.");
-	//   }
-	// };
 
 	return (
 		<form

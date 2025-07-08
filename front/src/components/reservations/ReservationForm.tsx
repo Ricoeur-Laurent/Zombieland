@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
 
 export default function ReservationForm() {
@@ -96,9 +96,9 @@ export default function ReservationForm() {
 
 			<button
 				type="submit"
-				className="bg-primary text-background py-2 rounded hover:bg-primary/90 transition"
+				className="bg-primary-light text-black font-bold py-2 rounded hover:bg-primary transition border border-primary"
 			>
-				Réserver
+				Valider ma réservation
 			</button>
 		</form>
 	);

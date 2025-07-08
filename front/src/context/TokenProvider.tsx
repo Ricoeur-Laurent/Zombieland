@@ -1,58 +1,80 @@
 "use client";
 
-// When to use use client in NextJs?
-// The 'use client' directive declares an entry point for the components to be rendered on the client side and should be used when creating interactive user interfaces (UI) that require client-side JavaScript capabilities, such as state management, event handling, and access to browser APIs.
+import type React from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-import {
-	type ReactNode,
-	createContext,
-	useContext,
-	useEffect,
-	useState,
-} from "react";
+// Crée le contexte
+const TokenContext = createContext<{
+	token: string | null;
+	setToken: (token: string | null) => void;
+	user: {
+		id: number;
+		firstname: string;
+		lastname: string;
+		email: string;
+		admin: boolean;
+	} | null;
+}>({
+	token: null,
+	setToken: () => {},
+	user: null,
+});
 
-// Context type-safe
-// we create an empty context that 'll be filled when the api provide it
-export const TokenContext = createContext<
-	| undefined
-	| {
-			token: string | null;
-			setToken: React.Dispatch<React.SetStateAction<string | null>>;
-	  }
->(undefined);
-
-export default function TokenProvider({ children }: { children: ReactNode }) {
+export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 	const [token, setToken] = useState<string | null>(null);
+	const [user, setUser] = useState<{
+		id: number;
+		firstname: string;
+		lastname: string;
+		email: string;
+		admin: boolean;
+	} | null>(null);
 
-	// if there is a token, charge it in the localstorage
 	useEffect(() => {
-		const storedToken = localStorage.getItem("token");
-		if (storedToken) {
-			setToken(storedToken);
-		}
+		const checkToken = async () => {
+			const storedToken = localStorage.getItem("token");
+			if (!storedToken) {
+				setToken(null);
+				setUser(null);
+				return;
+			}
+
+			try {
+				const response = await fetch("http://localhost:5000/auth/verify", {
+					headers: {
+						Authorization: `Bearer ${storedToken}`,
+					},
+				});
+
+				if (!response.ok) {
+					// Token invalide
+					console.log("Token invalide ou expiré. Suppression du localStorage.");
+					localStorage.removeItem("token");
+					setToken(null);
+					setUser(null);
+					return;
+				}
+
+				const data = await response.json();
+				console.log("Token valide, utilisateur :", data.user);
+				setToken(storedToken);
+				setUser(data.user);
+			} catch (error) {
+				console.error("Erreur lors de la vérification du token :", error);
+				localStorage.removeItem("token");
+				setToken(null);
+				setUser(null);
+			}
+		};
+
+		checkToken();
 	}, []);
 
-	// update local storage as soon as the token changes
-	useEffect(() => {
-		if (token) {
-			localStorage.setItem("token", token);
-		} else {
-			localStorage.removeItem("token");
-		}
-	}, [token]);
-
 	return (
-		<TokenContext.Provider value={{ token, setToken }}>
+		<TokenContext.Provider value={{ token, setToken, user }}>
 			{children}
 		</TokenContext.Provider>
 	);
-}
-
-// Hook that we 'll be able to use everywhere in the app
-export const useTokenContext = () => {
-	const context = useContext(TokenContext);
-	if (!context) {
-		throw new Error("useTokenContext must be used within a TokenProvider");
-	}
-	return context;
 };
+
+export const useTokenContext = () => useContext(TokenContext);
