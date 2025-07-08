@@ -1,7 +1,8 @@
 export const metadata = {
-	title: "mes-reservations ZombieLand",
-	description: "page to check your reservations to ZombieLand.",
+	title: "Mes réservations – Zombieland",
+	description: "Consultez vos réservations et suivez vos billets pour Zombieland facilement depuis votre espace personnel.",
 };
+
 
 export default function MesReservationsPage() {
 

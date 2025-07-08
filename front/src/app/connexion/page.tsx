@@ -1,9 +1,10 @@
 import ConnexionForm from "@/components/connexion/LoginForm";
 
 export const metadata = {
-	title: "connexion ZombieLand",
-	description: "page to connect to ZombieLand.",
+	title: "Connexion – Zombieland",
+	description: "Connectez-vous à Zombieland pour accéder à vos réservations et profiter de nos attractions.",
 };
+
 
 export default function ConnexionPage() {
 	return (

@@ -5,9 +5,10 @@ import { useTokenContext } from "@/context/TokenProvider";
 import { useRouter } from "next/navigation";
 
 export const metadata = {
-	title: "reservation–ZombieLand",
-	description: "page to buy a ticket for ZombieLand.",
+	title: "Réservations – Zombieland",
+	description: "Réservez vos billets pour Zombieland, choisissez votre date et nombre de visiteurs.",
 };
+
 
 export default function ReservationsPage() {
 	const { token } = useTokenContext();

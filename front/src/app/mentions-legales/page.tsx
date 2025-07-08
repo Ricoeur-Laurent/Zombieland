@@ -1,3 +1,9 @@
+export const metadata = {
+	title: "Mentions légales – Zombieland",
+	description: "Retrouvez les mentions légales de Zombieland, incluant les informations légales, éditeur, hébergeur et conditions d'utilisation du site.",
+};
+
+
 export default function LegalPage() {
 	return (
 		<main className="max-w-3xl mx-auto px-6 py-12 text-text font-body space-y-12">
