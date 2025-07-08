@@ -4,7 +4,12 @@ const attractionsController = {
 	// retrieve all attractions
 	async getAllAttractions(req, res) {
 		try {
-			const allAttractions = await Attractions.findAll();
+			const allAttractions = await Attractions.findAll({
+				include: {
+					model: Categories,
+					attributes: ['id', 'name'],
+				},
+			});
 			return res
 				.status(200)
 				.json({ message: `Attractions récupérées avec succès`, allAttractions });
