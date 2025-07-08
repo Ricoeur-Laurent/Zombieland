@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import router from './src/routers/router.js';
-import { sequelize } from './sequelize.js'; // adapte si ton fichier a un autre nom
+import { sequelize } from './src/models/sequelize.js';
 import seed from './src/migration/seed.js';
 
 dotenv.config();
