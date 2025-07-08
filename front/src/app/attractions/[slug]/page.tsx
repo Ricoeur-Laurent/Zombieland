@@ -27,7 +27,7 @@ export default function AttractionPage({ params }: PageProps) {
 	}
 
 	return (
-		<main className="max-w-3xl mx-auto px-4 py-10 space-y-8">
+		<div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
 			<Link href="/attractions" className="text-primary hover:underline">
 				← Retour aux attractions
 			</Link>
@@ -57,6 +57,6 @@ export default function AttractionPage({ params }: PageProps) {
 			<article className="prose prose-invert max-w-none">
 				<p>{attraction.description}</p>
 			</article>
-		</main>
+		</div>
 	);
 }

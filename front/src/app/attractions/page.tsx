@@ -24,7 +24,7 @@ export default function AttractionsPage() {
 	const hasMore = visible < filtered.length;
 
 	return (
-		<main className="px-4 py-6 max-w-6xl mx-auto">
+		<div className="px-4 py-6 max-w-6xl mx-auto">
 			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				Les attractions
 			</h2>
@@ -95,6 +95,6 @@ export default function AttractionsPage() {
 					</button>
 				</div>
 			)}
-		</main>
+		</div>
 	);
 }

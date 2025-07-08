@@ -60,7 +60,7 @@ export default function CarouselAttractions({
 							key={a.id}
 							className="min-w-full md:min-w-[50%] lg:min-w-[33.3333%] flex-shrink-0"
 						>
-							<Link href={`/attractions/${a.id}`} className="block h-full">
+							<Link href={`/attractions/${a.slug}`} className="block h-full">
 								<article className="relative aspect-video overflow-hidden border-2 border-primary rounded-lg m-3">
 									<Image
 										src={a.image}

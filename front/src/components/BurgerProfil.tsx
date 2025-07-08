@@ -2,7 +2,9 @@
 
 import { User, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTokenContext } from "@/context/TokenProvider";
 
 export default function BurgerProfil() {
 	const [open, setOpen] = useState(false);
@@ -11,6 +13,16 @@ export default function BurgerProfil() {
 	useEffect(() => {
 		document.body.style.overflow = open ? "hidden" : "";
 	}, [open]);
+	// we get the token in the burger to check if the user is connected and swap the  burger optin connect/disconnect
+	const { token, setToken } = useTokenContext();
+	const router = useRouter();
+
+	const handleLogout = () => {
+		localStorage.removeItem("zombieland_token");
+		setToken(null);
+		setOpen(false);
+		router.push("/");
+	};
 
 	return (
 		<>
@@ -39,18 +51,65 @@ export default function BurgerProfil() {
 						<X className="h-7 w-7" />
 					</button>
 
-					<ul className="mt-8 flex flex-grow flex-col gap-6">
-						<li>
-							<Link
-								href="/profil"
-								onClick={() => setOpen(false)}
-								className="flex items-center gap-3 py-2 text-primary-light
-                           transition-colors hover:text-primary"
-							>
-								Mon profil
-							</Link>
-						</li>
-					</ul>
+					
+
+						{token ? (
+						<ul className="mt-8 flex flex-grow flex-col gap-6">
+							<li>
+								<Link
+									href="/profil"
+									onClick={() => setOpen(false)}
+									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+								>
+									Mon profil
+								</Link>
+							</li>
+
+							<li>
+								<Link
+									href="/mes-reservations"
+									onClick={() => setOpen(false)}
+									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+								>
+									Mes réservations
+								</Link>
+							</li>
+							
+							<li>
+								<button
+									type="button"
+									onClick={handleLogout}
+									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+								>
+									Déconnexion
+								</button>
+							</li>
+						</ul>
+						) : (
+						<ul className="mt-8 flex flex-grow flex-col gap-6">
+								<li>
+								<Link
+									href="/connexion"
+									onClick={() => setOpen(false)}
+									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+								>
+									Connexion
+								</Link>
+							</li>
+							<li>
+								<Link
+									href="/inscription"
+									onClick={() => setOpen(false)}
+									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+								>
+									Inscription
+								</Link>
+							</li>
+						
+					  </ul>
+					)}
+							
+							
 				</div>
 			)}
 		</>
