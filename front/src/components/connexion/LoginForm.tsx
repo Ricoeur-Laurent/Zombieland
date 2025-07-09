@@ -21,34 +21,39 @@ export default function ConnexionForm() {
 
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ email, password }),
-					credentials: "include",
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ email, password }),
+				credentials: "include",
 			});
-	
+
 			if (!response.ok) {
-					throw new Error("Invalid credentials or server error");
+				throw new Error("Invalid credentials or server error");
 			}
-	
+
 			const data = await response.json();
-	
+
 			setToken(data.token); // pour ton contexte
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
-	
-			const redirectPath = searchParams.get("redirect");
-			router.push(redirectPath || "/paiement");
-	
-	} catch (e) {
-			if (e instanceof Error) {
-					console.error(e);
-					setError("Identifiants invalides ou erreur serveur.");
+
+			const stored = localStorage.getItem("zombieland_reservation");
+			if (stored) {
+				const redirectPath = searchParams.get("redirect");
+				router.push(redirectPath || "/paiement");
 			} else {
-					console.error("Unknown error", e);
-					setError("Erreur inconnue.");
+				const redirectPath = searchParams.get("redirect");
+				router.push(redirectPath || "/reservations");
 			}
-	}
-	}	
+		} catch (e) {
+			if (e instanceof Error) {
+				console.error(e);
+				setError("Identifiants invalides ou erreur serveur.");
+			} else {
+				console.error("Unknown error", e);
+				setError("Erreur inconnue.");
+			}
+		}
+	};
 
 	return (
 		<form
