@@ -14,7 +14,6 @@ export default async function AttractionPage({
 	try {
 		const httpResponse = await fetch(
 			`${process.env.NEXT_PUBLIC_API_URL}/attractions/slug/${slug}`,
-			{},
 		);
 
 		if (httpResponse.status === 404) {

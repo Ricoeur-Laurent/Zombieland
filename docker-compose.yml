@@ -9,8 +9,9 @@ services:
        - ./front/node_modules:/app/node_modules
     depends_on:
       - back
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:5000/
+ 
+    env_file:
+      - ./front/.env
     networks:
       - zombienet
 
