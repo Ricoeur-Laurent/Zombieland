@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Review } from "@/@types";
 import { useTokenContext } from "@/context/TokenProvider";
@@ -24,12 +25,14 @@ export default function ReviewModal({
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
+	const pathname = usePathname();
+	const router = useRouter();
 	// Handles review submission
 	const handleSend = async () => {
 		// If not logged in, block the action
 		if (!token) {
 			setError("Vous devez être connecté pour laisser un avis.");
-			return;
+			router.push(`/connexion?redirect=${pathname}`);
 		}
 
 		setLoading(true);
