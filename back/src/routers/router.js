@@ -26,6 +26,6 @@ router.use('/api/admin/users', verifyToken, verifyAdmin, signUpRoutes);
 router.use('/api/admin/categories', verifyToken, verifyAdmin, categoriesRoutes);
 
 // =================== auth routes =====================
-router.use('/auth', authRoutes);
+router.use('/api/auth', authRoutes);
 
 export default router;
