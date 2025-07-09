@@ -14,10 +14,11 @@ if (!JWT_SECRET) {
 const reservationsControllers = {
 	// retrieve all reservations
 	async getAllReservations(req, res) {
+		console.log("admin :", req.user)
+		if (!req.user.admin) {
+			return res.status(403).json({ error: 'Accès interdit : Admin uniquement.' });
+		}
 		try {
-			if (req.user.admin !== 'true') {
-				return res.status(403).json({ error: 'Accès interdit : Admin uniquement.' });
-			}
 			const reservations = await Reservations.findAll();
 			return res.status(200).json({
 				message: 'Reservations récupérées avec succès',
@@ -33,13 +34,24 @@ const reservationsControllers = {
 
 	// retrieve one reservation by id
 	async getOneReservation(req, res) {
-		const { id } = req.params;
+
+		// req.params data control with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+		
 		const userId = req.user.id;
 		try {
-			const oneReservation = await Reservations.findByPk(id);
+			const oneReservation = await Reservations.findByPk(id.data.id);
 			if (!oneReservation) {
-				console.log(`La reservation n°${id} est introuvable`);
-				return res.status(404).json({ message: `La reservation n°${id} est introuvable` });
+				console.log(`La reservation n°${id.data.id} est introuvable`);
+				return res.status(404).json({ message: `La reservation n°${id.data.id} est introuvable` });
 			}
 			if (oneReservation.userId !== userId) {
 				return res.status(403).json({ message: 'Accès refusé à cette réservation' });
@@ -49,9 +61,9 @@ const reservationsControllers = {
 				oneReservation,
 			});
 		} catch (error) {
-			console.error(`Erreur lors de la récupération de la réservation n° ${id} `, error);
+			console.error(`Erreur lors de la récupération de la réservation n° ${id.data.id} `, error);
 			res.status(500).json({
-				message: `Erreur serveur interne lors de la récupération de la réservation n° ${id}`,
+				message: `Erreur serveur interne lors de la récupération de la réservation n° ${id.data.id}`,
 			});
 		}
 	},

@@ -1,0 +1,22 @@
+# Create a user
+POST http://localhost:5000/api/signUp
+content-type: application/json
+
+{
+  "firstname": "julien2",
+  "lastname": "desbard",
+  "email" : "jide2@gmail.com",
+  "password" : "julien",
+  "phone" : "123"
+}
+###
+
+# Login as a user
+POST http://localhost:5000/api/login
+content-type: application/json
+
+{
+  "email" : "jide2@gmail.com",
+  "password" : "julien"
+}
+###

@@ -1,4 +1,6 @@
 import { Categories, Attractions } from '../models/index.js';
+import { createAttractionSchema, updateAttractionSchema } from '../schemas/attractions.js';
+import paramsSchema from '../schemas/params.js';
 
 const attractionsController = {
 	// retrieve all attractions
@@ -24,9 +26,20 @@ const attractionsController = {
 
 	// retrieve one attraction
 	async getOneAttraction(req, res) {
-		const { id } = req.params;
+
+		// req.params data control with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+		
 		try {
-			const oneAttraction = await Attractions.findByPk(id);
+			const oneAttraction = await Attractions.findByPk(id.data.id);
 			if (!oneAttraction) {
 				console.log(`L'attraction est introuvable`);
 				return res.status(404).json({ message: `L'attraction est introuvable` });
@@ -42,17 +55,23 @@ const attractionsController = {
 
 	//  create one attraction
 	async createAttraction(req, res) {
-		const { name, image, description } = req.body;
-		if (!name || !image || !description) {
-			return res.status(400).json({ error: 'Tous les champs sont requis.' });
+
+		// Data control with Zod
+		const newAttraction = createAttractionSchema.safeParse(req.body)
+		if (!newAttraction.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					errors: newAttraction.error.issues
+				})
 		}
+console.log("new attraction data = ", newAttraction.data)
+
+		// New attraction creation
 		try {
-			const newAttraction = await Attractions.create({
-				name,
-				image,
-				description,
-			});
-			return res.status(201).json({ message: 'Attraction créée avec succès', newAttraction });
+			const attraction = await Attractions.create(newAttraction.data);
+			return res.status(201).json({ message: 'Attraction créée avec succès', attraction });
 		} catch (error) {
 			console.error(`Erreur lors de la création de l'attraction `, error);
 			res
@@ -63,13 +82,33 @@ const attractionsController = {
 
 	// update one attraction
 	async updateAttraction(req, res) {
-		const { id } = req.params;
+		// req.params data control with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+		// Data control with Zod
+		const attractionUpdate = updateAttractionSchema.safeParse(req.body)
+		if (!attractionUpdate.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					errors: attractionUpdate.error.issues
+				})
+		}
+		// Attraction update
 		try {
-			const attraction = await Attractions.findByPk(id);
+			const attraction = await Attractions.findByPk(id.data.id);
 			if (!attraction) {
 				return res.status(404).json({ message: `L'attraction est introuvable` });
 			}
-			await attraction.update(req.body);
+			await attraction.update(attractionUpdate.data);
 			return res.status(200).json({
 				message: 'Attraction modifiée avec succès.',
 				attraction,
@@ -84,9 +123,19 @@ const attractionsController = {
 
 	// delete one attraction
 	async deleteAttraction(req, res) {
-		const { id } = req.params;
+		// req.params data control with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+
 		try {
-			const attraction = await Attractions.findByPk(id);
+			const attraction = await Attractions.findByPk(id.data.id);
 			if (!attraction) {
 				return res.status(404).json({ error: "L'attraction demandée n'existe pas" });
 			}
@@ -104,10 +153,20 @@ const attractionsController = {
 
 	// Get attractions by category
 	async getAttractionsByCategory(req, res) {
-		try {
-			const { id } = req.params;
 
-			const category = await Categories.findByPk(id, {
+		// req.params data control with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+
+		try {
+			const category = await Categories.findByPk(id.data.id, {
 				include: {
 					model: Attractions,
 					as: 'attractions',

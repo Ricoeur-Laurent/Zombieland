@@ -1,40 +1,47 @@
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqaWRlMkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNzUyMDUzNTU5LCJleHAiOjE3NTIxMzk5NTl9.Kc1X-WEcg7jjEB5L3STNVC2WcY_CyawVWVCbD_w2-4s
 ###
 # Get all attractions
-GET http://localhost:5000/attractions
+GET http://localhost:5000/api/attractions
 ###
 
 ###
 # Get one attraction by id
-GET http://localhost:5000/attractions/1
+GET http://localhost:5000/api/attractions/5
 ###
 
 # Create one attraction
-POST http://localhost:5000/admin/attractions
+POST http://localhost:5000/api/admin/attractions
 content-type: application/json
+Authorization: Bearer {{token}}
 
 {
-    "name" : "attraction n°5",
+    "name" : "attraction n°125",
     "image" : "encore une autre belle image",
-    "description" : "une attraction qui fait peur et qui est drôle en même temps"
+    "description" : "une attraction qui fait peur et qui est drôle en même temps",
+    "slug" : "attraction-n-125"
 
 }
 ###
 
 ###
 # Delete one attraction
-DELETE http://localhost:5000/admin/attractions/6
+DELETE http://localhost:5000/api/admin/attractions/1
+Authorization: Bearer {{token}}
+
 ###
 
 ###
 
 ###
 # Update an attraction
-PATCH http://localhost:5000/admin/attractions/3
+PATCH http://localhost:5000/api/admin/attractions/2
 content-type: application/json
+Authorization: Bearer {{token}}
 
 {
 
-    "name" : "la dernière attraction"
+    "name" : "l'ancien dédale again"
 
 }
 ###
