@@ -7,6 +7,7 @@ import reservationsRoutes from './routes/reservations.routes.js';
 import signUpRoutes from './routes/users.routes.js';
 import attractionsRoutes from './routes/attractions.routes.js';
 import categoriesRoutes from './routes/categories.routes.js';
+import authRoutes from './routes/auth.routes.js'
 
 const router = express.Router();
 
