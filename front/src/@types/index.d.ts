@@ -10,3 +10,9 @@ export interface Category {
 	id: number;
 	name: string;
 }
+
+export interface Review {
+	id: number;
+	comment: string;
+	rating: number;
+}

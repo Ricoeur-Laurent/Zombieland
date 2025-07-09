@@ -39,10 +39,8 @@ export default function ConnexionForm() {
 			const stored = localStorage.getItem("zombieland_reservation");
 			if (stored) {
 				const redirectPath = searchParams.get("redirect");
-				router.push(redirectPath || "/paiement");
-			} else {
-				const redirectPath = searchParams.get("redirect");
-				router.push(redirectPath || "/reservations");
+				if (!redirectPath) return;
+				router.push(redirectPath);
 			}
 		} catch (e) {
 			if (e instanceof Error) {

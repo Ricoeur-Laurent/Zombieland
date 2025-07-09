@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
-import type { Attraction } from "@/@types";
 import AttractionDetails from "@/components/attraction/AttractionDetails";
+import CarouselReviews from "@/components/attractionReview/CarouselReviews";
 
 export default async function AttractionPage({
 	params,
@@ -10,13 +10,30 @@ export default async function AttractionPage({
 	const { slug } = await params;
 
 	/* fetch one attraction */
-	const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/attractions/slug/${slug}`, {});
 
-	if (!res.ok) {
-		notFound(); // 404 automatic
+	try {
+		const httpResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/attractions/slug/${slug}`,
+			{},
+		);
+
+		if (httpResponse.status === 404) {
+			notFound(); // 404 automatic
+		}
+		if (!httpResponse.ok) {
+			// (500, 403, etc.)
+			throw new Error(`Erreur serveur: ${httpResponse.status}`);
+		}
+
+		const data = await httpResponse.json();
+
+		return (
+			<>
+				<AttractionDetails attraction={data.oneAttraction} />
+				<CarouselReviews attractionId={data.oneAttraction.id} />
+			</>
+		);
+	} catch (error) {
+		console.log(error);
 	}
-
-	const { oneAttraction }: { oneAttraction: Attraction } = await res.json();
-
-	return <AttractionDetails attraction={oneAttraction} />;
 }
