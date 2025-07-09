@@ -1,11 +1,15 @@
 import { sequelize } from '../models/index.js';
 
-sequelize
-	.authenticate()
-	.then(() => {
+
+export async function initDatabase() {
+	try {
+		await sequelize.authenticate();
 		console.log('✅ Connexion à la BDD réussie');
-		return sequelize.sync({ force: true });
-	})
-	.catch((error) => {
-		console.error('❌ Erreur :', error.message);
-	});
+
+		await sequelize.sync({ force: true }); // alter:true ensuite
+		console.log('✅ Tables synchronisées');
+	} catch (err) {
+		console.error('❌ Erreur de sync :', err);
+		throw err;
+	}
+}
