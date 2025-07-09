@@ -46,13 +46,14 @@ export default function PaiementSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`, // Send reservation data to API with user token
 				},
+				credentials: "include", // send cookies with request
 				body: JSON.stringify({
-					date: reservation.date,
-					visitors: reservation.visitors,
-					price: reservation.calculatedPrice,
-				}),
+					visit_date: reservation.date,
+					nb_participants: reservation.visitors,
+					amount: reservation.calculatedPrice,
+			}),
+			
 			});
 
 			if (!response.ok) {

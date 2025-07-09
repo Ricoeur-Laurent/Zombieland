@@ -2,6 +2,7 @@ import express from "express";
 import { verifyAdmin } from "../middlewares/verifyAdmin.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
 import attractionsRoutes from "./routes/attractions.routes.js";
+import authRoutes from "./routes/auth.routes.js";
 import categoriesRoutes from "./routes/categories.routes.js";
 import homeRoutes from "./routes/home.routes.js";
 import loginRoutes from "./routes/login.routes.js";
@@ -26,6 +27,6 @@ router.use("/admin/users", verifyToken, verifyAdmin, signUpRoutes);
 router.use("/admin/categories", verifyToken, verifyAdmin, categoriesRoutes);
 
 // =================== auth routes =====================
-router.use('/auth', authRoutes);
+router.use("/auth", authRoutes);
 
 export default router;

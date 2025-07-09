@@ -1,5 +1,6 @@
 "use client";
 
+import Cookies from "js-cookie";
 import { User, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -17,10 +18,19 @@ export default function BurgerProfil() {
 	const { token, setToken } = useTokenContext();
 	const router = useRouter();
 
+	// ...
+
 	const handleLogout = () => {
-		localStorage.removeItem("zombieland_token");
+		// Remove the token from the cookies
+		Cookies.remove("zombieland_token");
+
+		// Clear the token from the context
 		setToken(null);
+
+		// Close the burger menu
 		setOpen(false);
+
+		// Redirect the user to the home page after logout
 		router.push("/");
 	};
 
@@ -51,9 +61,7 @@ export default function BurgerProfil() {
 						<X className="h-7 w-7" />
 					</button>
 
-					
-
-						{token ? (
+					{token ? (
 						<ul className="mt-8 flex flex-grow flex-col gap-6">
 							<li>
 								<Link
@@ -74,7 +82,7 @@ export default function BurgerProfil() {
 									Mes réservations
 								</Link>
 							</li>
-							
+
 							<li>
 								<button
 									type="button"
@@ -85,9 +93,9 @@ export default function BurgerProfil() {
 								</button>
 							</li>
 						</ul>
-						) : (
+					) : (
 						<ul className="mt-8 flex flex-grow flex-col gap-6">
-								<li>
+							<li>
 								<Link
 									href="/connexion"
 									onClick={() => setOpen(false)}
@@ -105,11 +113,8 @@ export default function BurgerProfil() {
 									Inscription
 								</Link>
 							</li>
-						
-					  </ul>
+						</ul>
 					)}
-							
-							
 				</div>
 			)}
 		</>
