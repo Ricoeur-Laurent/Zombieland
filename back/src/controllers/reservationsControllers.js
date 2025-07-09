@@ -1,7 +1,9 @@
+import dotenv from 'dotenv';
 import { Users } from '../models/index.js';
 import { Reservations } from '../models/index.js';
 import dayjs from 'dayjs';
-import dotenv from 'dotenv';
+import { createReservationSchema, updateReservationSchema } from '../schemas/reservations.js';
+import paramsSchema from '../schemas/params.js';
 
 dotenv.config();
 
@@ -45,7 +47,7 @@ const reservationsControllers = {
 					error: id.error.issues
 				})
 		}
-		
+
 		const userId = req.user.id;
 		try {
 			const oneReservation = await Reservations.findByPk(id.data.id);
@@ -102,21 +104,26 @@ const reservationsControllers = {
 
 	// Create a reservation
 	async createReservation(req, res) {
+
+		// Data control with zod
+		const newReservation = createReservationSchema.safeParse(req.body)
+		if (!newReservation.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					error: newReservation.error.issues
+				})
+		}
+
+		const userId = req.user.id;
+
+		// Creation of the reservation
 		try {
-			const { visit_date, nb_participants, amount } = req.body;
-			const userId = req.user.id;
-			if (!visit_date || !nb_participants || !amount) {
-				return res.status(400).json({ error: 'Tous les champs sont requis.' });
-			}
-			const reservation = await Reservations.create({
-				visit_date,
-				nb_participants,
-				amount,
-				userId,
-			});
+			const reservation = await Reservations.create(newReservation.data);
 			return res.status(201).json({
 				message: 'Réservation créée avec succès.',
-				reservation,
+				newReservation,
 			});
 		} catch (error) {
 			console.error('Erreur lors de la création de la réservation :', error);
@@ -128,26 +135,47 @@ const reservationsControllers = {
 
 	// Update a reservation
 	async updateReservation(req, res) {
-		const { id } = req.params;
+
+		// req.params validation with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+		// Data validation with Zod
+		const updateReservation = updateReservationSchema.safeParse(req.body)
+		if (!updateReservation.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error : updateReservation.error.issues
+				})
+		}
+
 		const userId = req.user.id;
+		const reservation = await Reservations.findByPk(id.data.id);
+		if (!reservation) {
+			return res.status(404).json({ error: 'reservation non trouvée' });
+		}
+		if (reservation.userId !== userId) {
+			return res
+				.status(403)
+				.json({ error: 'Accès refusé : vous ne pouvez modifier que vos propres réservations' });
+		}
+		const today = dayjs();
+		const visitDate = dayjs(reservation.visit_date);
+		if (visitDate.diff(today, 'day') < 10) {
+			return res.status(400).json({
+				error:
+					'La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.',
+			});
+		}
 		try {
-			const reservation = await Reservations.findByPk(id);
-			if (!reservation) {
-				return res.status(404).json({ error: 'reservation non trouvée' });
-			}
-			if (reservation.userId !== userId) {
-				return res
-					.status(403)
-					.json({ error: 'Accès refusé : vous ne pouvez modifier que vos propres réservations' });
-			}
-			const today = dayjs();
-			const visitDate = dayjs(reservation.visit_date);
-			if (visitDate.diff(today, 'day') < 10) {
-				return res.status(400).json({
-					error:
-						'La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.',
-				});
-			}
 			await reservation.update(req.body);
 			return res.status(200).json({
 				message: 'Réservation modifiée avec succès.',

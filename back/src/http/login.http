@@ -3,11 +3,11 @@ POST http://localhost:5000/api/signUp
 content-type: application/json
 
 {
-  "firstname": "julien2",
-  "lastname": "desbard",
-  "email" : "jide2@gmail.com",
-  "password" : "julien",
-  "phone" : "123"
+  "firstname": "admin",
+  "lastname": "admin",
+  "email" : "admin2@zombie.com",
+  "password" : "admin",
+  "phone" : "123456789"
 }
 ###
 
@@ -16,7 +16,7 @@ POST http://localhost:5000/api/login
 content-type: application/json
 
 {
-  "email" : "jide2@gmail.com",
-  "password" : "julien"
+  "email" :  "admin@zombie.com",
+  "password" : "admin"
 }
 ###
