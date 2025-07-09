@@ -16,6 +16,9 @@ export default function ReservationForm() {
 	const today = new Date().toISOString().split("T")[0];
 
 	useEffect(() => {
+		if (!date || !visitors || visitors <= 0) {
+			return;
+		}
 		const pricePerVisitor = 66;
 		// here we need to check if visitors is not undefined or 0
 		const visitorsNumber = visitors ?? 0;
