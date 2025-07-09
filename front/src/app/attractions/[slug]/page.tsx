@@ -1,62 +1,39 @@
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { Attraction } from "@/@types";
-import { attractions } from "@/data/attractions";
+import AttractionDetails from "@/components/attraction/AttractionDetails";
+import CarouselReviews from "@/components/attractionReview/CarouselReviews";
 
-interface PageProps {
-	params: { slug: string };
-}
+export default async function AttractionPage({
+	params,
+}: {
+	params: Promise<{ slug: string }>;
+}) {
+	const { slug } = await params;
 
-export function generateMetadata({ params }: PageProps) {
-	const attr = attractions.find((a) => a.slug === params.slug);
-	if (!attr) return { title: "Attraction introuvable – Zombieland" };
-	return {
-		title: `${attr.title} – Zombieland`,
-		description: attr.excerpt,
-	};
-}
+	/* fetch one attraction */
 
-export default function AttractionPage({ params }: PageProps) {
-	const attraction: Attraction | undefined = attractions.find(
-		(a) => a.slug === params.slug,
-	);
+	try {
+		const httpResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API_URL}/attractions/slug/${slug}`,
+			{},
+		);
 
-	if (!attraction) {
-		notFound(); /*automatic 404*/
+		if (httpResponse.status === 404) {
+			notFound(); // 404 automatic
+		}
+		if (!httpResponse.ok) {
+			// (500, 403, etc.)
+			throw new Error(`Erreur serveur: ${httpResponse.status}`);
+		}
+
+		const data = await httpResponse.json();
+
+		return (
+			<>
+				<AttractionDetails attraction={data.oneAttraction} />
+				<CarouselReviews attractionId={data.oneAttraction.id} />
+			</>
+		);
+	} catch (error) {
+		console.log(error);
 	}
-
-	return (
-		<div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
-			<Link href="/attractions" className="text-primary hover:underline">
-				← Retour aux attractions
-			</Link>
-
-			{/* Image  */}
-			<div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden border-2 border-primary">
-				<Image
-					src={attraction.image}
-					alt={attraction.title}
-					fill
-					className="object-cover"
-					priority
-				/>
-			</div>
-
-			{/* Title and category*/}
-			<div>
-				<h1 className="text-3xl md:text-4xl font-subtitle text-primary-light mb-2">
-					{attraction.title}
-				</h1>
-				<p className="uppercase  tracking-wider">{attraction.category}</p>
-			</div>
-
-			{/* Infos  */}
-
-			{/* Description  */}
-			<article className="prose prose-invert max-w-none">
-				<p>{attraction.description}</p>
-			</article>
-		</div>
-	);
 }

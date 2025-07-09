@@ -1,4 +1,5 @@
 
+
 import express from 'express';
 import { verifyToken } from '../middlewares/verifyToken.js';
 import { verifyAdmin } from '../middlewares/verifyAdmin.js';
@@ -8,6 +9,7 @@ import signUpRoutes from './routes/users.routes.js';
 import attractionsRoutes from './routes/attractions.routes.js';
 import categoriesRoutes from './routes/categories.routes.js';
 import authRoutes from './routes/auth.routes.js'
+
 
 const router = express.Router();
 
@@ -26,6 +28,8 @@ router.use('/api/admin/users', verifyToken, verifyAdmin, signUpRoutes);
 router.use('/api/admin/categories', verifyToken, verifyAdmin, categoriesRoutes);
 
 // =================== auth routes =====================
+
 router.use('/api/auth', authRoutes);
+
 
 export default router;

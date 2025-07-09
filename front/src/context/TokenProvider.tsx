@@ -1,74 +1,81 @@
 "use client";
 
+import Cookies from "js-cookie";
 import type React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 
-// Crée le contexte
-const TokenContext = createContext<{
+// Types for clarity
+type UserType = {
+	id: number;
+	firstname: string;
+	lastname: string;
+	email: string;
+	admin: boolean;
+} | null;
+
+type TokenContextType = {
 	token: string | null;
 	setToken: (token: string | null) => void;
-	user: {
-		id: number;
-		firstname: string;
-		lastname: string;
-		email: string;
-		admin: boolean;
-	} | null;
-}>({
+	user: UserType;
+};
+
+// Create the context with default values
+const TokenContext = createContext<TokenContextType>({
 	token: null,
 	setToken: () => {},
 	user: null,
 });
 
 export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
-	const [token, setToken] = useState<string | null>(null);
-	const [user, setUser] = useState<{
-		id: number;
-		firstname: string;
-		lastname: string;
-		email: string;
-		admin: boolean;
-	} | null>(null);
+	const [token, setTokenState] = useState<string | null>(null);
+	const [user, setUser] = useState<UserType>(null);
 
 	useEffect(() => {
 		const checkToken = async () => {
-			const storedToken = localStorage.getItem("token");
-			if (!storedToken) {
-				setToken(null);
-				setUser(null);
-				return;
-			}
-
 			try {
-				const response = await fetch("http://localhost:5000/auth/verify", {
-					headers: {
-						Authorization: `Bearer ${storedToken}`,
-					},
+				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
+					credentials: "include",
 				});
 
 				if (!response.ok) {
-					// Token invalide
-					console.log("Token invalide ou expiré. Suppression du localStorage.");
-					localStorage.removeItem("token");
-					setToken(null);
+					console.log("Token invalide ou expiré. Suppression du cookie.");
+					Cookies.remove("token");
+					setTokenState(null);
 					setUser(null);
 					return;
 				}
 
 				const data = await response.json();
 				console.log("Token valide, utilisateur :", data.user);
-				setToken(storedToken);
+				setTokenState("present"); // tu peux utiliser un simple indicateur
 				setUser(data.user);
 			} catch (error) {
 				console.error("Erreur lors de la vérification du token :", error);
-				localStorage.removeItem("token");
-				setToken(null);
+				Cookies.remove("token");
+				setTokenState(null);
 				setUser(null);
 			}
 		};
 
 		checkToken();
 	}, []);
+
+	const setToken = (newToken: string | null) => {
+		if (newToken) {
+			// Store the token in cookies securely
+			Cookies.set("zombieland_token", newToken, {
+				expires: 1, // 1 day
+				secure: process.env.NODE_ENV === "production", // HTTPS only in production
+				sameSite: "strict",
+			});
+			setTokenState(newToken);
+		} else {
+			// Remove token and clear user on logout
+			Cookies.remove("zombieland_token");
+			setTokenState(null);
+			setUser(null);
+		}
+	};
 
 	return (
 		<TokenContext.Provider value={{ token, setToken, user }}>
