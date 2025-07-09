@@ -42,7 +42,7 @@ export default function PaiementSection() {
 		setError(null);
 
 		try {
-			const response = await fetch("http://localhost:5000/reservations", {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

@@ -19,7 +19,7 @@ export default function AttractionsPage() {
 	useEffect(() => {
 		async function getAttractions() {
 			try {
-				const httpResponse = await fetch("http://localhost:5000/attractions");
+				const httpResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/attractions`);
 				const data = await httpResponse.json();
 
 				if (httpResponse.ok) {
@@ -38,7 +38,7 @@ export default function AttractionsPage() {
 	useEffect(() => {
 		async function getCategories() {
 			try {
-				const httpResponse = await fetch("http://localhost:5000/categories");
+				const httpResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
 				const data = await httpResponse.json();
 
 				if (httpResponse.ok) {

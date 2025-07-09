@@ -33,7 +33,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 	useEffect(() => {
 		const checkToken = async () => {
 			try {
-				const response = await fetch("http://localhost:5000/auth/verify", {
+				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
 					credentials: "include",
 				});
 
