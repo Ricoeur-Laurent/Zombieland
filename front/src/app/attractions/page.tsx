@@ -109,7 +109,6 @@ export default function AttractionsPage() {
 								fill
 								className="object-cover"
 								sizes="(max-width:640px)100vw,(max-width:1024px)50vw,33vw"
-								priority
 							/>
 							<div className="absolute inset-0 flex items-end p-4 bg-gradient-to-t from-black/70 to-transparent">
 								<h3 className="text-white text-xl font-title">{a.name}</h3>
