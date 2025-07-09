@@ -12,7 +12,6 @@ export default function HeroSection() {
 				alt="ZombieLand - Parc post-apocalyptique"
 				fill
 				className="object-cover"
-				priority
 			/>
 
 			{/* Overlay */}

@@ -1,62 +1,22 @@
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Attraction } from "@/@types";
-import { attractions } from "@/data/attractions";
+import AttractionDetails from "@/components/attraction/AttractionDetails";
 
-interface PageProps {
-	params: { slug: string };
-}
+export default async function AttractionPage({
+	params,
+}: {
+	params: Promise<{ slug: string }>;
+}) {
+	const { slug } = await params;
 
-export function generateMetadata({ params }: PageProps) {
-	const attr = attractions.find((a) => a.slug === params.slug);
-	if (!attr) return { title: "Attraction introuvable – Zombieland" };
-	return {
-		title: `${attr.title} – Zombieland`,
-		description: attr.excerpt,
-	};
-}
+	/* fetch one attraction */
+	const res = await fetch(`http://localhost:5000/attractions/slug/${slug}`, {});
 
-export default function AttractionPage({ params }: PageProps) {
-	const attraction: Attraction | undefined = attractions.find(
-		(a) => a.slug === params.slug,
-	);
-
-	if (!attraction) {
-		notFound(); /*automatic 404*/
+	if (!res.ok) {
+		notFound(); // 404 automatic
 	}
 
-	return (
-		<div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
-			<Link href="/attractions" className="text-primary hover:underline">
-				← Retour aux attractions
-			</Link>
+	const { oneAttraction }: { oneAttraction: Attraction } = await res.json();
 
-			{/* Image  */}
-			<div className="relative w-full h-64 md:h-96 rounded-lg overflow-hidden border-2 border-primary">
-				<Image
-					src={attraction.image}
-					alt={attraction.title}
-					fill
-					className="object-cover"
-					priority
-				/>
-			</div>
-
-			{/* Title and category*/}
-			<div>
-				<h1 className="text-3xl md:text-4xl font-subtitle text-primary-light mb-2">
-					{attraction.title}
-				</h1>
-				<p className="uppercase  tracking-wider">{attraction.category}</p>
-			</div>
-
-			{/* Infos  */}
-
-			{/* Description  */}
-			<article className="prose prose-invert max-w-none">
-				<p>{attraction.description}</p>
-			</article>
-		</div>
-	);
+	return <AttractionDetails attraction={oneAttraction} />;
 }
