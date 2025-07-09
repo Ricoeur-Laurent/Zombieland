@@ -18,7 +18,7 @@ export default function ConnexionForm() {
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError("");
-
+		console.log("button clicked");
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
 				method: "POST",
@@ -33,15 +33,11 @@ export default function ConnexionForm() {
 
 			const data = await response.json();
 
-			setToken(data.token); // pour ton contexte
+			setToken(data.token);
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
 
-			const stored = localStorage.getItem("zombieland_reservation");
-			if (stored) {
-				const redirectPath = searchParams.get("redirect");
-				if (!redirectPath) return;
-				router.push(redirectPath);
-			}
+			const redirectPath = searchParams.get("redirect") || "/reservations";
+			router.push(redirectPath);
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
