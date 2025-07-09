@@ -1,5 +1,9 @@
-import cors from "cors";
 import dotenv from "dotenv";
+
+dotenv.config();
+
+import cookieParser from "cookie-parser";
+import cors from "cors";
 import express from "express";
 import router from "./src/routers/router.js";
 
@@ -7,18 +11,17 @@ const app = express();
 
 const corsOptions = {
 	origin: [
-		`${process.env.BASE_URL}:3001`,
-		`${process.env.BASE_URL}:3000`,
-		`${process.env.BASE_URL}`,
+		"http://localhost:3000",
+		"http://localhost:3001",
 	],
+	credentials: true,
 	methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
 };
 app.use(cors(corsOptions));
 
-dotenv.config();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use(router);
 const PORT = process.env.PORT || 5000;

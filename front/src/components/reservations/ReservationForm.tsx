@@ -57,7 +57,7 @@ export default function ReservationForm() {
 				htmlFor="visitors"
 				className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
 			>
-				Nombre de visiteur(s)
+				Nombre de visiteurs
 			</label>
 			<input
 				id="visitors"
