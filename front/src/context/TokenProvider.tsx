@@ -9,6 +9,7 @@ type UserType = {
 	id: number;
 	firstname: string;
 	lastname: string;
+	phone: string;
 	email: string;
 	admin: boolean;
 } | null;
