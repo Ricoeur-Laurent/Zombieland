@@ -1,22 +1,31 @@
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function verifyToken(req, res, next) {
-	const authHeader = req.headers.authorization;
+	// Try to get the token from the Authorization header first
+	let token = null;
 
-	if (!authHeader) {
-		return res.status(401).json({ error: 'Token manquant' });
+	const authHeader = req.headers.authorization;
+	if (authHeader && authHeader.startsWith("Bearer ")) {
+		token = authHeader.split(" ")[1];
 	}
 
-	const token = authHeader.split(' ')[1]; // "Bearer token"
+	// If not found, try to get it from the cookies
+	if (!token && req.cookies && req.cookies.token) {
+		token = req.cookies.token;
+	}
+
+	if (!token) {
+		return res.status(401).json({ error: "Token manquant" });
+	}
 
 	try {
 		const decoded = jwt.verify(token, JWT_SECRET);
-		console.log('Decoded token:', decoded);
+
 		req.user = {
 			id: decoded.id,
 			firstname: decoded.firstname,
@@ -24,8 +33,9 @@ export function verifyToken(req, res, next) {
 			email: decoded.email,
 			admin: decoded.admin,
 		};
+
 		next();
 	} catch (error) {
-		return res.status(403).json({ error: 'Token invalide ou expiré' });
+		return res.status(403).json({ error: "Token invalide ou expiré" });
 	}
 }

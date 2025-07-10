@@ -1,24 +1,25 @@
+import bcrypt from "bcrypt";
+
 import {
-	sequelize,
-	Users,
 	Attractions,
-	Reviews,
-	Reservations,
-	Categories,
-} from '../models/index.js';
+  Categories,
+  Reservations,
+  Reviews,
+  sequelize,
+  Users,
+} from "../models/index.js";
 
 async function seed() {
-	try {
-		// await sequelize.sync({ force: true });
-		// console.log('BDD synchronisée');
 
+	try {
+		
 		const categories = await Categories.bulkCreate([
-			{ name: 'Survival' },
-			{ name: 'Escape Game' },
-			{ name: 'Manège' },
-			{ name: 'Simulation urbaine' },
-			{ name: 'Paintball' },
-			{ name: 'VR' },
+			{ name: "Survival" },
+			{ name: "Escape Game" },
+			{ name: "Manège" },
+			{ name: "Simulation urbaine" },
+			{ name: "Paintball" },
+			{ name: "VR" },
 		]);
 
 		const attractions = await Attractions.bulkCreate([
@@ -116,60 +117,64 @@ async function seed() {
 		await attractions[11].addCategories([categories[3]]);
 		await attractions[12].addCategories([categories[5]]);
 
+		const hashedPasswordAdmin = await bcrypt.hash("admin", 10);
+		const hashedPasswordUser = await bcrypt.hash("user", 10);
+		const hashedPasswordUser2 = await bcrypt.hash("user2", 10);
+
 		const users = await Users.bulkCreate([
 			{
-				firstname: 'Admin',
-				lastname: 'Zombie',
-				email: 'admin@zombie.com',
-				password: 'admin',
-				phone: '0600000001',
+				firstname: "Admin",
+				lastname: "Zombie",
+				email: "admin@zombie.com",
+				password: hashedPasswordAdmin,
+				phone: "0600000001",
 				admin: true,
 			},
 			{
-				firstname: 'User',
-				lastname: 'Zombie',
-				email: 'user@zombie.com',
-				password: 'user',
-				phone: '0600000002',
+				firstname: "User",
+				lastname: "Zombie",
+				email: "user@zombie.com",
+				password: hashedPasswordUser,
+				phone: "0600000002",
 				admin: false,
 			},
 			{
-				firstname: 'User2',
-				lastname: 'Zombie',
-				email: 'user2@zombie.com',
-				password: 'user2',
-				phone: '0600000003',
+				firstname: "User2",
+				lastname: "Zombie",
+				email: "user2@zombie.com",
+				password: hashedPasswordUser2,
+				phone: "0600000003",
 				admin: false,
 			},
 		]);
 
 		const reservations = await Reservations.bulkCreate([
 			{
-				visit_date: '2025-09-30',
+				visit_date: "2025-09-30",
 				amount: 44.64,
 				nb_participants: 1,
 				userId: users[0].id,
 			},
 			{
-				visit_date: '2025-09-25',
+				visit_date: "2025-09-25",
 				amount: 25.66,
 				nb_participants: 5,
 				userId: users[1].id,
 			},
 			{
-				visit_date: '2025-07-26',
+				visit_date: "2025-07-26",
 				amount: 92.15,
 				nb_participants: 4,
 				userId: users[2].id,
 			},
 			{
-				visit_date: '2025-09-27',
+				visit_date: "2025-09-27",
 				amount: 24.69,
 				nb_participants: 1,
 				userId: users[0].id,
 			},
 			{
-				visit_date: '2025-09-05',
+				visit_date: "2025-09-05",
 				amount: 78.1,
 				nb_participants: 3,
 				userId: users[1].id,
@@ -208,6 +213,7 @@ async function seed() {
 				attractionId: attractions[4].id,
 			},
 		]);
+
 
 		console.log('Données insérées avec succès');
 		// process.exit();

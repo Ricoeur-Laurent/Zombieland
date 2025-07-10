@@ -1,0 +1,43 @@
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqaWRlMkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNzUyMDUzNTU5LCJleHAiOjE3NTIxMzk5NTl9.Kc1X-WEcg7jjEB5L3STNVC2WcY_CyawVWVCbD_w2-4s
+###
+# Get all categories
+GET http://localhost:5000/api/categories
+###
+
+###
+# Get one categorie by id
+GET http://localhost:5000/api/categories/-2
+###
+
+# Create one categorie
+POST http://localhost:5000/api/admin/categories
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name" : "123"
+
+}
+###
+
+###
+# Delete one categorie
+DELETE http://localhost:5000/api/admin/categories/7
+Authorization: Bearer {{token}}
+
+###
+
+###
+
+###
+# Update an categorie
+PATCH http://localhost:5000/api/admin/categories/1
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name" : "sanglant"
+
+}
+###

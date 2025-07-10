@@ -1,4 +1,6 @@
 import { Categories } from '../models/categories.js';
+import { createCategorySchema, updateCategorySchema } from '../schemas/categories.js';
+import paramsSchema from '../schemas/params.js';
 
 const categoriesControllers = {
 	// Retrieve all categories
@@ -17,9 +19,20 @@ const categoriesControllers = {
 
 	// Retrieve one category by ID
 	async getOneCategory(req, res) {
-		const { id } = req.params;
+
+		// req.params data control with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+
 		try {
-			const oneCategory = await Categories.findByPk(id);
+			const oneCategory = await Categories.findByPk(id.data.id);
 			if (!oneCategory) {
 				console.log(`La catégorie n°${id} est introuvable`);
 				return res.status(404).json({
@@ -37,14 +50,21 @@ const categoriesControllers = {
 
 	// Create a new category
 	async createCategory(req, res) {
+
+		// Data control with Zod
+		const newCategory = createCategorySchema.safeParse(req.body)
+		if (!newCategory.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					error: newCategory.error.issues
+				})
+		}
+
+		// category creation
 		try {
-			const { name } = req.body;
-			if (!name) {
-				return res.status(400).json({ error: 'Tous les champs sont requis.' });
-			}
-			const category = await Categories.create({
-				name,
-			});
+			const category = await Categories.create(newCategory.data);
 			return res.status(201).json({
 				message: 'Catégorie créée avec succès.',
 				category,
@@ -63,20 +83,38 @@ const categoriesControllers = {
 
 	// Update an existing category by ID
 	async updateCategory(req, res) {
+
+		// req.params data control with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
+
+		// req.body control with Zod
+		const newCategoryName = createCategorySchema.safeParse(req.body)
+		if (!newCategoryName.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					error: newCategoryName.error.issues
+				})
+		}
+console.log("new category name = ", newCategoryName.data.name)
+		// update of category name
 		try {
-			const { id } = req.params;
-			const { name } = req.body;
 
-			if (!name) {
-				return res.status(400).json({ error: 'Le nom est requis.' });
-			}
-
-			const category = await Categories.findByPk(id);
+			const category = await Categories.findByPk(id.data.id);
 
 			if (!category) {
 				return res.status(404).json({ error: 'Catégorie non trouvée.' });
 			}
-			category.name = name;
+			category.name = newCategoryName.data.name;
 			await category.save();
 
 			return res.json({
@@ -90,7 +128,7 @@ const categoriesControllers = {
 			});
 		}
 	},
-	
+
 	// Delete a category by ID
 	async deleteCategory(req, res) {
 		try {

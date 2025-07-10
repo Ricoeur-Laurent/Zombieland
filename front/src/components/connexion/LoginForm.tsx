@@ -1,5 +1,5 @@
 "use client";
-
+import Cookies from "js-cookie";
 import { LogIn } from "lucide-react";
 
 import { useRouter, useSearchParams } from "next/navigation";
@@ -20,10 +20,11 @@ export default function ConnexionForm() {
 		setError("");
 
 		try {
-			const response = await fetch("http://localhost:5000/login", {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ email, password }),
+				credentials: "include",
 			});
 
 			if (!response.ok) {
@@ -31,10 +32,16 @@ export default function ConnexionForm() {
 			}
 
 			const data = await response.json();
-			setToken(data.token);
 
-			const redirectPath = searchParams.get("redirect");
-			router.push(redirectPath || "/paiement");
+			setToken(data.token); // pour ton contexte
+			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
+
+			const stored = localStorage.getItem("zombieland_reservation");
+			if (stored) {
+				const redirectPath = searchParams.get("redirect");
+				if (!redirectPath) return;
+				router.push(redirectPath);
+			}
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
