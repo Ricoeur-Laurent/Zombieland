@@ -16,7 +16,7 @@ if (!JWT_SECRET) {
 const reservationsControllers = {
 	// retrieve all reservations
 	async getAllReservations(req, res) {
-		console.log("admin :", req.user)
+
 		if (!req.user.admin) {
 			return res.status(403).json({ error: 'Accès interdit : Admin uniquement.' });
 		}
@@ -35,7 +35,7 @@ const reservationsControllers = {
 	},
 
 	// retrieve one reservation by id
-	async getOneReservation(req, res) {
+	async getOneReservationByUserId(req, res) {
 
 		// req.params data control with Zod
 		const id = paramsSchema.safeParse(req.params)
@@ -49,10 +49,11 @@ const reservationsControllers = {
 		}
 
 		const userId = req.user.id;
+
 		try {
 			const oneReservation = await Reservations.findByPk(id.data.id);
 			if (!oneReservation) {
-				console.log(`La reservation n°${id.data.id} est introuvable`);
+
 				return res.status(404).json({ message: `La reservation n°${id.data.id} est introuvable` });
 			}
 			if (oneReservation.userId !== userId) {
@@ -82,7 +83,6 @@ const reservationsControllers = {
 				},
 			});
 			if (!userReservations || userReservations.length === 0) {
-				console.log(`Aucune réservation trouvée pour l'utilisateur n°${userId}`);
 				return res
 					.status(404)
 					.json({ message: `Aucune réservation trouvée pour l'utilisateur n°${userId}` });
@@ -123,7 +123,7 @@ const reservationsControllers = {
 			const reservation = await Reservations.create(newReservation.data);
 			return res.status(201).json({
 				message: 'Réservation créée avec succès.',
-				newReservation,
+				reservation,
 			});
 		} catch (error) {
 			console.error('Erreur lors de la création de la réservation :', error);
@@ -191,10 +191,21 @@ const reservationsControllers = {
 
 	// delete a reservation
 	async deleteReservation(req, res) {
-		const { id } = req.params;
+		
+		// req.params validation with Zod
+		const id = paramsSchema.safeParse(req.params)
+		if (!id.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: id.error.issues
+				})
+		}
 		const userId = req.user.id;
+		// deleting reservation
 		try {
-			const reservation = await Reservations.findByPk(id);
+			const reservation = await Reservations.findByPk(id.data.id);
 			if (!reservation) {
 				return res.status(404).json({ error: "La réservation demandée n'existe pas" });
 			}

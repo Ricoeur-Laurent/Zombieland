@@ -41,7 +41,7 @@ const attractionsController = {
 					error: id.error.issues
 				})
 		}
-		
+
 		try {
 			const oneAttraction = await Attractions.findByPk(id.data.id);
 			if (!oneAttraction) {
@@ -105,7 +105,7 @@ const attractionsController = {
 				})
 
 		}
-console.log("new attraction data = ", newAttraction.data)
+		console.log("new attraction data = ", newAttraction.data)
 
 		// New attraction creation
 		try {
@@ -123,6 +123,7 @@ console.log("new attraction data = ", newAttraction.data)
 
 	// update one attraction
 	async updateAttraction(req, res) {
+
 		// req.params data control with Zod
 		const id = paramsSchema.safeParse(req.params)
 		if (!id.success) {
