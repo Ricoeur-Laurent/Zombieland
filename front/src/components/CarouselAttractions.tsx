@@ -23,7 +23,7 @@ export default function CarouselAttractions() {
 	useEffect(() => {
 		async function getAttractions() {
 			try {
-				const httpResponse = await fetch("http://localhost:5000/attractions");
+				const httpResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/attractions`);
 				const data = await httpResponse.json();
 
 				if (httpResponse.ok) {

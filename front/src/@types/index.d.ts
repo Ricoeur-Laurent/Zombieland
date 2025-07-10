@@ -3,12 +3,16 @@ export interface Attraction {
 	name: string;
 	slug: string;
 	image: string;
-	category: string;
+	categories: Category[];
 	description: string;
 }
-
-export interface AttractionCarousel {
+export interface Category {
 	id: number;
-	title: string;
-	img: string;
+	name: string;
+}
+
+export interface Review {
+	id: number;
+	comment: string;
+	rating: number;
 }
