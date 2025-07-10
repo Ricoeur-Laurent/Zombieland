@@ -28,7 +28,10 @@ const TokenContext = createContext<TokenContextType>({
 });
 
 export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
-	const [token, setTokenState] = useState<string | null>(null);
+	const [token, setTokenState] = useState<string | null>(
+		() => Cookies.get("zombieland_token") || null,
+	);
+
 	const [user, setUser] = useState<UserType>(null);
 
 	useEffect(() => {
