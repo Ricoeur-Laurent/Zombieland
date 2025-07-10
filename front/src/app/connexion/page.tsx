@@ -1,4 +1,4 @@
-import ConnexionForm from "@/components/connexion/LoginForm";
+import ConnexionForm from "@/components/Login/LoginForm";
 
 export const metadata = {
 	title: "Connexion – Zombieland",

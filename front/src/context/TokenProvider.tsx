@@ -32,13 +32,23 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 
 	useEffect(() => {
 		const checkToken = async () => {
+			if (!token) {
+				setUser(null);
+				return;
+			}
+
 			try {
-				const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, {
-					credentials: "include",
-				});
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`,
+					{
+						headers: {
+							Authorization: `Bearer ${token}`,
+						},
+						credentials: "include",
+					},
+				);
 
 				if (!response.ok) {
-					console.log("Token invalide ou expiré. Suppression du cookie.");
 					Cookies.remove("token");
 					setTokenState(null);
 					setUser(null);
@@ -46,11 +56,11 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 				}
 
 				const data = await response.json();
-				console.log("Token valide, utilisateur :", data.user);
-				setTokenState("present"); // tu peux utiliser un simple indicateur
+				setTokenState(token);
 				setUser(data.user);
 			} catch (error) {
-				console.error("Erreur lors de la vérification du token :", error);
+				if (process.env.NODE_ENV === "development") {
+					console.error("Erreur lors du check token :", error);
 				Cookies.remove("token");
 				setTokenState(null);
 				setUser(null);
@@ -58,7 +68,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 		};
 
 		checkToken();
-	}, []);
+	}, [token]); // ✅ we add the token here to use again if the token change
 
 	const setToken = (newToken: string | null) => {
 		if (newToken) {
