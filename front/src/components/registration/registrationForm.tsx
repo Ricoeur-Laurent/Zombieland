@@ -15,6 +15,7 @@ export default function RegistrationForm() {
 	const [phone, setPhone] = useState("");
 	const [email, setEmail] = useState("votre@email.com");
 	const [password, setPassword] = useState("password");
+	const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
 	const [error, setError] = useState("");
 
 	function formatPhone(value: string) {
@@ -24,6 +25,7 @@ export default function RegistrationForm() {
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
+		setErrors({});
 		setError("");
 
 		const rawPhone = phone.replace(/\D/g, "");
@@ -49,14 +51,35 @@ export default function RegistrationForm() {
 				},
 			);
 
-			if (!response.ok) {
-				throw new Error("Invalid credentials or server error");
-			}
-
 			const data = await response.json();
 
-			setToken(data.token);
+			// TODO: à améliorer quand l'API renverra un objet `errors`
 
+			if (!response.ok) {
+				if (response.status === 409 && typeof data.error === "string") {
+					const err = data.error.toLowerCase();
+
+					const fieldErrors: { email?: string; phone?: string } = {};
+
+					if (err.includes("email")) {
+						fieldErrors.email = data.error;
+					}
+					if (err.includes("phone") || err.includes("téléphone")) {
+						fieldErrors.phone = data.error;
+					}
+
+					if (Object.keys(fieldErrors).length > 0) {
+						setErrors(fieldErrors);
+					} else {
+						setError(data.error);
+					}
+				} else {
+					setError(data.error || "Erreur lors de l'inscription.");
+				}
+				return;
+			}
+
+			setToken(data.token);
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
 		} catch (e) {
@@ -126,8 +149,13 @@ export default function RegistrationForm() {
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
 					required
-					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
+					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+						${errors.email ? "border-red-500 border-2" : "border-muted"} 
+						focus:border-primary placeholder:text-muted`}
 				/>
+				{errors.email && (
+					<p className="text-red-500 text-sm font-body">{errors.email}</p>
+				)}
 			</div>
 			<div className="flex flex-col gap-1">
 				<label
@@ -144,8 +172,13 @@ export default function RegistrationForm() {
 					value={phone}
 					onChange={(e) => setPhone(formatPhone(e.target.value))}
 					required
-					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
+					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+						${errors.phone ? "border-red-500 border-2" : "border-muted"} 
+						focus:border-primary placeholder:text-muted`}
 				/>
+				{errors.phone && (
+					<p className="text-red-500 text-sm font-body">{errors.phone}</p>
+				)}
 			</div>
 
 			<div className="flex flex-col gap-1">
