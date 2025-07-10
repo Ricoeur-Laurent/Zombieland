@@ -1,28 +1,18 @@
 import { Reviews, Users, Attractions } from '../models/index.js';
-import paramsSchema from '../schemas/params.js';
 import { createReviewSchema } from '../schemas/reviews.js';
 
 const reviewsControllers = {
 	// Create a new review for a specific attraction
 	async createReview(req, res) {
 
-		// req.params data control with Zod
-		const id = paramsSchema.safeParse(req.params)
-		if (!id.success) {
-			return res
-			.status(400)
-			.json({
-				message: "req.params ne respecte pas les contraintes",
-				error: idParams.error.issues
-			})
-		}
-		const attractionId = id.data.id
-		
-		// Control data with Zod
+		const { id } = req.checkedParams;
+		const attractionId = id
+
+		// Data control with Zod
 		const newReview = createReviewSchema.safeParse(req.body)
-		if(!newReview.success) {
+		if (!newReview.success) {
 			return res
-			.status(400)
+				.status(400)
 				.json({
 					message: "Erreur lors de la validation des données via Zod",
 					errors: newReview.error.issues
@@ -52,7 +42,10 @@ const reviewsControllers = {
 	},
 	// Retrieve all reviews for a specific attraction
 	async getReviewsByAttraction(req, res) {
-		const { id: attractionId } = req.params;
+
+		const { id } = req.checkedParams;
+		const attractionId = id
+
 
 		try {
 			const reviews = await Reviews.findAll({
