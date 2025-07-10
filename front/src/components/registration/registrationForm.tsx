@@ -1,30 +1,53 @@
 "use client";
-import Cookies from "js-cookie";
 import { LogIn } from "lucide-react";
-import Link from "next/link";
+
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
 
-export default function ConnexionForm() {
+export default function RegistrationForm() {
 	const { setToken } = useTokenContext();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
+	const [firstname, setFirstName] = useState("");
+	const [lastname, setLastName] = useState("");
+	const [phone, setPhone] = useState("");
 	const [email, setEmail] = useState("votre@email.com");
 	const [password, setPassword] = useState("password");
 	const [error, setError] = useState("");
-	const redirect = searchParams.get("redirect") || "/";
+
+	function formatPhone(value: string) {
+		const digits = value.replace(/\D/g, "").slice(0, 10);
+		return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
+	}
+
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError("");
+
+		const rawPhone = phone.replace(/\D/g, "");
+		if (!/^0[1-9]\d{8}$/.test(rawPhone)) {
+			setError("Numéro de téléphone invalide.");
+			return;
+		}
+
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password }),
-				credentials: "include",
-			});
+			const response = await fetch(
+				`${process.env.NEXT_PUBLIC_API_URL}/signUp`,
+				{
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({
+						firstname,
+						lastname,
+						email,
+						password,
+						phone: phone.replace(/\D/g, ""),
+					}),
+					credentials: "include",
+				},
+			);
 
 			if (!response.ok) {
 				throw new Error("Invalid credentials or server error");
@@ -33,7 +56,6 @@ export default function ConnexionForm() {
 			const data = await response.json();
 
 			setToken(data.token);
-			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
 
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
@@ -55,6 +77,42 @@ export default function ConnexionForm() {
 		>
 			<div className="flex flex-col gap-1">
 				<label
+					htmlFor="firstName"
+					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+				>
+					Prénom
+				</label>
+				<input
+					id="firstName"
+					name="firstName"
+					type="text"
+					placeholder="votre prénom"
+					value={firstname}
+					onChange={(e) => setFirstName(e.target.value)}
+					required
+					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
+				/>
+			</div>
+			<div className="flex flex-col gap-1">
+				<label
+					htmlFor="lastName"
+					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+				>
+					Nom
+				</label>
+				<input
+					id="lastName"
+					name="lastName"
+					type="text"
+					placeholder="votre nom"
+					value={lastname}
+					onChange={(e) => setLastName(e.target.value)}
+					required
+					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
+				/>
+			</div>
+			<div className="flex flex-col gap-1">
+				<label
 					htmlFor="email"
 					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
 				>
@@ -67,6 +125,24 @@ export default function ConnexionForm() {
 					placeholder="votre@email.com"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
+					required
+					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
+				/>
+			</div>
+			<div className="flex flex-col gap-1">
+				<label
+					htmlFor="phone"
+					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+				>
+					Téléphone
+				</label>
+				<input
+					id="phone"
+					name="phone"
+					type="tel"
+					placeholder="votre téléphone"
+					value={phone}
+					onChange={(e) => setPhone(formatPhone(e.target.value))}
 					required
 					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
 				/>
@@ -98,17 +174,8 @@ export default function ConnexionForm() {
 				className="bg-primary text-black font-subtitle uppercase tracking-wide py-2 rounded-lg hover:bg-primary-dark transition flex items-center justify-center gap-2"
 			>
 				<LogIn size={18} />
-				Me connecter
+				M'inscrire
 			</button>
-			<p className="mt-4 text-sm text-center">
-				Pas encore de compte ?{" "}
-				<Link
-					href={`/inscription${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
-					className="text-primary hover:underline"
-				>
-					Créez un compte ici
-				</Link>
-			</p>
 		</form>
 	);
 }

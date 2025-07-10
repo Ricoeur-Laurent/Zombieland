@@ -1,5 +1,11 @@
-import { Users } from '../models/users.js';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { Users } from "../models/users.js";
+
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const signUpControllers = {
 	// Get all users
@@ -8,9 +14,9 @@ const signUpControllers = {
 			const users = await Users.findAll();
 			res.json(users);
 		} catch (error) {
-			console.error('Erreur lors de la récupération des users :', error);
+			console.error("Erreur lors de la récupération des users :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la récupération des users.',
+				error: "Erreur serveur lors de la récupération des users.",
 			});
 		}
 	},
@@ -20,21 +26,16 @@ const signUpControllers = {
 			const { id } = req.params;
 
 			const user = await Users.findByPk(id, {
-				attributes: { exclude: ['password'] },
+				attributes: { exclude: ["password"] },
 			});
 
 			if (!user) {
-				return res
-					.status(404)
-					.json({ error: 'Utilisateur non trouvé.' });
+				return res.status(404).json({ error: "Utilisateur non trouvé." });
 			}
 
 			res.json(user);
 		} catch (error) {
-			console.error(
-				"Erreur lors de la récupération de l'utilisateur :",
-				error,
-			);
+			console.error("Erreur lors de la récupération de l'utilisateur :", error);
 			res.status(500).json({
 				error: "Erreur serveur lors de la récupération de l'utilisateur.",
 			});
@@ -44,15 +45,13 @@ const signUpControllers = {
 	async userCreate(req, res) {
 		const { firstname, lastname, email, password, phone } = req.body;
 		if (!firstname || !lastname || !email || !password || !phone) {
-			return res
-				.status(400)
-				.json({ error: 'Tous les champs sont requis.' });
+			return res.status(400).json({ error: "Tous les champs sont requis." });
 		}
 		try {
 			const existingUser = await Users.findOne({ where: { email } });
 			if (existingUser) {
 				return res.status(409).json({
-					error: 'Un utilisateur avec cet email existe déjà.',
+					error: "Un utilisateur avec cet email existe déjà.",
 				});
 			}
 			const hashedPassword = await bcrypt.hash(password, 10);
@@ -71,8 +70,20 @@ const signUpControllers = {
 				phone: userPhone,
 				created_at,
 			} = user;
+
+			const tokenPayload = {
+				id: user.id,
+				email: user.email,
+				admin: user.admin,
+			};
+
+			const token = jwt.sign(tokenPayload, JWT_SECRET, {
+				expiresIn: process.env.JWT_EXPIRES_IN,
+			});
+
 			res.status(201).json({
-				message: 'Utilisateur créé avec succès.',
+				message: "Utilisateur créé avec succès.",
+				token,
 				user: {
 					id,
 					firstname: fName,
@@ -97,9 +108,7 @@ const signUpControllers = {
 
 			const user = await Users.findByPk(id);
 			if (!user) {
-				return res
-					.status(404)
-					.json({ error: 'Utilisateur non trouvé.' });
+				return res.status(404).json({ error: "Utilisateur non trouvé." });
 			}
 
 			if (firstname) user.firstname = firstname;
@@ -113,7 +122,7 @@ const signUpControllers = {
 
 			await user.save();
 			res.json({
-				message: 'Utilisateur mis à jour avec succès.',
+				message: "Utilisateur mis à jour avec succès.",
 				user: {
 					id: user.id,
 					firstname: user.firstname,
@@ -124,9 +133,9 @@ const signUpControllers = {
 				},
 			});
 		} catch (error) {
-			console.error('Erreur lors de la mise à jour :', error);
+			console.error("Erreur lors de la mise à jour :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la mise à jour.',
+				error: "Erreur serveur lors de la mise à jour.",
 			});
 		}
 	},
@@ -137,18 +146,16 @@ const signUpControllers = {
 			const user = await Users.findByPk(id);
 
 			if (!user) {
-				return res
-					.status(404)
-					.json({ error: 'Utilisateur non trouvé.' });
+				return res.status(404).json({ error: "Utilisateur non trouvé." });
 			}
 
 			await user.destroy();
 
-			res.json({ message: 'Utilisateur supprimé avec succès.' });
+			res.json({ message: "Utilisateur supprimé avec succès." });
 		} catch (error) {
-			console.error('Erreur lors de la suppression :', error);
+			console.error("Erreur lors de la suppression :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la suppression.',
+				error: "Erreur serveur lors de la suppression.",
 			});
 		}
 	},
