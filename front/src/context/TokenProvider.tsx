@@ -61,6 +61,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 			} catch (error) {
 				if (process.env.NODE_ENV === "development") {
 					console.error("Erreur lors du check token :", error);
+				}
 				Cookies.remove("token");
 				setTokenState(null);
 				setUser(null);
@@ -68,7 +69,7 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 		};
 
 		checkToken();
-	}, [token]); // ✅ we add the token here to use again if the token change
+	}, [token]); // ✅ added token here so if token change the use effect is triggered
 
 	const setToken = (newToken: string | null) => {
 		if (newToken) {
