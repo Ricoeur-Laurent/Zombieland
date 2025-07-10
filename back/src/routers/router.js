@@ -13,23 +13,24 @@ import authRoutes from './routes/auth.routes.js'
 
 const router = express.Router();
 
-router.use('/api/signUp', signUpRoutes);
-router.use('/api/login', loginRoutes);
-router.use('/api/reservations', verifyToken, reservationsRoutes);
-router.use('/api/attractions', attractionsRoutes);
-router.use('/api/categories', categoriesRoutes);
-router.use("/api/myReservations", verifyToken, reservationsRoutes);
+router.use('/signUp', signUpRoutes);
+router.use('/login', loginRoutes);
+router.use('/reservations', verifyToken, reservationsRoutes);
+router.use('/attractions', attractionsRoutes);
+router.use('/categories', categoriesRoutes);
+router.use("/myReservations", verifyToken, reservationsRoutes);
 
 // =================== Admin routes =====================
 
-router.use('/api/admin/reservations', verifyToken, verifyAdmin, reservationsRoutes);
-router.use('/api/admin/attractions', verifyToken, verifyAdmin, attractionsRoutes);
-router.use('/api/admin/users', verifyToken, verifyAdmin, signUpRoutes);
-router.use('/api/admin/categories', verifyToken, verifyAdmin, categoriesRoutes);
+router.use('/admin/reservations', verifyToken, verifyAdmin, reservationsRoutes);
+router.use('/admin/attractions', verifyToken, verifyAdmin, attractionsRoutes);
+router.use('/admin/users', verifyToken, verifyAdmin, signUpRoutes);
+router.use('/admin/categories', verifyToken, verifyAdmin, categoriesRoutes);
 
 // =================== auth routes =====================
 
-router.use('/api/auth', authRoutes);
+router.use('/auth', authRoutes);
+
 
 
 export default router;

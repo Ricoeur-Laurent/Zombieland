@@ -32,7 +32,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(router);
+app.use('/api',router);
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {

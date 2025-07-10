@@ -1,15 +1,18 @@
 import bcrypt from "bcrypt";
 
 import {
-	Attractions,
-	Categories,
-	Reservations,
-	Reviews,
-	sequelize,
-	Users,
+
+  Attractions,
+  Categories,
+  Reservations,
+  Reviews,
+  sequelize,
+  Users,
+
 } from "../models/index.js";
 
 async function seed() {
+
 
 	try {
 		
