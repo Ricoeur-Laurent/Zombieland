@@ -14,17 +14,14 @@ if (!JWT_SECRET) {
 const loginControllers = {
 	// Get one user by email and password
 	async getOneUser(req, res) {
-		try {
-			loginSchema.parse(req.body);
-		} catch (err) {
+		const loginAttempt = loginSchema.safeParse(req.body);
+		if (!loginAttempt.success) {
 			return res.status(400).json({
-				error: err.errors?.map((e) => e.message) || ['Données invalides'],
+				message: "Erreur lors de la validation des données via Zod",
+				errors: loginAttempt.error.issues
 			});
 		}
 		const { email, password } = req.body;
-		if (!email || !password) {
-			return res.status(400).json({ error: 'Email et mot de passe requis' });
-		}
 		try {
 			const user = await Users.findOne({ where: { email } });
 			if (!user) {
