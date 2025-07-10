@@ -31,21 +31,11 @@ const attractionsController = {
 	// retrieve one attraction
 	async getOneAttraction(req, res) {
 
-		// req.params data control with Zod
-		const id = paramsSchema.safeParse(req.params)
-		if (!id.success) {
-			return res
-				.status(400)
-				.json({
-					message: "req.params ne respecte pas les contraintes",
-					error: id.error.issues
-				})
-		}
-		
+		const { id } = req.checkedParams;
+
 		try {
-			const oneAttraction = await Attractions.findByPk(id.data.id);
+			const oneAttraction = await Attractions.findByPk(id);
 			if (!oneAttraction) {
-				console.log(`L'attraction est introuvable`);
 				return res
 					.status(404)
 					.json({ message: `L'attraction est introuvable` });
@@ -63,7 +53,7 @@ const attractionsController = {
 
 	// retrieve one attraction by slug
 	async getOneAttractionBySlug(req, res) {
-		const { slug } = req.params;
+		const { slug } = req.checkedParams;
 		try {
 			const oneAttraction = await Attractions.findOne({
 				where: { slug },
@@ -74,7 +64,6 @@ const attractionsController = {
 				},
 			});
 			if (!oneAttraction) {
-				console.log(`L'attraction est introuvable`);
 				return res
 					.status(404)
 					.json({ message: `L'attraction est introuvable` });
@@ -105,7 +94,6 @@ const attractionsController = {
 				})
 
 		}
-console.log("new attraction data = ", newAttraction.data)
 
 		// New attraction creation
 		try {
@@ -123,16 +111,9 @@ console.log("new attraction data = ", newAttraction.data)
 
 	// update one attraction
 	async updateAttraction(req, res) {
-		// req.params data control with Zod
-		const id = paramsSchema.safeParse(req.params)
-		if (!id.success) {
-			return res
-				.status(400)
-				.json({
-					message: "req.params ne respecte pas les contraintes",
-					error: id.error.issues
-				})
-		}
+
+		const { id } = req.checkedParams
+
 		// Data control with Zod
 		const attractionUpdate = updateAttractionSchema.safeParse(req.body)
 		if (!attractionUpdate.success) {
@@ -145,7 +126,7 @@ console.log("new attraction data = ", newAttraction.data)
 		}
 		// Attraction update
 		try {
-			const attraction = await Attractions.findByPk(id.data.id);
+			const attraction = await Attractions.findByPk(id);
 			if (!attraction) {
 				return res
 					.status(404)
@@ -166,19 +147,11 @@ console.log("new attraction data = ", newAttraction.data)
 
 	// delete one attraction
 	async deleteAttraction(req, res) {
-		// req.params data control with Zod
-		const id = paramsSchema.safeParse(req.params)
-		if (!id.success) {
-			return res
-				.status(400)
-				.json({
-					message: "req.params ne respecte pas les contraintes",
-					error: id.error.issues
-				})
-		}
+	
+		const { id } = req.checkedParams
 
 		try {
-			const attraction = await Attractions.findByPk(id.data.id);
+			const attraction = await Attractions.findByPk(id);
 			if (!attraction) {
 				return res
 					.status(404)
@@ -199,19 +172,9 @@ console.log("new attraction data = ", newAttraction.data)
 	// Get attractions by category
 	async getAttractionsByCategory(req, res) {
 
-		// req.params data control with Zod
-		const id = paramsSchema.safeParse(req.params)
-		if (!id.success) {
-			return res
-				.status(400)
-				.json({
-					message: "req.params ne respecte pas les contraintes",
-					error: id.error.issues
-				})
-		}
-
+		const { id } = req.checkedParams
 		try {
-			const category = await Categories.findByPk(id.data.id, {
+			const category = await Categories.findByPk(id, {
 				include: {
 					model: Attractions,
 					as: "attractions",
@@ -223,7 +186,10 @@ console.log("new attraction data = ", newAttraction.data)
 				return res.status(404).json({ error: "Catégorie non trouvée." });
 			}
 
-			res.json({
+			res
+			.status(200)
+			.json({
+				message: `Attractions récupérées avec succès`,
 				category: category.name,
 				attractions: category.attractions,
 			});

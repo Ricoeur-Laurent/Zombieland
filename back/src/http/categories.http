@@ -1,5 +1,5 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkB6b21iaWUuY29tIiwiYWRtaW4iOnRydWUsImlhdCI6MTc1MjE1MzIzNiwiZXhwIjoxNzUyMjM5NjM2fQ.f0nnVedcmA8JCf8PfY-UNvtm9YtbF925_mp-fKQxA3I
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqaWRlMkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNzUyMDUzNTU5LCJleHAiOjE3NTIxMzk5NTl9.Kc1X-WEcg7jjEB5L3STNVC2WcY_CyawVWVCbD_w2-4s
 ###
 # Get all categories
 GET http://localhost:5000/api/categories
@@ -7,7 +7,7 @@ GET http://localhost:5000/api/categories
 
 ###
 # Get one categorie by id
-GET http://localhost:5000/api/categories/-2
+GET http://localhost:5000/api/categories/1
 ###
 
 # Create one categorie
@@ -31,7 +31,7 @@ Authorization: Bearer {{token}}
 ###
 
 ###
-# Update an categorie
+# Update a categorie
 PATCH http://localhost:5000/api/admin/categories/1
 content-type: application/json
 Authorization: Bearer {{token}}

@@ -1,0 +1,22 @@
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkB6b21iaWUuY29tIiwiYWRtaW4iOnRydWUsImlhdCI6MTc1MjE1MzIzNiwiZXhwIjoxNzUyMjM5NjM2fQ.f0nnVedcmA8JCf8PfY-UNvtm9YtbF925_mp-fKQxA3I
+
+###
+# Create a review
+POST http://localhost:5000/api/reviews/1
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "comment" : "attraction n°125",
+    "rating" : 5
+
+}
+###
+
+###
+# Get reviews by attraction id
+GET http://localhost:5000/api/reviews/1
+Authorization: Bearer {{token}}
+
+###

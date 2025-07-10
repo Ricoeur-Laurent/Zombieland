@@ -1,13 +1,24 @@
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NCwiZW1haWwiOiJqaWRlMkBnbWFpbC5jb20iLCJhZG1pbiI6dHJ1ZSwiaWF0IjoxNzUyMDUzNTU5LCJleHAiOjE3NTIxMzk5NTl9.Kc1X-WEcg7jjEB5L3STNVC2WcY_CyawVWVCbD_w2-4s
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkB6b21iaWUuY29tIiwiYWRtaW4iOnRydWUsImlhdCI6MTc1MjE1MzIzNiwiZXhwIjoxNzUyMjM5NjM2fQ.f0nnVedcmA8JCf8PfY-UNvtm9YtbF925_mp-fKQxA3I
+
 ###
 # Get all attractions
 GET http://localhost:5000/api/attractions
 ###
 
 ###
+# Get  attractions by category
+GET http://localhost:5000/api/attractions/category/1
+###
+
+###
 # Get one attraction by id
-GET http://localhost:5000/api/attractions/5
+GET http://localhost:5000/api/attractions/1
+###
+
+###
+# Get one attraction by slug
+GET http://localhost:5000/api/attractions/slug/le-manoir-des-âmes-perdues
 ###
 
 # Create one attraction
@@ -17,7 +28,7 @@ Authorization: Bearer {{token}}
 
 {
     "name" : "attraction n°125",
-    "image" : "encore une autre belle image",
+    "image" : "https://www.example.com/images/paysage-naturel.jpg",
     "description" : "une attraction qui fait peur et qui est drôle en même temps",
     "slug" : "attraction-n-125"
 
