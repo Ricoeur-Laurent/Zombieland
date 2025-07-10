@@ -1,18 +1,15 @@
 import bcrypt from "bcrypt";
 
 import {
-
-  Attractions,
+	Attractions,
   Categories,
   Reservations,
   Reviews,
   sequelize,
   Users,
-
 } from "../models/index.js";
 
 async function seed() {
-
 
 	try {
 		
@@ -24,10 +21,6 @@ async function seed() {
 			{ name: "Paintball" },
 			{ name: "VR" },
 		]);
-
-
-  
-
 
 		const attractions = await Attractions.bulkCreate([
 			{
@@ -222,15 +215,14 @@ async function seed() {
 		]);
 
 
-    console.log('Données insérées avec succès');
-    // process.exit();
-  } catch (error) {
-    console.error('Erreur pendant le seed :', error);
-    process.exit(1);
-  }
+		console.log('Données insérées avec succès');
+		// process.exit();
+	} catch (error) {
+		console.error('Erreur pendant le seed :', error);
+		process.exit(1);
+	}
 }
 
 // seed();
 
-export default seed
-
+export default seed;

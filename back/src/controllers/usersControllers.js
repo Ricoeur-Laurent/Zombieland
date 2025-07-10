@@ -1,4 +1,5 @@
 import { Users } from '../models/users.js';
+import { signUpSchema, updateUserSchema } from '../schemas/user.js';
 import bcrypt from 'bcrypt';
 
 const signUpControllers = {
@@ -18,23 +19,15 @@ const signUpControllers = {
 	async getOneUser(req, res) {
 		try {
 			const { id } = req.params;
-
 			const user = await Users.findByPk(id, {
 				attributes: { exclude: ['password'] },
 			});
-
 			if (!user) {
-				return res
-					.status(404)
-					.json({ error: 'Utilisateur non trouvé.' });
+				return res.status(404).json({ error: 'Utilisateur non trouvé.' });
 			}
-
 			res.json(user);
 		} catch (error) {
-			console.error(
-				"Erreur lors de la récupération de l'utilisateur :",
-				error,
-			);
+			console.error("Erreur lors de la récupération de l'utilisateur :", error);
 			res.status(500).json({
 				error: "Erreur serveur lors de la récupération de l'utilisateur.",
 			});
@@ -42,18 +35,22 @@ const signUpControllers = {
 	},
 	// Create a new user
 	async userCreate(req, res) {
-		const { firstname, lastname, email, password, phone } = req.body;
-		if (!firstname || !lastname || !email || !password || !phone) {
-			return res
-				.status(400)
-				.json({ error: 'Tous les champs sont requis.' });
+		const newUser = signUpSchema.safeParse(req.body);
+		if (!newUser.success) {
+			return res.status(400).json({
+				message: 'Erreur lors de la validation des données via Zod',
+				errors: newUser.error.issues,
+			});
 		}
+		const { firstname, lastname, email, password, phone } = req.body;
 		try {
-			const existingUser = await Users.findOne({ where: { email } });
-			if (existingUser) {
-				return res.status(409).json({
-					error: 'Un utilisateur avec cet email existe déjà.',
-				});
+			const emailExists = await Users.findOne({ where: { email } });
+			if (emailExists) {
+				return res.status(409).json({ error: 'Cet email est déjà utilisé.' });
+			}
+			const phoneExists = await Users.findOne({ where: { phone } });
+			if (phoneExists) {
+				return res.status(409).json({ error: 'Ce numéro de téléphone est déjà utilisé.' });
 			}
 			const hashedPassword = await bcrypt.hash(password, 10);
 			const user = await Users.create({
@@ -91,17 +88,29 @@ const signUpControllers = {
 	},
 	// Update an existing user
 	async updateUser(req, res) {
+		// Data control with Zod
+		const userUpdate = updateUserSchema.safeParse(req.body);
+		if (!userUpdate.success) {
+			return res.status(400).json({
+				message: 'Erreur lors de la validation des données via Zod',
+				errors: userUpdate.error.issues,
+			});
+		}
 		try {
 			const { id } = req.params;
 			const { firstname, lastname, email, password, phone } = req.body;
-
 			const user = await Users.findByPk(id);
 			if (!user) {
-				return res
-					.status(404)
-					.json({ error: 'Utilisateur non trouvé.' });
+				return res.status(404).json({ error: 'Utilisateur non trouvé.' });
 			}
-
+			const existingEmailUser = await Users.findOne({ where: { email } });
+			if (existingEmailUser && existingEmailUser.id !== parseInt(id)) {
+				return res.status(409).json({ error: 'Cet email est déjà utilisé.' });
+			}
+			const existingPhoneUser = await Users.findOne({ where: { phone } });
+			if (existingPhoneUser && existingPhoneUser.id !== parseInt(id)) {
+				return res.status(409).json({ error: 'Ce numéro de téléphone est déjà utilisé.' });
+			}
 			if (firstname) user.firstname = firstname;
 			if (lastname) user.lastname = lastname;
 			if (email) user.email = email;
@@ -110,7 +119,6 @@ const signUpControllers = {
 				const hashedPassword = await bcrypt.hash(password, 10);
 				user.password = hashedPassword;
 			}
-
 			await user.save();
 			res.json({
 				message: 'Utilisateur mis à jour avec succès.',
@@ -135,15 +143,10 @@ const signUpControllers = {
 		try {
 			const { id } = req.params;
 			const user = await Users.findByPk(id);
-
 			if (!user) {
-				return res
-					.status(404)
-					.json({ error: 'Utilisateur non trouvé.' });
+				return res.status(404).json({ error: 'Utilisateur non trouvé.' });
 			}
-
 			await user.destroy();
-
 			res.json({ message: 'Utilisateur supprimé avec succès.' });
 		} catch (error) {
 			console.error('Erreur lors de la suppression :', error);
