@@ -77,7 +77,7 @@ export default function PaiementSection() {
 	};
 
 	if (!reservation) {
-		return <p className="text-center text-text">Aucune réservation trouvée.</p>;
+		return <p className="text-center text-text">Aucune réservation trouvée, vous allez être redirigé vers la page de réservation.</p>;
 	}
 
 	return (
