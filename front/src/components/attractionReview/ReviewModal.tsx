@@ -3,6 +3,7 @@ import { useState } from "react";
 import type { Review } from "@/@types";
 import Modal from "@/components/modal/Modal";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 
 interface Props {
 	attractionId: number;
@@ -43,7 +44,7 @@ export default function ReviewModal({
 		setError(null);
 		try {
 			const httpResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/attractions/${attractionId}/reviews`,
+				`${getApiUrl()}/reviews/${attractionId}`,
 				{
 					method: "POST",
 					headers: {

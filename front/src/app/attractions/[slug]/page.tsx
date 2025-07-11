@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import AttractionDetails from "@/components/attraction/AttractionDetails";
 import CarouselReviews from "@/components/attractionReview/CarouselReviews";
+import { getApiUrl } from "@/utils/getApi";
 
 export default async function AttractionPage({
 	params,
@@ -12,9 +13,7 @@ export default async function AttractionPage({
 	/* fetch one attraction */
 
 	try {
-		const httpResponse = await fetch(
-			`${process.env.NEXT_PUBLIC_API_URL}/attractions/slug/${slug}`,
-		);
+		const httpResponse = await fetch(`${getApiUrl()}/attractions/slug/${slug}`);
 
 		if (httpResponse.status === 404) {
 			notFound(); // 404 automatic

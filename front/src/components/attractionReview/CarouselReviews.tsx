@@ -3,6 +3,7 @@
 import useEmblaCarousel from "embla-carousel-react";
 import { useCallback, useEffect, useState } from "react";
 import type { Review } from "@/@types";
+import { getApiUrl } from "@/utils/getApi";
 import ReviewCard from "./ReviewCard";
 import ReviewModal from "./ReviewModal";
 
@@ -22,10 +23,9 @@ export default function CarouselReviews({ attractionId }: Props) {
 	useEffect(() => {
 		async function fetchReviews() {
 			try {
-				const res = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/attractions/${attractionId}/reviews`,
-				);
+				const res = await fetch(`${getApiUrl()}/reviews/${attractionId}`);
 				const data = await res.json();
+
 				setReviews(data.reviews);
 			} catch (err) {
 				console.error("Erreur fetch reviews :", err);
