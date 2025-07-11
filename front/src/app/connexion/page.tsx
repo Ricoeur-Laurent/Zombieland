@@ -1,4 +1,4 @@
-import ConnexionForm from "@/components/connexion/LoginForm";
+import ConnexionForm from "@/components/Login/LoginForm";
 
 export const metadata = {
 	title: "Connexion – Zombieland",
@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function ConnexionPage() {
 	return (
-		<div className="flex flex-col items-center justify-start min-h-screen px-4 py-12">
+		<div className="px-4 py-6 max-w-6xl mx-auto">
 			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				Connexion
 			</h2>

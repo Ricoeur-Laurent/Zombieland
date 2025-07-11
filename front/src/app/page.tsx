@@ -1,6 +1,6 @@
-import CarouselAttractions from "@/components/CarouselAttractions";
-import HeroSection from "@/components/HeroSection";
-import PrepareVisit from "@/components/PrepareVisit";
+import CarouselAttractions from "@/components/homePage/CarouselAttractions";
+import HeroSection from "@/components/homePage/HeroSection";
+import PrepareVisit from "@/components/homePage/PrepareVisit";
 
 // import { attractions } from "@/data/attractions";
 

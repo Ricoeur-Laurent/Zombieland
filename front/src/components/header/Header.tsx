@@ -6,7 +6,6 @@ import BurgerProfil from "./BurgerProfil";
 const links = [
 	{ href: "/attractions", label: "Attractions" },
 	{ href: "/infos-pratiques", label: "Infos pratiques" },
-	{ href: "/reservations", label: "Réservations" },
 ];
 
 export default function Header() {

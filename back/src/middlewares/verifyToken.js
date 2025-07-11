@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
 
 dotenv.config();
 
@@ -10,7 +10,7 @@ export function verifyToken(req, res, next) {
 	let token = null;
 
 	const authHeader = req.headers.authorization;
-	if (authHeader && authHeader.startsWith("Bearer ")) {
+	if (authHeader?.startsWith("Bearer ")) {
 		token = authHeader.split(" ")[1];
 	}
 

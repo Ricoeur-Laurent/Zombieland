@@ -1,7 +1,18 @@
-import { Users } from '../models/users.js';
+
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { Users } from "../models/users.js";
+
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+
+
 import { signUpSchema, updateUserSchema } from '../schemas/user.js';
 import validator from 'validator';
-import bcrypt from 'bcrypt';
+
+
 
 const signUpControllers = {
 	// Get all users
@@ -10,9 +21,9 @@ const signUpControllers = {
 			const users = await Users.findAll();
 			res.json(users);
 		} catch (error) {
-			console.error('Erreur lors de la récupération des users :', error);
+			console.error("Erreur lors de la récupération des users :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la récupération des users.',
+				error: "Erreur serveur lors de la récupération des users.",
 			});
 		}
 	},
@@ -22,10 +33,12 @@ const signUpControllers = {
 		try {
 			const { id } = req.checkedParams;
 			const user = await Users.findByPk(id, {
-				attributes: { exclude: ['password'] },
+				attributes: { exclude: ["password"] },
 			});
 			if (!user) {
-				return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+
+				return res.status(404).json({ error: "Utilisateur non trouvé." });
+
 			}
 			res.json(user);
 		} catch (error) {
@@ -38,6 +51,7 @@ const signUpControllers = {
 
 	// Create a new user
 	async userCreate(req, res) {
+
 		// Validate incoming data with Zod schema
 		const newUser = signUpSchema.safeParse(req.body);
 		if (!newUser.success) {
@@ -45,6 +59,7 @@ const signUpControllers = {
 				message: 'Erreur lors de la validation des données via Zod',
 				errors: newUser.error.issues,
 			});
+
 		}
 
 		// Sanitize the input
@@ -55,6 +70,7 @@ const signUpControllers = {
 		const password = newUser.data.password.trim();
 
 		try {
+
 			// Check if the email is already used by another user
 			const emailExists = await Users.findOne({ where: { email } });
 			if (emailExists) {
@@ -64,6 +80,7 @@ const signUpControllers = {
 			const phoneExists = await Users.findOne({ where: { phone } });
 			if (phoneExists) {
 				return res.status(409).json({ error: 'Ce numéro de téléphone est déjà utilisé.' });
+
 			}
 
 			// Secure the password with bcrypt hashing before saving
@@ -85,8 +102,20 @@ const signUpControllers = {
 				phone: userPhone,
 				created_at,
 			} = user;
+
+			const tokenPayload = {
+				id: user.id,
+				email: user.email,
+				admin: user.admin,
+			};
+
+			const token = jwt.sign(tokenPayload, JWT_SECRET, {
+				expiresIn: process.env.JWT_EXPIRES_IN,
+			});
+
 			res.status(201).json({
-				message: 'Utilisateur créé avec succès.',
+				message: "Utilisateur créé avec succès.",
+				token,
 				user: {
 					id,
 					firstname: fName,
@@ -131,6 +160,7 @@ const signUpControllers = {
 			// Check if the user with the provided ID exists
 			const user = await Users.findByPk(id);
 			if (!user) {
+
 				return res.status(404).json({ error: 'Utilisateur non trouvé.' });
 			}
 
@@ -144,6 +174,7 @@ const signUpControllers = {
 			const existingPhoneUser = await Users.findOne({ where: { phone } });
 			if (existingPhoneUser && existingPhoneUser.id !== parseInt(id)) {
 				return res.status(409).json({ error: 'Ce numéro de téléphone est déjà utilisé.' });
+
 			}
 
 			// Update user fields if they are provided
@@ -160,7 +191,7 @@ const signUpControllers = {
 
 			// Send updated user data in the response (excluding password)
 			res.json({
-				message: 'Utilisateur mis à jour avec succès.',
+				message: "Utilisateur mis à jour avec succès.",
 				user: {
 					id: user.id,
 					firstname: user.firstname,
@@ -171,9 +202,9 @@ const signUpControllers = {
 				},
 			});
 		} catch (error) {
-			console.error('Erreur lors de la mise à jour :', error);
+			console.error("Erreur lors de la mise à jour :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la mise à jour.',
+				error: "Erreur serveur lors de la mise à jour.",
 			});
 		}
 	},
@@ -184,14 +215,18 @@ const signUpControllers = {
 			const { id } = req.checkedParams;
 			const user = await Users.findByPk(id);
 			if (!user) {
-				return res.status(404).json({ error: 'Utilisateur non trouvé.' });
+
+				return res.status(404).json({ error: "Utilisateur non trouvé." });
+
 			}
 			await user.destroy();
-			res.json({ message: 'Utilisateur supprimé avec succès.' });
+
+			res.json({ message: "Utilisateur supprimé avec succès." });
+
 		} catch (error) {
-			console.error('Erreur lors de la suppression :', error);
+			console.error("Erreur lors de la suppression :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la suppression.',
+				error: "Erreur serveur lors de la suppression.",
 			});
 		}
 	},

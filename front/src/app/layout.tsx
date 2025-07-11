@@ -1,9 +1,9 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import Footer from "@/components/footer/Footer";
+import Header from "@/components/header/Header";
 import "./globals.css";
-import { Providers } from "@/components/Provider";
+import { Providers } from "@/components/provider/Provider";
 
 export const metadata: Metadata = {
 	title: "ZombieLand",
@@ -17,7 +17,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-<html lang="fr">
+		<html lang="fr">
 			<body className="min-h-screen flex flex-col bg-bg text-text">
 				<Providers>
 					<Header />

@@ -15,6 +15,8 @@ export default function CarouselReviews({ attractionId }: Props) {
 	const [reviews, setReviews] = useState<Review[]>([]);
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const [showModal, setShowModal] = useState(false);
+	const [initialComment, setInitialComment] = useState("");
+	const [initialRating, setInitialRating] = useState(5);
 
 	/* fetch attraction reviews*/
 	useEffect(() => {
@@ -25,12 +27,29 @@ export default function CarouselReviews({ attractionId }: Props) {
 				);
 				const data = await res.json();
 				setReviews(data.reviews);
-				console.log(data);
 			} catch (err) {
 				console.error("Erreur fetch reviews :", err);
 			}
 		}
 		fetchReviews();
+	}, [attractionId]);
+
+	// On mount, restore pending review from localStorage if it matches the current attraction.
+	useEffect(() => {
+		const stored = localStorage.getItem("pendingReview");
+		if (stored) {
+			try {
+				const parsed = JSON.parse(stored);
+				if (parsed?.attractionId === attractionId) {
+					setInitialComment(parsed.comment || "");
+					setInitialRating(parsed.rating || 5);
+					setShowModal(true); // Automatically reopens the modal
+				}
+			} catch (err) {
+				console.error("Erreur parsing pendingReview :", err);
+			}
+			localStorage.removeItem("pendingReview");
+		}
 	}, [attractionId]);
 
 	/* Embla change (color)*/
@@ -70,8 +89,8 @@ export default function CarouselReviews({ attractionId }: Props) {
 				)}
 			</div>
 
-			<div ref={emblaRef} className="overflow-hidden w-full mx-auto px-4">
-				<div className="flex gap-4">
+			<div ref={emblaRef} className="max-w-3xl  w-full mx-auto">
+				<div className="flex gap-4 mx-auto ">
 					{reviews.map((r) => (
 						<ReviewCard key={r.id} review={r} />
 					))}
@@ -110,6 +129,8 @@ export default function CarouselReviews({ attractionId }: Props) {
 					attractionId={attractionId}
 					onClose={() => setShowModal(false)}
 					onSubmit={handleNewReview}
+					initialComment={initialComment}
+					initialRating={initialRating}
 				/>
 			)}
 		</div>

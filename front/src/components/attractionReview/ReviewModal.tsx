@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Review } from "@/@types";
 import { useTokenContext } from "@/context/TokenProvider";
@@ -9,26 +10,39 @@ interface Props {
 	attractionId: number;
 	onClose: () => void;
 	onSubmit: (review: Review) => void;
+	initialComment?: string;
+	initialRating?: number;
 }
 
 export default function ReviewModal({
 	attractionId,
 	onClose,
 	onSubmit,
+	initialComment,
+	initialRating,
 }: Props) {
-	// Token context: used to authorize the review submission
+	// Token from context to check if user is logged in
 	const { token } = useTokenContext();
-	// Form states
-	const [comment, setComment] = useState("");
-	const [rating, setRating] = useState(5);
+	// State: comment text, star rating, loading status, and error message
+	const [comment, setComment] = useState(initialComment || "");
+	const [rating, setRating] = useState(initialRating || 5);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	const pathname = usePathname();
+	const router = useRouter();
 
 	// Handles review submission
 	const handleSend = async () => {
 		// If not logged in, block the action
 		if (!token) {
+			// Save review in localStorage and redirect to login if unauthenticated
+			localStorage.setItem(
+				"pendingReview",
+				JSON.stringify({ comment, rating, attractionId }),
+			);
 			setError("Vous devez être connecté pour laisser un avis.");
+			router.push(`/connexion?redirect=${pathname}`);
 			return;
 		}
 

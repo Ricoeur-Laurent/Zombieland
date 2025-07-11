@@ -16,6 +16,13 @@ export default function ReservationForm() {
 	const today = new Date().toISOString().split("T")[0];
 
 	useEffect(() => {
+		const storedReservation = localStorage.getItem("zombieland_reservation");
+		if (token && storedReservation) {
+			router.push("/paiement");
+		}
+	}, [token, router]);
+
+	useEffect(() => {
 		if (!date || !visitors || visitors <= 0) {
 			return;
 		}

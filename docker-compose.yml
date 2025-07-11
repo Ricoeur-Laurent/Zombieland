@@ -9,7 +9,7 @@ services:
        - ./front/node_modules:/app/node_modules
     depends_on:
       - back
- 
+
     env_file:
       - ./front/.env
     networks:

@@ -1,7 +1,7 @@
 "use client";
 import Cookies from "js-cookie";
 import { LogIn } from "lucide-react";
-
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
@@ -14,11 +14,10 @@ export default function ConnexionForm() {
 	const [email, setEmail] = useState("votre@email.com");
 	const [password, setPassword] = useState("password");
 	const [error, setError] = useState("");
-
+	const redirect = searchParams.get("redirect") || "/";
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError("");
-
 		try {
 			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
 				method: "POST",
@@ -33,15 +32,11 @@ export default function ConnexionForm() {
 
 			const data = await response.json();
 
-			setToken(data.token); // pour ton contexte
+			setToken(data.token);
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
 
-			const stored = localStorage.getItem("zombieland_reservation");
-			if (stored) {
-				const redirectPath = searchParams.get("redirect");
-				if (!redirectPath) return;
-				router.push(redirectPath);
-			}
+			const redirectPath = searchParams.get("redirect") || "/reservations";
+			router.push(redirectPath);
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
@@ -105,6 +100,15 @@ export default function ConnexionForm() {
 				<LogIn size={18} />
 				Me connecter
 			</button>
+			<p className="mt-4 text-sm text-center">
+				Pas encore de compte ?{" "}
+				<Link
+					href={`/inscription${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
+					className="text-primary hover:underline"
+				>
+					Créez un compte ici
+				</Link>
+			</p>
 		</form>
 	);
 }
