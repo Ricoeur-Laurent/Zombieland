@@ -1,6 +1,5 @@
 import { Users } from '../models/users.js';
 import { signUpSchema, updateUserSchema } from '../schemas/user.js';
-import { checkParams } from "../../middlewares/checkParams.js";
 import validator from 'validator';
 import bcrypt from 'bcrypt';
 
