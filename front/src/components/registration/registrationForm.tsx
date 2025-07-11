@@ -1,6 +1,6 @@
 "use client";
 import { LogIn } from "lucide-react";
-
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
@@ -198,6 +198,30 @@ export default function RegistrationForm() {
 					required
 					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text-xl"
 				/>
+			</div>
+
+			<div className="flex items-start gap-2 mt-4">
+				<input
+					type="checkbox"
+					id="acceptPrivacy"
+					name="acceptPrivacy"
+					required
+					className="mt-1 accent-primary w-5 h-5"
+				/>
+				<label
+					htmlFor="acceptPrivacy"
+					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+				>
+					J'accepte la{" "}
+					<Link
+						href="/mentions-legales#confidentialite"
+						target="_blank"
+						rel="noopener"
+						className="underline hover:text-primary-dark transition"
+					>
+						politique de confidentialité
+					</Link>
+				</label>
 			</div>
 
 			{error && <p className="text-red-500 text-sm font-body">{error}</p>}
