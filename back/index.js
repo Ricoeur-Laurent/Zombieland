@@ -1,20 +1,14 @@
-
 import dotenv from "dotenv";
 
 dotenv.config();
 
 import cookieParser from "cookie-parser";
 
-
-
 import express from 'express';
 import router from './src/routers/router.js';
 import seed from './src/migration/seed.js';
 import { initDatabase } from './src/migration/sync.js';
 import cors from "cors";
-
-
-
 
 const app = express();
 
@@ -32,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(router);
+app.use('/api',router);
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {

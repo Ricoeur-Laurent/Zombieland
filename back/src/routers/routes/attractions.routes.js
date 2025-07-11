@@ -1,7 +1,6 @@
 import express from "express";
 import attractionsController from "../../controllers/attractionsControllers.js";
-import reviewsControllers from "../../controllers/reviewsControllers.js";
-import { verifyToken } from "../../middlewares/verifyToken.js";
+import { checkParams } from "../../middlewares/checkParams.js";
 
 const router = express.Router();
 
@@ -9,24 +8,21 @@ const router = express.Router();
 router.get("/", attractionsController.getAllAttractions);
 
 // retrieve one attraction
-router.get("/:id", attractionsController.getOneAttraction);
+router.get("/:id", checkParams, attractionsController.getOneAttraction);
 
 // retrieve one attraction by slug
-router.get("/slug/:slug", attractionsController.getOneAttractionBySlug);
+router.get("/slug/:slug", checkParams, attractionsController.getOneAttractionBySlug);
+
+// retrieve attractions by catégory
+router.get('/category/:id', checkParams, attractionsController.getAttractionsByCategory)
 
 // Create one attraction
 router.post("/", attractionsController.createAttraction);
 
 // Update an attraction
-router.patch("/:id", attractionsController.updateAttraction);
+router.patch("/:id", checkParams, attractionsController.updateAttraction);
 
 // Delete an attraction
-router.delete("/:id", attractionsController.deleteAttraction);
-
-// Retrieve all reviews for a specific attraction
-router.get("/:id/reviews", reviewsControllers.getReviewsByAttraction);
-
-// Create a new review for a specific attraction
-router.post("/:id/reviews", verifyToken, reviewsControllers.createReview);
+router.delete("/:id", checkParams, attractionsController.deleteAttraction);
 
 export default router;

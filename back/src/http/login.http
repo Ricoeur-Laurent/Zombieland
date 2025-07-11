@@ -1,0 +1,22 @@
+# Create a user
+POST http://localhost:5000/api/signUp
+content-type: application/json
+
+{
+  "firstname": "admin",
+  "lastname": "admin",
+  "email" : "admin2@zombie.com",
+  "password" : "admin",
+  "phone" : "123456789"
+}
+###
+
+# Login as a user
+POST http://localhost:5000/api/login
+content-type: application/json
+
+{
+  "email" :  "admin@zombie.com",
+  "password" : "admin"
+}
+###

@@ -1,7 +1,9 @@
+import dotenv from 'dotenv';
 import { Users } from '../models/index.js';
 import { Reservations } from '../models/index.js';
 import dayjs from 'dayjs';
-import dotenv from 'dotenv';
+import { createReservationSchema, updateReservationSchema } from '../schemas/reservations.js';
+import paramsSchema from '../schemas/params.js';
 
 dotenv.config();
 
@@ -14,32 +16,44 @@ if (!JWT_SECRET) {
 const reservationsControllers = {
 	// retrieve all reservations
 	async getAllReservations(req, res) {
+
+		if (!req.user.admin) {
+			return res
+				.status(403)
+				.json({ error: 'Accès interdit : Admin uniquement.' });
+		}
 		try {
-			if (req.user.admin !== 'true') {
-				return res.status(403).json({ error: 'Accès interdit : Admin uniquement.' });
-			}
 			const reservations = await Reservations.findAll();
-			return res.status(200).json({
-				message: 'Reservations récupérées avec succès',
-				reservations,
-			});
+			return res
+				.status(200)
+				.json({
+					message: 'Reservations récupérées avec succès',
+					reservations,
+				});
 		} catch (error) {
 			console.error('Erreur lors de la récupération des réservations :', error);
-			res.status(500).json({
+			res
+			.status(500)
+			.json({
 				error: 'Erreur serveur lors de la récupération des réservations.',
 			});
 		}
 	},
 
 	// retrieve one reservation by id
-	async getOneReservation(req, res) {
-		const { id } = req.params;
+	async getOneReservationByUserId(req, res) {
+
+		const { id } = req.checkedParams;
+
 		const userId = req.user.id;
+
 		try {
 			const oneReservation = await Reservations.findByPk(id);
 			if (!oneReservation) {
-				console.log(`La reservation n°${id} est introuvable`);
-				return res.status(404).json({ message: `La reservation n°${id} est introuvable` });
+
+				return res
+				.status(404)
+				.json({ message: `La reservation n°${id} est introuvable` });
 			}
 			if (oneReservation.userId !== userId) {
 				return res.status(403).json({ message: 'Accès refusé à cette réservation' });
@@ -68,13 +82,12 @@ const reservationsControllers = {
 				},
 			});
 			if (!userReservations || userReservations.length === 0) {
-				console.log(`Aucune réservation trouvée pour l'utilisateur n°${userId}`);
 				return res
 					.status(404)
 					.json({ message: `Aucune réservation trouvée pour l'utilisateur n°${userId}` });
 			}
 			return res.status(200).json({
-				message: 'Vos réservations ont été récupérées avec succès',
+				message: 'Réservations récupérées avec succès',
 				userReservations,
 			});
 		} catch (error) {
@@ -90,16 +103,25 @@ const reservationsControllers = {
 
 	// Create a reservation
 	async createReservation(req, res) {
+
+		// Data control with zod
+		const newReservation = createReservationSchema.safeParse(req.body)
+
+		if (!newReservation.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					error: newReservation.error.issues
+				})
+		}
+
+		const userId = req.user.id;
+
+		// Creation of the reservation
 		try {
-			const { visit_date, nb_participants, amount } = req.body;
-			const userId = req.user.id;
-			if (!visit_date || !nb_participants || !amount) {
-				return res.status(400).json({ error: 'Tous les champs sont requis.' });
-			}
 			const reservation = await Reservations.create({
-				visit_date,
-				nb_participants,
-				amount,
+				...newReservation.data,
 				userId,
 			});
 			return res.status(201).json({
@@ -116,27 +138,40 @@ const reservationsControllers = {
 
 	// Update a reservation
 	async updateReservation(req, res) {
-		const { id } = req.params;
+
+		const { id } = req.checkedParams;
+
+		// Data control with Zod
+		const updateReservation = updateReservationSchema.safeParse(req.body)
+		if (!updateReservation.success) {
+			return res
+				.status(400)
+				.json({
+					message: "req.params ne respecte pas les contraintes",
+					error: updateReservation.error.issues
+				})
+		}
+
 		const userId = req.user.id;
+		const reservation = await Reservations.findByPk(id);
+		if (!reservation) {
+			return res.status(404).json({ error: 'reservation non trouvée' });
+		}
+		if (reservation.userId !== userId) {
+			return res
+				.status(403)
+				.json({ error: 'Accès refusé : vous ne pouvez modifier que vos propres réservations' });
+		}
+		const today = dayjs();
+		const visitDate = dayjs(reservation.visit_date);
+		if (visitDate.diff(today, 'day') < 10) {
+			return res.status(400).json({
+				message:
+					'La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.',
+			});
+		}
 		try {
-			const reservation = await Reservations.findByPk(id);
-			if (!reservation) {
-				return res.status(404).json({ error: 'reservation non trouvée' });
-			}
-			if (reservation.userId !== userId) {
-				return res
-					.status(403)
-					.json({ error: 'Accès refusé : vous ne pouvez modifier que vos propres réservations' });
-			}
-			const today = dayjs();
-			const visitDate = dayjs(reservation.visit_date);
-			if (visitDate.diff(today, 'day') < 10) {
-				return res.status(400).json({
-					error:
-						'La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.',
-				});
-			}
-			await reservation.update(req.body);
+			await reservation.update(updateReservation.data);
 			return res.status(200).json({
 				message: 'Réservation modifiée avec succès.',
 				reservation,
@@ -151,8 +186,11 @@ const reservationsControllers = {
 
 	// delete a reservation
 	async deleteReservation(req, res) {
-		const { id } = req.params;
+
+		const { id } = req.checkedParams;
+
 		const userId = req.user.id;
+		// deleting reservation
 		try {
 			const reservation = await Reservations.findByPk(id);
 			if (!reservation) {

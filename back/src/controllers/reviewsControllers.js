@@ -1,16 +1,24 @@
 import { Reviews, Users, Attractions } from '../models/index.js';
+import { createReviewSchema } from '../schemas/reviews.js';
 
 const reviewsControllers = {
+	// Create a new review for a specific attraction
 	async createReview(req, res) {
-		// Create a new review for a specific attraction
-		const { id: attractionId } = req.params;
-		const { comment, rating } = req.body;
-		const userId = req.user.id;
 
-		if (!comment || !rating) {
-			return res.status(400).json({ error: 'Commentaire et note requis.' });
+		const { id } = req.checkedParams;
+		const attractionId = id
+
+		// Data control with Zod
+		const newReview = createReviewSchema.safeParse(req.body)
+		if (!newReview.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					errors: newReview.error.issues
+				})
 		}
-
+		const userId = req.user.id;
 		try {
 			const attraction = await Attractions.findByPk(attractionId);
 			if (!attraction) {
@@ -18,8 +26,7 @@ const reviewsControllers = {
 			}
 
 			const review = await Reviews.create({
-				comment,
-				rating,
+				...newReview.data,
 				userId,
 				attractionId,
 			});
@@ -35,7 +42,10 @@ const reviewsControllers = {
 	},
 	// Retrieve all reviews for a specific attraction
 	async getReviewsByAttraction(req, res) {
-		const { id: attractionId } = req.params;
+
+		const { id } = req.checkedParams;
+		const attractionId = id
+
 
 		try {
 			const reviews = await Reviews.findAll({

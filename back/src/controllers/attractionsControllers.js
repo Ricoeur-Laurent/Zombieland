@@ -1,4 +1,8 @@
-import { Attractions, Categories } from "../models/index.js";
+
+import { Categories, Attractions } from '../models/index.js';
+import { createAttractionSchema, updateAttractionSchema } from '../schemas/attractions.js';
+import paramsSchema from '../schemas/params.js';
+
 
 const attractionsController = {
 	// retrieve all attractions
@@ -26,11 +30,12 @@ const attractionsController = {
 
 	// retrieve one attraction
 	async getOneAttraction(req, res) {
-		const { id } = req.params;
+
+		const { id } = req.checkedParams;
+
 		try {
 			const oneAttraction = await Attractions.findByPk(id);
 			if (!oneAttraction) {
-				console.log(`L'attraction est introuvable`);
 				return res
 					.status(404)
 					.json({ message: `L'attraction est introuvable` });
@@ -48,7 +53,7 @@ const attractionsController = {
 
 	// retrieve one attraction by slug
 	async getOneAttractionBySlug(req, res) {
-		const { slug } = req.params;
+		const { slug } = req.checkedParams;
 		try {
 			const oneAttraction = await Attractions.findOne({
 				where: { slug },
@@ -59,7 +64,6 @@ const attractionsController = {
 				},
 			});
 			if (!oneAttraction) {
-				console.log(`L'attraction est introuvable`);
 				return res
 					.status(404)
 					.json({ message: `L'attraction est introuvable` });
@@ -77,19 +81,26 @@ const attractionsController = {
 
 	//  create one attraction
 	async createAttraction(req, res) {
-		const { name, image, description } = req.body;
-		if (!name || !image || !description) {
-			return res.status(400).json({ error: "Tous les champs sont requis." });
-		}
-		try {
-			const newAttraction = await Attractions.create({
-				name,
-				image,
-				description,
-			});
+
+
+		// Data control with Zod
+		const newAttraction = createAttractionSchema.safeParse(req.body)
+		if (!newAttraction.success) {
 			return res
-				.status(201)
-				.json({ message: "Attraction créée avec succès", newAttraction });
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					errors: newAttraction.error.issues
+				})
+
+		}
+
+		// New attraction creation
+		try {
+
+			const attraction = await Attractions.create(newAttraction.data);
+			return res.status(201).json({ message: 'Attraction créée avec succès', attraction });
+
 		} catch (error) {
 			console.error(`Erreur lors de la création de l'attraction `, error);
 			res.status(500).json({
@@ -100,7 +111,20 @@ const attractionsController = {
 
 	// update one attraction
 	async updateAttraction(req, res) {
-		const { id } = req.params;
+
+		const { id } = req.checkedParams
+
+		// Data control with Zod
+		const attractionUpdate = updateAttractionSchema.safeParse(req.body)
+		if (!attractionUpdate.success) {
+			return res
+				.status(400)
+				.json({
+					message: "Erreur lors de la validation des données via Zod",
+					errors: attractionUpdate.error.issues
+				})
+		}
+		// Attraction update
 		try {
 			const attraction = await Attractions.findByPk(id);
 			if (!attraction) {
@@ -108,7 +132,7 @@ const attractionsController = {
 					.status(404)
 					.json({ message: `L'attraction est introuvable` });
 			}
-			await attraction.update(req.body);
+			await attraction.update(attractionUpdate.data);
 			return res.status(200).json({
 				message: "Attraction modifiée avec succès.",
 				attraction,
@@ -123,7 +147,9 @@ const attractionsController = {
 
 	// delete one attraction
 	async deleteAttraction(req, res) {
-		const { id } = req.params;
+	
+		const { id } = req.checkedParams
+
 		try {
 			const attraction = await Attractions.findByPk(id);
 			if (!attraction) {
@@ -145,9 +171,9 @@ const attractionsController = {
 
 	// Get attractions by category
 	async getAttractionsByCategory(req, res) {
-		try {
-			const { id } = req.params;
 
+		const { id } = req.checkedParams
+		try {
 			const category = await Categories.findByPk(id, {
 				include: {
 					model: Attractions,
@@ -160,7 +186,10 @@ const attractionsController = {
 				return res.status(404).json({ error: "Catégorie non trouvée." });
 			}
 
-			res.json({
+			res
+			.status(200)
+			.json({
+				message: `Attractions récupérées avec succès`,
 				category: category.name,
 				attractions: category.attractions,
 			});

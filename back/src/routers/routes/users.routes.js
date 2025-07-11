@@ -1,5 +1,6 @@
 import express from 'express';
 import usersControllers from '../../controllers/usersControllers.js';
+import { checkParams } from "../../middlewares/checkParams.js";
 
 const router = express.Router();
 
@@ -10,12 +11,12 @@ router.get('/', usersControllers.getAllUsers);
 router.post('/', usersControllers.userCreate);
 
 // Get one user
-router.get('/:id', usersControllers.getOneUser);
+router.get('/:id', checkParams, usersControllers.getOneUser);
 
 // Update one user
-router.patch('/:id', usersControllers.updateUser);
+router.patch('/:id', checkParams, usersControllers.updateUser);
 
 // Delete one user
-router.delete('/:id', usersControllers.deleteUser);
+router.delete('/:id', checkParams, usersControllers.deleteUser);
 
 export default router;

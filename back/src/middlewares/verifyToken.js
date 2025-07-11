@@ -19,13 +19,16 @@ export function verifyToken(req, res, next) {
 		token = req.cookies.token;
 	}
 
+	// If still no token, deny access
 	if (!token) {
 		return res.status(401).json({ error: "Token manquant" });
 	}
 
 	try {
+		// Verify token using the secret key
 		const decoded = jwt.verify(token, JWT_SECRET);
 
+		// Attach user data from token to the request object for later use
 		req.user = {
 			id: decoded.id,
 			firstname: decoded.firstname,
