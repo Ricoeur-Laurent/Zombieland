@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 import PaiementValidation from "./PaiementValidation";
 
 export default function PaiementSection() {
@@ -42,7 +43,7 @@ export default function PaiementSection() {
 		setError(null);
 
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
+			const response = await fetch(`${getApiUrl()}/reservations`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -52,8 +53,7 @@ export default function PaiementSection() {
 					visit_date: reservation.date,
 					nb_participants: reservation.visitors,
 					amount: reservation.calculatedPrice,
-			}),
-			
+				}),
 			});
 
 			if (!response.ok) {
@@ -77,7 +77,12 @@ export default function PaiementSection() {
 	};
 
 	if (!reservation) {
-		return <p className="text-center text-text">Aucune réservation trouvée, vous allez être redirigé vers la page de réservation.</p>;
+		return (
+			<p className="text-center text-text">
+				Aucune réservation trouvée, vous allez être redirigé vers la page de
+				réservation.
+			</p>
+		);
 	}
 
 	return (

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 
 export default function ConnexionForm() {
 	const { setToken } = useTokenContext();
@@ -19,7 +20,7 @@ export default function ConnexionForm() {
 		e.preventDefault();
 		setError("");
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+			const response = await fetch(`${getApiUrl()}/login`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ email, password }),

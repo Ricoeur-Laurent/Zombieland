@@ -11,7 +11,7 @@ services:
       - back
 
     env_file:
-      - ./front/.env
+      - ./front/.env.docker
     networks:
       - zombienet
 

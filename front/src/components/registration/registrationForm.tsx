@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 
 export default function RegistrationForm() {
 	const { setToken } = useTokenContext();
@@ -41,28 +42,25 @@ export default function RegistrationForm() {
 		}
 
 		try {
-			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/signUp`,
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						firstname,
-						lastname,
-						email,
-						password,
-						phone: phone.replace(/\D/g, ""),
-					}),
-					credentials: "include",
-				},
-			);
+			const response = await fetch(`${getApiUrl()}/signUp`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					firstname,
+					lastname,
+					email,
+					password,
+					phone: phone.replace(/\D/g, ""),
+				}),
+				credentials: "include",
+			});
 
 			const data = await response.json();
 
-			// TODO: à améliorer quand l'API renverra un objet `errors`
 			if (!response.ok) {
 				if (response.status === 400 && Array.isArray(data.errors)) {
 					const zodErrors = Object.fromEntries(
+						// biome-ignore lint: explicit any
 						data.errors.map((err: any) => [err.path[0], err.message]),
 					);
 					setErrors(zodErrors);

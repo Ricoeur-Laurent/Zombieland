@@ -5,10 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import type { Attraction } from "@/@types";
-
+import { getApiUrl } from "@/utils/getApi";
 
 export default function CarouselAttractions() {
-
 	/*Embla initialisation*/
 	const [emblaRef, emblaApi] = useEmblaCarousel({
 		loop: true,
@@ -23,8 +22,8 @@ export default function CarouselAttractions() {
 	useEffect(() => {
 		async function getAttractions() {
 			try {
-				console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
-				const httpResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/attractions`);
+				console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+				const httpResponse = await fetch(`${getApiUrl()}/attractions`);
 				const data = await httpResponse.json();
 
 				if (httpResponse.ok) {
