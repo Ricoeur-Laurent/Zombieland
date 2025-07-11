@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Attraction, Category } from "@/@types";
+import { getApiUrl } from "@/utils/getApi";
 
 export default function AttractionsPage() {
 	/* State search + category  */
@@ -19,7 +20,7 @@ export default function AttractionsPage() {
 	useEffect(() => {
 		async function getAttractions() {
 			try {
-				const httpResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/attractions`);
+				const httpResponse = await fetch(`${getApiUrl()}/attractions`);
 				const data = await httpResponse.json();
 
 				if (httpResponse.ok) {
@@ -38,11 +39,11 @@ export default function AttractionsPage() {
 	useEffect(() => {
 		async function getCategories() {
 			try {
-				const httpResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/categories`);
+				const httpResponse = await fetch(`${getApiUrl()}/categories`);
 				const data = await httpResponse.json();
 
 				if (httpResponse.ok) {
-					setCategories(data);
+					setCategories(data.categories);
 				} else {
 					throw new Error("L'appel à l'API a échoué, veuillez réessayer...");
 				}

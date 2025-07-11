@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Review } from "@/@types";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 
 // Props expected by the modal: attraction ID, close handler, and a submit callback
 interface Props {
@@ -50,7 +51,7 @@ export default function ReviewModal({
 		setError(null);
 		try {
 			const httpResponse = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/attractions/${attractionId}/reviews`,
+				`${getApiUrl()}/reviews/${attractionId}`,
 				{
 					method: "POST",
 					headers: {
