@@ -89,8 +89,8 @@ export default function CarouselReviews({ attractionId }: Props) {
 				)}
 			</div>
 
-			<div ref={emblaRef} className="overflow-hidden w-full mx-auto px-4">
-				<div className="flex gap-4">
+			<div ref={emblaRef} className="max-w-3xl  w-full mx-auto">
+				<div className="flex gap-4 mx-auto ">
 					{reviews.map((r) => (
 						<ReviewCard key={r.id} review={r} />
 					))}
