@@ -1,20 +1,14 @@
-
 import dotenv from "dotenv";
 
 dotenv.config();
 
 import cookieParser from "cookie-parser";
 
-
-
 import express from 'express';
 import router from './src/routers/router.js';
 import seed from './src/migration/seed.js';
 import { initDatabase } from './src/migration/sync.js';
 import cors from "cors";
-
-
-
 
 const app = express();
 
