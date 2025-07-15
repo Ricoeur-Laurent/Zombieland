@@ -71,7 +71,7 @@ export default function AttractionsSection() {
 						name,
 						description,
 						slug: slugify(name),
-						image: `https://cdn.zombieland.fr/images/${selectedAttraction.image}`,
+						image: `${slugify(name)}.webp`,
 					}),
 				},
 			);
@@ -109,7 +109,7 @@ export default function AttractionsSection() {
 					name,
 					description,
 					slug: slugify(name),
-					image: `${slugify(name)}.webp`, // temporaire ou champ à ajouter
+					image: `${slugify(name)}.webp`,
 				}),
 			});
 
@@ -221,13 +221,11 @@ export default function AttractionsSection() {
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					className="w-full mb-2 p-2 border rounded"
-					placeholder="Nom"
 				/>
 				<textarea
 					value={description}
 					onChange={(e) => setDescription(e.target.value)}
 					className="w-full p-2 border rounded"
-					placeholder="Description"
 				/>
 			</Modal>
 			<Modal

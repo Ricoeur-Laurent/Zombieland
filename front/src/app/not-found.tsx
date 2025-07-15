@@ -8,9 +8,7 @@ export default function NotFound() {
 		<section className="relative w-full h-[90vh] flex items-center justify-center">
 			{/* Image */}
 			<Image
-				src="/images/desktop/404 git push --set-upstream origin feat/admin-attractions
-
-        .webp"
+				src="/images/desktop/404.webp"
 				alt="ZombieLand - 404"
 				fill
 				className="object-cover"
