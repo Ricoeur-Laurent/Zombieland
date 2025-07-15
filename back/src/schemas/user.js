@@ -12,7 +12,7 @@ const updateUserSchema = z.object({
 	firstname: z.string().min(2),
 	lastname: z.string().min(2),
 	email: z.string().email(),
-	password: z.string().min(4),
+	password: z.string().min(4).optional(),
 	phone: z.string().min(10),
 });
 

@@ -46,7 +46,6 @@ const reviewsControllers = {
 		const { id } = req.checkedParams;
 		const attractionId = id
 
-
 		try {
 			const reviews = await Reviews.findAll({
 				where: { attractionId },
