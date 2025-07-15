@@ -1,11 +1,10 @@
 "use client";
 
-import { Search } from "lucide-react";
+import { Edit, Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
-import ShowMoreButton from "./ShowMoreButton";
-import { Edit, Trash2 } from "lucide-react";
+import ShowMoreButton from "../ui/ShowMoreButton";
 
 type Reservation = {
 	id: number;
@@ -90,30 +89,40 @@ export default function ReservationsSection() {
 			</div>
 
 			<ul className="space-y-2">
-	{visibleItems.map((r) => (
-		<li
-			key={r.id}
-			className="flex justify-between items-center px-4 py-2 bg-surface border border-muted rounded"
-		>
-			<span>
-				<strong>
-					{r.User ? `${r.User.firstname} ${r.User.lastname}` : "Utilisateur inconnu"}
-				</strong>{" "}
-				– {new Date(r.visit_date).toLocaleDateString()}
-			</span>
+				{visibleItems.map((r) => (
+					<li
+						key={r.id}
+						className="flex justify-between items-center px-4 py-2 bg-surface border border-muted rounded"
+					>
+						<span>
+							<strong>
+								{r.User
+									? `${r.User.firstname} ${r.User.lastname}`
+									: "Utilisateur inconnu"}
+							</strong>{" "}
+							– {new Date(r.visit_date).toLocaleDateString()}
+						</span>
 
-			{/* Actions */}
-			<div className="flex gap-2">
-				<button type="button" onClick={() => handleEdit(r)} className="text-primary hover:text-primary-dark">
-					<Edit className="size-4" />
-				</button>
-				<button type="button" onClick={() => handleDelete(r.id)} className="text-red-500 hover:text-red-700">
-					<Trash2 className="size-4" />
-				</button>
-			</div>
-		</li>
-	))}
-</ul>
+						{/* Actions */}
+						<div className="flex gap-2">
+							<button
+								type="button"
+								onClick={() => handleEdit(r)}
+								className="text-primary hover:text-primary-dark"
+							>
+								<Edit className="size-4" />
+							</button>
+							<button
+								type="button"
+								onClick={() => handleDelete(r.id)}
+								className="text-red-500 hover:text-red-700"
+							>
+								<Trash2 className="size-4" />
+							</button>
+						</div>
+					</li>
+				))}
+			</ul>
 
 			<ShowMoreButton
 				hasMore={hasMore}

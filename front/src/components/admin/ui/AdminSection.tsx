@@ -1,5 +1,5 @@
-import SectionHeader from "./SectionHeader";
 import ItemList from "./ItemList";
+import SectionHeader from "./SectionHeader";
 
 type Props = {
 	title: string;
