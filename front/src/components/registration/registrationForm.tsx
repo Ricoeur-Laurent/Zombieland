@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 
 export default function RegistrationForm() {
 	const { setToken } = useTokenContext();
@@ -15,7 +16,13 @@ export default function RegistrationForm() {
 	const [phone, setPhone] = useState("");
 	const [email, setEmail] = useState("votre@email.com");
 	const [password, setPassword] = useState("password");
-	const [errors, setErrors] = useState<{ email?: string; phone?: string }>({});
+	const [errors, setErrors] = useState<{
+		email?: string;
+		phone?: string;
+		firstname?: string;
+		lastname?: string;
+		password?: string;
+	}>({});
 	const [error, setError] = useState("");
 
 	function formatPhone(value: string) {
@@ -35,47 +42,43 @@ export default function RegistrationForm() {
 		}
 
 		try {
-			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/signUp`,
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						firstname,
-						lastname,
-						email,
-						password,
-						phone: phone.replace(/\D/g, ""),
-					}),
-					credentials: "include",
-				},
-			);
+			const response = await fetch(`${getApiUrl()}/signUp`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					firstname,
+					lastname,
+					email,
+					password,
+					phone: phone.replace(/\D/g, ""),
+				}),
+				credentials: "include",
+			});
 
 			const data = await response.json();
 
-			// TODO: à améliorer quand l'API renverra un objet `errors`
-
 			if (!response.ok) {
+				if (response.status === 400 && Array.isArray(data.errors)) {
+					const zodErrors = Object.fromEntries(
+						// biome-ignore lint: explicit any
+						data.errors.map((err: any) => [err.path[0], err.message]),
+					);
+					setErrors(zodErrors);
+					return;
+				}
+
 				if (response.status === 409 && typeof data.error === "string") {
-					const err = data.error.toLowerCase();
-
-					const fieldErrors: { email?: string; phone?: string } = {};
-
-					if (err.includes("email")) {
-						fieldErrors.email = data.error;
-					}
-					if (err.includes("phone") || err.includes("téléphone")) {
-						fieldErrors.phone = data.error;
-					}
-
-					if (Object.keys(fieldErrors).length > 0) {
-						setErrors(fieldErrors);
+					if (data.error.toLowerCase().includes("email")) {
+						setErrors({ email: data.error });
+					} else if (data.error.toLowerCase().includes("téléphone")) {
+						setErrors({ phone: data.error });
 					} else {
 						setError(data.error);
 					}
-				} else {
-					setError(data.error || "Erreur lors de l'inscription.");
+					return;
 				}
+
+				setError(data.error || "Erreur lors de l'inscription.");
 				return;
 			}
 
@@ -113,8 +116,13 @@ export default function RegistrationForm() {
 					value={firstname}
 					onChange={(e) => setFirstName(e.target.value)}
 					required
-					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
+					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+						${errors.firstname ? "border-red-500 border-2" : "border-muted"} 
+						focus:border-primary placeholder:text-muted`}
 				/>
+				{errors.firstname && (
+					<p className="text-red-500 text-sm font-body">{errors.firstname}</p>
+				)}
 			</div>
 			<div className="flex flex-col gap-1">
 				<label
@@ -131,8 +139,13 @@ export default function RegistrationForm() {
 					value={lastname}
 					onChange={(e) => setLastName(e.target.value)}
 					required
-					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
+					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+						${errors.lastname ? "border-red-500 border-2" : "border-muted"} 
+						focus:border-primary placeholder:text-muted`}
 				/>
+				{errors.lastname && (
+					<p className="text-red-500 text-sm font-body">{errors.lastname}</p>
+				)}
 			</div>
 			<div className="flex flex-col gap-1">
 				<label
@@ -196,8 +209,13 @@ export default function RegistrationForm() {
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}
 					required
-					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text-xl"
+					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+						${errors.password ? "border-red-500 border-2" : "border-muted"} 
+						focus:border-primary placeholder:text-muted`}
 				/>
+				{errors.password && (
+					<p className="text-red-500 text-sm font-body">{errors.password}</p>
+				)}
 			</div>
 
 			<div className="flex items-start gap-2 mt-4">
