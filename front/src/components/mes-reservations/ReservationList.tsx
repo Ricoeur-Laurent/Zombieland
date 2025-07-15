@@ -15,9 +15,9 @@ interface Reservation {
 }
 
 export default function ReservationList() {
-	const { token, user } = useTokenContext();
+	const { token, user, loading } = useTokenContext();
 	const [reservations, setReservations] = useState<Reservation[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [fetchingReservations, setFetchingReservations] = useState(true);
 	const [redirecting, setRedirecting] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -122,6 +122,8 @@ export default function ReservationList() {
 	};
 
 	useEffect(() => {
+		if (loading) return; // ⛔️ do not take effect if loading
+
 		if (!token || !user || !user.id) {
 			setRedirecting(true);
 			const timeout = setTimeout(() => {
@@ -131,7 +133,7 @@ export default function ReservationList() {
 			}, 3000);
 			return () => clearTimeout(timeout);
 		}
-	}, [token, user, router, searchParams]);
+	}, [loading, token, user, router, searchParams]);
 
 	useEffect(() => {
 		const fetchReservations = async () => {
@@ -153,13 +155,13 @@ export default function ReservationList() {
 			} catch (error) {
 				console.error("Erreur lors de la récupération des réservations", error);
 			} finally {
-				setLoading(false);
+				setFetchingReservations(false);
 			}
 		};
 		if (token && user && user.id) {
 			fetchReservations();
 		} else {
-			setLoading(false);
+			setFetchingReservations(false);
 		}
 	}, [token, user]);
 

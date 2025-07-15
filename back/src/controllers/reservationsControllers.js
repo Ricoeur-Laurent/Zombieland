@@ -170,83 +170,78 @@ const reservationsControllers = {
 		}
 	},
 
-	// Update a reservation
 	async updateReservation(req, res) {
 		const { id } = req.checkedParams;
 		const isAdmin = req.user.admin;
 		const userId = req.user.id;
-
-		// Check if a user is trying to modify the amount field
+	
+		// Interdiction for an user to modify the price
 		if (!isAdmin && "amount" in req.body) {
 			return res.status(403).json({
 				error: "Vous n'êtes pas autorisé à modifier le prix.",
 			});
 		}
-
-		// Choose the appropriate schema based on the user's role
+	
+		// Validation Schema is different for admin
 		const schema = isAdmin
 			? updateReservationAdminSchema
 			: updateReservationUserSchema;
-
-		// Data control with Zod
+	
 		const updateReservation = schema.safeParse(req.body);
 		if (!updateReservation.success) {
+			console.log("Échec de validation Zod :", req.body);
 			return res.status(400).json({
-				message: "req.params ne respecte pas les contraintes",
+				message: "Le corps de la requête est invalide.",
 				error: updateReservation.error.issues,
 			});
 		}
-
+	
 		try {
 			const reservation = await Reservations.findByPk(id);
 			if (!reservation) {
-				return res.status(404).json({ error: "reservation non trouvée" });
+				return res.status(404).json({ error: "Réservation non trouvée" });
 			}
-			// Check ownership: non-admin users can only modify their own reservations
-			if (reservation.userId !== userId) {
-				return res
-					.status(403)
-					.json({
-						error:
-							"Accès refusé : vous ne pouvez modifier que vos propres réservations",
-					});
-			}
-
-			// Ensure the reservation can only be modified more than 10 days before the visit date
-			const today = dayjs();
-			const visitDate = dayjs(reservation.visit_date);
-			if (visitDate.diff(today, "day") < 10) {
-				return res.status(400).json({
-					message:
-						"La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.",
+	
+			// if not and admin user1 can only modify user1 resa
+			if (!isAdmin && reservation.userId !== userId) {
+				return res.status(403).json({
+					error:
+						"Accès refusé : vous ne pouvez modifier que vos propres réservations",
 				});
 			}
-
-			// Prepare data to be updated
+	
+			// Restricted to 10 days only for user, not admin
+			if (!isAdmin) {
+				const today = dayjs();
+				const visitDate = dayjs(reservation.visit_date);
+				if (visitDate.diff(today, "day") < 10) {
+					return res.status(400).json({
+						message:
+							"La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.",
+					});
+				}
+			}
+	
 			const updateData = { ...updateReservation.data };
-
-			// If a regular user updates 'nb_participants', recalculate the 'amount' automatically
+	
+			// we check the price for users
 			if (!isAdmin && "nb_participants" in updateData) {
 				const price = 66;
 				updateData.amount = updateData.nb_participants * price;
 			}
-
+	
 			await reservation.update(updateData);
 			return res.status(200).json({
 				message: "Réservation modifiée avec succès.",
 				reservation,
 			});
 		} catch (error) {
-			console.error(
-				"Erreur lors de la modification de la réservation :",
-				error,
-			);
+			console.error("Erreur lors de la modification de la réservation :", error);
 			res.status(500).json({
 				error: "Erreur serveur lors de la modification de la réservation.",
 			});
 		}
 	},
-
 	// delete a reservation
 	async deleteReservation(req, res) {
 		const { id } = req.checkedParams;
