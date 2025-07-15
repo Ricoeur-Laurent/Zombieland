@@ -30,8 +30,9 @@ export const updateReservationUserSchema = z.object({
 export const updateReservationAdminSchema = z.object({
 	visit_date: z.coerce
 		.date()
-		.optional()
-		.refine((date) => date > new Date(), { message: 'La date de visite doit être dans le futur' }),
+		.refine((date) => date > new Date(), {
+			message: "La date de visite doit être dans le futur",
+		}),
 	nb_participants: z.coerce.number().int().positive().optional(),
-	amount: z.coerce.number().positive(),
+	amount: z.coerce.number().positive().optional(),
 });
