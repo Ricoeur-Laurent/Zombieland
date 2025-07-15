@@ -35,7 +35,6 @@ export default function CategoriesSection() {
 				credentials: "include",
 			});
 			const data = await res.json();
-			console.log("Catégories à afficher :", data.categories);
 			setCategories(data.categories || []);
 		} catch (err) {
 			console.error("Erreur lors du fetch des catégories :", err);
