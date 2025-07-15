@@ -4,6 +4,7 @@ import type { Attraction } from "@/@types";
 import Modal from "@/components/modal/Modal";
 import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
+import ShowMoreButton from "../ui/ShowMoreButton";
 
 export default function AttractionsSection() {
 	const { token } = useTokenContext();
@@ -13,9 +14,13 @@ export default function AttractionsSection() {
 	const [selectedAttraction, setSelectedAttraction] =
 		useState<Attraction | null>(null);
 	const [showModal, setShowModal] = useState(false);
-
+	const [visible, setVisible] = useState(4);
+	const step = 4;
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
+
+	const visibleItems = attractions.slice(0, visible);
+	const hasMore = visible < attractions.length;
 
 	const slugify = (str: string) =>
 		str
@@ -167,7 +172,7 @@ export default function AttractionsSection() {
 					</button>
 				</div>
 				<ul className="space-y-2">
-					{attractions.map((a, i) => (
+					{visibleItems.map((a, i) => (
 						<li
 							// biome-ignore lint/suspicious/noArrayIndexKey: usage de l’index ok (liste statique, carrousel embla)
 							key={i}
@@ -197,6 +202,10 @@ export default function AttractionsSection() {
 						</li>
 					))}
 				</ul>
+				<ShowMoreButton
+					hasMore={hasMore}
+					onClick={() => setVisible((v) => v + step)}
+				/>
 			</section>
 			<Modal
 				isOpen={showEditModal}
