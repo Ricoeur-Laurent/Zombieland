@@ -17,19 +17,23 @@ const handleSubmit = async (e: FormEvent) => {
   setError("");
   setSuccess("");
 
+	// Check if user is logged in (token exists)
   if (!token) {
     setError("Vous devez être connecté pour envoyer un message.");
     return;
   }
 
-  const formData = {
-    from_firstname: firstname,
-    from_lastname: lastname,
-    reply_to: email,
-    message: message,
-  };
+	// Prepare data object to send to EmailJS, keys must match template variables
+		const formData = {
+		firstname: firstname,
+		lastname: lastname,
+		email: email,
+		message: message,
+		reply_to: email,
+	};
 
   try {
+		// Send email using EmailJS service, template, and public key from env variables
 		await emailjs.send(
 			process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
 			process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
@@ -37,8 +41,10 @@ const handleSubmit = async (e: FormEvent) => {
 			process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
 		);
 
+		// Set success message if email was sent
 		setSuccess('Message envoyé avec succès !'); 
-		
+
+		// Clear form fields after sending
 		setFirstName('');
 		setLastName('');
 		setEmail('');
