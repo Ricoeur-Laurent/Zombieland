@@ -8,6 +8,7 @@ export default function MyProfil() {
 	const { token, user } = useTokenContext();
 	const [loading, setLoading] = useState(true);
 	const [redirecting, setRedirecting] = useState(false);
+	const [successMessage, setSuccessMessage] = useState("")
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -27,56 +28,6 @@ export default function MyProfil() {
 		const digits = value.replace(/\D/g, "").slice(0, 10);
 		return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
 	}
-
-
-
-	// Check if the client is logged in, otherwise rediret him to the connexion page
-	// useEffect(() => {
-	// 	if (!token || !user || !user.id) {
-	// 		setRedirecting(true);
-	// 		const redirectPath = searchParams.get("redirect") || "/mon-profil";
-	// 		router.push(`/connexion?redirect=${redirectPath}`);
-	// 	}
-	// }, [token, user, router, searchParams]);
-
-	// Retrieve user's data to display it on the page
-	useEffect(() => {
-		const displayProfil = async () => {
-			// Retrieving data from the user's profile
-			try {
-				const response = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/myProfil/${user?.id}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${token}`,
-						},
-						credentials: "include",
-					},
-				);
-				if (!response.ok) {
-					console.error("Erreur lors de la récupération des réservations");
-					return;
-				}
-				const data = await response.json();
-				setFirstName(data.firstname || "");
-				setLastName(data.lastname || "");
-				setEmail(data.email || "");
-				setPhone(data.phone || "");
-
-			} catch (error) {
-				console.error("Erreur lors de la récupération des réservations", error);
-			} finally {
-				setLoading(false);
-			}
-		};
-		if (token && user && user.id) {
-			displayProfil();
-		} else {
-			setLoading(false);
-		}
-	}, [token, user]);
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
@@ -129,7 +80,9 @@ export default function MyProfil() {
 				setError(data.error || "Erreur lors de la modification des données du profil.");
 				return;
 			}
-
+			if (response.ok) {
+				setSuccessMessage("Modifications effectuées avec succès")
+			}
 			// setToken(data.token);
 
 		} catch (e) {
@@ -143,16 +96,72 @@ export default function MyProfil() {
 		}
 	};
 
+	// Check if the client is logged in, otherwise redirect him on the connexion page
+	useEffect(() => {
+		if (!token || !user || !user.id) {
+			setRedirecting(true);
+			const timeout = setTimeout(() => {
+				const redirectPath =
+					searchParams.get("redirect") || "/mon-profil";
+				router.push(`/connexion?redirect=${redirectPath}`);
+			}, 3000);
+			return () => clearTimeout(timeout);
+		}
+	}, [token, user, router, searchParams]);
 
-	// if (redirecting) {
-	// 	return (
-	// 		<p className="text-center text-primary mt-6">
-	// 			Vous devez être connecté pour avoir accès à votre profil,
-	// 			<br />
-	// 			vous allez être redirigé vers la connexion...
-	// 		</p>
-	// 	);
-	// }
+
+	// Retrieve user's data to display it on the page
+	useEffect(() => {
+		const displayProfil = async () => {
+			// Retrieving data from the user's profile
+			try {
+				const response = await fetch(
+					`${process.env.NEXT_PUBLIC_API_URL}/myProfil/${user?.id}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`,
+						},
+						credentials: "include",
+					},
+				);
+				if (!response.ok) {
+					console.error("Erreur lors de la récupération des informations du profil");
+					return;
+				}
+				const data = await response.json();
+				setFirstName(data.firstname || "");
+				setLastName(data.lastname || "");
+				setEmail(data.email || "");
+				setPhone(data.phone || "");
+
+			} catch (error) {
+				console.error("Erreur lors de la récupération des informations du profil", error);
+			} finally {
+				// todo voir avec Gabriel et Laurent pourquoi j'ai du ajouter setRedirecting(false) pour débloquer l'affichage vs reservationsList qui se débloque seul
+				setLoading(false);
+				setRedirecting(false)
+			}
+		};
+		if (token && user && user.id) {
+			displayProfil();
+		} else {
+			setLoading(false);
+		}
+	}, [token, user]);
+
+
+
+	if (redirecting) {
+		return (
+			<p className="text-center text-primary mt-6">
+				Vous devez être connecté pour avoir accès à votre profil,
+				<br />
+				vous allez être redirigé vers la page de connexion...
+			</p>
+		);
+	}
 
 	if (loading) {
 		return (
@@ -262,6 +271,8 @@ export default function MyProfil() {
 
 
 			{error && <p className="text-red-500 text-sm font-body">{error}</p>}
+			{/* todo a styliser */}
+			{successMessage && <p className="text-primary text-md text-center prose prose-invert font-body">{successMessage}</p>}
 
 			<button
 				type="submit"
@@ -269,6 +280,7 @@ export default function MyProfil() {
 			>
 				{/* <LogIn size={18} /> */}
 				Sauvegarder mes modifications
+				{}
 			</button>
 		</form>
 	)
