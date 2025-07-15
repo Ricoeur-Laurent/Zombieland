@@ -15,7 +15,7 @@ export default function BurgerProfil() {
 		document.body.style.overflow = open ? "hidden" : "";
 	}, [open]);
 	// we get the token in the burger to check if the user is connected and swap the  burger optin connect/disconnect
-	const { token, setToken } = useTokenContext();
+	const { user, token, setToken } = useTokenContext();
 	const router = useRouter();
 
 	// ...
@@ -82,6 +82,18 @@ export default function BurgerProfil() {
 									Mes réservations
 								</Link>
 							</li>
+							{/* if admin new link */}
+							{user?.admin && (
+								<li>
+									<Link
+										href="/admin"
+										onClick={() => setOpen(false)}
+										className="flex items-center gap-3 py-2 text-red-500 font-bold transition-colors hover:text-red-700"
+									>
+										Espace Admin
+									</Link>
+								</li>
+							)}
 
 							<li>
 								<button
