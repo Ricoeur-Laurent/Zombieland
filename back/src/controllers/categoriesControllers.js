@@ -56,7 +56,7 @@ const categoriesControllers = {
 
 		// Sanitize fields
 		const sanitizedData = {
-			name: validator.escape(newCategory.data.name.trim()),
+			name: validator.whitelist(newCategory.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-"),
 		};
 
 		try {
@@ -94,7 +94,8 @@ const categoriesControllers = {
 		}
 
 		// Sanitize the new name
-		const newName = validator.escape(newCategoryName.data.name.trim());
+		const newName = validator.whitelist(newCategoryName.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-");
+
 		// update of category name
 		try {
 			const category = await Categories.findByPk(id);

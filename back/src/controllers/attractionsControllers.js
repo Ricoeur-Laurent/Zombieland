@@ -81,13 +81,6 @@ const attractionsController = {
 		// Sanitize and validate input fields
 		const rawImage = newAttraction.data.image.trim();
 
-		// Check if image is a valid URL with http/https
-		if (!validator.isURL(rawImage, { protocols: ['http', 'https'], require_protocol: true })) {
-			return res.status(400).json({
-				message: "Le champ 'image' doit contenir une URL valide.",
-			});
-		}
-
 		// Allow only .jpeg, .jpg, or .webp image file extensions
 		const allowedExtensions = ['.jpeg', '.jpg', '.webp'];
 		const lowerImage = rawImage.toLowerCase();
@@ -100,7 +93,7 @@ const attractionsController = {
 
 		// Prepare sanitized data to store in database
 		const sanitizedData = {
-			name: validator.escape(newAttraction.data.name.trim()),
+			name: validator.whitelist(newAttraction.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-"),
 			image: rawImage,
 			description: validator.escape(newAttraction.data.description.trim()),
 			slug: validator.whitelist(newAttraction.data.slug.trim().toLowerCase(), 'a-z0-9-'),
@@ -150,21 +143,11 @@ const attractionsController = {
 			}
 
 			const sanitizedData = {
-				name: validator.escape(attractionUpdate.data.name.trim()),
+				name: validator.whitelist(attractionUpdate.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-"),
 				description: validator.escape(attractionUpdate.data.description.trim()),
 				slug: validator.whitelist(attractionUpdate.data.slug.trim().toLowerCase(), 'a-z0-9-'),
 				image: attractionUpdate.data.image.trim(),
 			};
-
-			// Validate image URL
-			if (
-				!validator.isURL(sanitizedData.image, {
-					protocols: ['http', 'https'],
-					require_protocol: true,
-				})
-			) {
-				return res.status(400).json({ message: "Le champ 'image' doit contenir une URL valide." });
-			}
 
 			// Check allowed extensions
 			const allowedExtensions = ['.jpeg', '.jpg', '.webp'];

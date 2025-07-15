@@ -1,7 +1,7 @@
 "use client";
+import emailjs from '@emailjs/browser';
 import { useState, FormEvent } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
-import { getApiUrl } from "@/utils/getApi";
 
 export default function ContactForm() {
 	const { token } = useTokenContext();
@@ -13,42 +13,41 @@ export default function ContactForm() {
 	const [success, setSuccess] = useState("");
 
 const handleSubmit = async (e: FormEvent) => {
-		e.preventDefault();
-		setError("");
-		setSuccess("");
+	e.preventDefault();
+  setError("");
+  setSuccess("");
 
-		if (!token) {
-			setError("Vous devez être connecté pour envoyer un message.");
-			return;
-		}
+  if (!token) {
+    setError("Vous devez être connecté pour envoyer un message.");
+    return;
+  }
 
-try {
-			const response = await fetch(`${getApiUrl()}/contact`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				credentials: "include",
-				body: JSON.stringify({ firstname, lastname, email, message }),
-			});
+  const formData = {
+    from_firstname: firstname,
+    from_lastname: lastname,
+    reply_to: email,
+    message: message,
+  };
 
-			const data = await response.json();
+  try {
+		await emailjs.send(
+			process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+			process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+			formData,
+			process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+		);
 
-			if (!response.ok) {
-				setError(data.error || "Une erreur est survenue.");
-				return;
-			}
-
-			setSuccess("Message envoyé avec succès !");
-			setFirstName("");
-			setLastName("");
-			setEmail("");
-			setMessage("");
-		} catch (err) {
-			console.error(err);
-			setError("Erreur lors de l'envoi du message.");
-		}
-	};
+		setSuccess('Message envoyé avec succès !'); 
+		
+		setFirstName('');
+		setLastName('');
+		setEmail('');
+		setMessage('');
+  } catch (error) {
+    console.error(error);
+    setError('Erreur lors de l’envoi du message.');
+  }
+};
 
 	return (
 		<form
@@ -134,15 +133,3 @@ try {
 		</form>
 	);
 }
-
-
-
-
-
-
-
-
-
-
-
-

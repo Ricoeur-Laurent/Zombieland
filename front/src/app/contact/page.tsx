@@ -1,5 +1,4 @@
 import ContactForm from "@/components/contact/ContactForm";
-import Footer from "@/components/footer/Footer";
 
 export const metadata = {
 	title: "Zombieland Contact",
