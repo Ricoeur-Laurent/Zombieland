@@ -151,6 +151,7 @@ export default function ReservationsSection() {
 	}
 
 	return (
+
 		<>
 			<section className="mb-10 text-text font-body">
 				<div className="flex justify-between items-center mb-3">
@@ -259,5 +260,6 @@ export default function ReservationsSection() {
 				/>
 			</Modal>
 		</>
+
 	);
 }
