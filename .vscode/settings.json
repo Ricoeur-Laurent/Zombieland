@@ -1,0 +1,35 @@
+{
+	"keyboard.dispatch": "keyCode",
+	"git.enabled": false,
+	"workbench.iconTheme": "material-icon-theme",
+	"editor.formatOnPaste": false,
+	"editor.linkedEditing": true,
+	"editor.renderWhitespace": "all",
+	"editor.occurrencesHighlight": "off",
+	"editor.suggest.insertMode": "insert",
+	"editor.acceptSuggestionOnCommitCharacter": false,
+	"workbench.tree.indent": 10,
+	"workbench.tree.renderIndentGuides": "always",
+	"editor.lineHeight": 22,
+	"editor.fontSize": 14,
+	"editor.overviewRulerBorder": false,
+	"editor.minimap.enabled": false,
+	"debug.disassemblyView.showSourceCode": false,
+	"liveServer.settings.donotShowInfoMsg": true,
+	"liveServer.settings.donotVerifyTags": true,
+	"editor.tabSize": 2,
+	"editor.formatOnSave": true,
+	"workbench.colorTheme": "One Dark Pro",
+	"editor.wordWrap": "on",
+	"editor.multiCursorModifier": "ctrlCmd",
+	"explorer.compactFolders": false,
+	"hediet.vscode-drawio.resizeImages": null,
+	"editor.defaultFormatter": "biomejs.biome",
+
+	"editor.codeActionsOnSave": {
+		"quickfix.biome.correctness.noUnusedVariables": "never",
+		"quickfix.biome": "explicit",
+		"source.organizeImports.biome": "explicit"
+	},
+	"emmet.triggerExpansionOnTab": true
+}

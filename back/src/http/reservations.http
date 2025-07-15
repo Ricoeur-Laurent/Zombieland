@@ -1,0 +1,55 @@
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkB6b21iaWUuY29tIiwiYWRtaW4iOnRydWUsImlhdCI6MTc1MjE1MzIzNiwiZXhwIjoxNzUyMjM5NjM2fQ.f0nnVedcmA8JCf8PfY-UNvtm9YtbF925_mp-fKQxA3I
+
+###
+# Get all reservations
+GET http://localhost:5000/api/admin/reservations
+Authorization: Bearer {{token}}
+
+###
+
+###
+# Get all reservations for one user id
+GET http://localhost:5000/api/admin/reservations/userId
+Authorization: Bearer {{token}}
+
+###
+
+###
+# Get one reservation by id and for one user Id
+GET http://localhost:5000/api/admin/reservations/userId/1
+Authorization: Bearer {{token}}
+
+###
+
+# Create a reservation
+POST http://localhost:5000/api/admin/reservations
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "visit_date" : "2025-08-11",
+    "nb_participants" : 5,
+    "amount" : 200.01
+}
+###
+
+###
+# Delete one reservation
+DELETE http://localhost:5000/api/admin/reservations/1
+Authorization: Bearer {{token}}
+###
+
+###
+
+###
+# Update a reservation
+PATCH http://localhost:5000/api/admin/reservations/4
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+
+    "nb_participants" : 21
+
+}
+###

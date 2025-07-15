@@ -1,0 +1,58 @@
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkB6b21iaWUuY29tIiwiYWRtaW4iOnRydWUsImlhdCI6MTc1MjE1MzIzNiwiZXhwIjoxNzUyMjM5NjM2fQ.f0nnVedcmA8JCf8PfY-UNvtm9YtbF925_mp-fKQxA3I
+
+###
+# Get all attractions
+GET http://localhost:5000/api/attractions
+###
+
+###
+# Get  attractions by category
+GET http://localhost:5000/api/attractions/category/1
+###
+
+###
+# Get one attraction by id
+GET http://localhost:5000/api/attractions/1
+###
+
+###
+# Get one attraction by slug
+GET http://localhost:5000/api/attractions/slug/le-manoir-des-âmes-perdues
+###
+
+# Create one attraction
+POST http://localhost:5000/api/admin/attractions
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name" : "attraction n°125",
+    "image" : "https://www.example.com/images/paysage-naturel.jpg",
+    "description" : "une attraction qui fait peur et qui est drôle en même temps",
+    "slug" : "attraction-n-125"
+
+}
+###
+
+###
+# Delete one attraction
+DELETE http://localhost:5000/api/admin/attractions/1
+Authorization: Bearer {{token}}
+
+###
+
+###
+
+###
+# Update an attraction
+PATCH http://localhost:5000/api/admin/attractions/2
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+
+    "name" : "l'ancien dédale again"
+
+}
+###
