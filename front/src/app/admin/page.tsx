@@ -6,15 +6,22 @@ import AdminPage from "@/components/admin/AdminPage";
 import { useTokenContext } from "@/context/TokenProvider";
 
 export default function AdminRouteGuard() {
-	const { user } = useTokenContext();
+	const { user, loading } = useTokenContext();
 	const router = useRouter();
 
 	useEffect(() => {
-		if (user === null) {
-			router.replace("/connexion");
-		} else if (!user.admin) {
-			router.replace("/unauthorized");
+		if (!loading) {
+			if (user === null) {
+				router.replace("/connexion");
+			} else if (!user.admin) {
+				router.replace("/unauthorized");
+			}
 		}
-	}, [user, router]);
+	}, [user, loading, router]);
+	
+	if (loading) {
+		return <p className="text-center mt-6">Chargement...</p>;
+	}
+	
 	return <AdminPage />;
 }

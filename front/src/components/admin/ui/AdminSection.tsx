@@ -1,16 +1,16 @@
-import ItemList from "./ItemList";
 import SectionHeader from "./SectionHeader";
 
 type Props = {
 	title: string;
-	items: string[];
+	onCreate?: () => void;
+	children?: React.ReactNode;
 };
 
-export default function AdminSection({ title, items }: Props) {
+export default function AdminSection({ title, onCreate, children }: Props) {
 	return (
-		<section className="mb-10">
-			<SectionHeader title={title} />
-			<ItemList items={items} />
+		<section className="mb-10 text-text font-body">
+			<SectionHeader title={title} onCreate={onCreate} />
+			{children}
 		</section>
 	);
 }
