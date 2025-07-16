@@ -16,6 +16,7 @@ const corsOptions = {
 	origin: [
 		"http://localhost:3000",
 		"http://localhost:3001",
+		"https://zombieland-front-vercel.vercel.app", // ✅ domaine Vercel
 	],
 	credentials: true,
 	methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
