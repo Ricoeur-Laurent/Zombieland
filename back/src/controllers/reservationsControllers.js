@@ -213,11 +213,12 @@ const reservationsControllers = {
 			// Restricted to 10 days only for user, not admin
 			if (!isAdmin) {
 				const today = dayjs();
-				const visitDate = dayjs(reservation.visit_date);
-				if (visitDate.diff(today, "day") < 10) {
+				const newVisitDate = dayjs(updateReservation.data.visit_date); // ✅ checking the updated date and not the first one
+			
+				if (newVisitDate.diff(today, "day") < 10) {
 					return res.status(400).json({
 						message:
-							"La réservation ne peut pas être modifiée moins de 10 jours avant la date de visite.",
+							"La réservation ne peut pas être modifiée à une date située dans moins de 10 jours.",
 					});
 				}
 			}
