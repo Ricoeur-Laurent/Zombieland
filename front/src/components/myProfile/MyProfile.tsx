@@ -5,20 +5,24 @@ import { Edit, Plus, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import Modal from "@/components/modal/Modal";
+import Cookies from "js-cookie";
 
 
 export default function MyProfil() {
-    const { token, user } = useTokenContext();
+    const { user, token, setToken } = useTokenContext();
     const [loading, setLoading] = useState(true);
     const [redirecting, setRedirecting] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("")
+
     const router = useRouter();
     const searchParams = useSearchParams();
 
-    // usestate pour modale
+    // usestate pour modale edit
     const [showEditModal, setShowEditModal] = useState(false);
     const [name, setName] = useState("")
     const [champActif, setChampActif] = useState<"firstname" | "lastname" | "email" | "phone" | null>(null);
+
+    // usestate pour modal delete
+    const [showDeleteModal, setshowDeleteModal] = useState(false)
 
     const [firstname, setFirstName] = useState("");
     const [lastname, setLastName] = useState("");
@@ -32,6 +36,56 @@ export default function MyProfil() {
     }>({});
     const [error, setError] = useState("");
 
+    // formate phone input from user
+    function formatPhone(value: string) {
+        const digits = value.replace(/\D/g, "").slice(0, 10); 
+        return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim(); 
+    }
+
+    // logout user after account deletion
+    const handleLogout = () => {
+        // Remove the token from the cookies
+        Cookies.remove("zombieland_token");
+
+        // Clear the token from the context
+        setToken(null);
+
+        // Redirect the user to the home page after logout
+        router.push("/");
+    };
+
+    const displayProfil = async () => {
+        // Retrieving data from the user's profile
+        try {
+            const response = await fetch(
+                `${getApiUrl()}/myProfil/${user?.id}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    credentials: "include",
+                },
+            );
+            if (!response.ok) {
+                console.error("Erreur lors de la récupération des informations du profil");
+                return;
+            }
+            const data = await response.json();
+            setFirstName(data.firstname || "");
+            setLastName(data.lastname || "");
+            setEmail(data.email || "");
+            setPhone(data.phone || "");
+
+        } catch (error) {
+            console.error("Erreur lors de la récupération des informations du profil", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // edit profile in database after user update
     const handleEdit = async () => {
         setErrors({});
         setError("");
@@ -49,7 +103,7 @@ export default function MyProfil() {
                     },
 
                     body: JSON.stringify({
-                       [champActif] : name,
+                        [champActif]: name,
                     }),
                     credentials: "include",
                 },
@@ -80,7 +134,7 @@ export default function MyProfil() {
                 return;
             }
             if (response.ok) {
-                setSuccessMessage("Modifications effectuées avec succès")
+
                 setShowEditModal(false)
                 displayProfil()
             }
@@ -96,6 +150,39 @@ export default function MyProfil() {
         }
     };
 
+
+    // delete user from database
+    const handleDelete = async () => {
+
+        try {
+            const response = await fetch(`${getApiUrl()}/myProfil/${user?.id}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                    credentials: "include",
+                },
+            );
+            if (!response.ok) {
+                const data = await response.json().catch(() => null);
+                const message = data?.error || "Échec de la suppression du profil.";
+                console.error("Erreur API :", message);
+                setError(message);
+                return;
+            }
+
+            setshowDeleteModal(false);
+            handleLogout();
+        } catch (e) {
+            console.error("Erreur réseau :", e);
+            setError(
+                e instanceof Error
+                    ? "Erreur serveur : " + e.message
+                    : "Une erreur inconnue est survenue."
+            );
+        }
+    };
     // Check if the client is logged in, otherwise redirect him on the connexion page
     useEffect(() => {
         if (!token || !user || !user.id) {
@@ -112,38 +199,8 @@ export default function MyProfil() {
 
 
     // Retrieve user's data to display it on the page
-    
-    const displayProfil = async () => {
-        // Retrieving data from the user's profile
-        try {
-            const response = await fetch(
-                `${getApiUrl()}/myProfil/${user?.id}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                    credentials: "include",
-                },
-            );
-            if (!response.ok) {
-                console.error("Erreur lors de la récupération des informations du profil");
-                return;
-            }
-            const data = await response.json();
-            setFirstName(data.firstname || "");
-            setLastName(data.lastname || "");
-            setEmail(data.email || "");
-            setPhone(data.phone || "");
-            
-        } catch (error) {
-            console.error("Erreur lors de la récupération des informations du profil", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-    
+
+
     useEffect(() => {
         if (token && user && user.id) {
             displayProfil();
@@ -152,7 +209,7 @@ export default function MyProfil() {
             setRedirecting(false)
         }
     }, [token, user]);
-    
+
     if (redirecting) {
         return (
             <p className="text-center text-primary mt-6">
@@ -250,6 +307,28 @@ export default function MyProfil() {
                     </li>
                 </ul>
             </section>
+            <div className="text-center mt-6">
+                <button
+                    type="button"
+                    // onClick={onClick}
+                    className="bg-primary text-bg px-6 py-2 rounded-lg font-bold hover:bg-primary-dark"
+                >
+                    Modifier mon mot de passe
+                </button>
+            </div>		<div className="text-center mt-6">
+                <button
+                    type="button"
+                    onClick={() =>
+                        setshowDeleteModal(true)
+                    }
+                    className="bg-primary text-bg px-6 py-2 rounded-lg font-bold hover:bg-primary-dark"
+                >
+                    {error && <p className="text-red-500 text-sm font-body">{error}</p>}
+
+                    Supprimer mon compte
+                </button>
+            </div>
+            {/* edit modale */}
             <Modal
                 isOpen={showEditModal}
                 onClose={() => {
@@ -261,10 +340,32 @@ export default function MyProfil() {
             >
                 <input
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => {
+                        const userInput = e.target.value;
+                        if (champActif === "phone") {
+                            setName(formatPhone(userInput));
+                        } else {
+                            setName(userInput);
+                        }
+                    }}
                     className="w-full mb-2 p-2 border rounded"
                 />
 
+            </Modal>
+
+            {/* delete modal */}
+            <Modal
+                isOpen={showDeleteModal}
+                onClose={() => {
+                    setshowDeleteModal(false);
+                }}
+                title="Confirmer la suppression du compte"
+                confirmText="Confirmer la suppression"
+                onConfirm={handleDelete}
+            >
+                <p className="text-text font-body">
+                    Êtes-vous certain de vouloir supprimer votre compte ? Toute
+                    suppression sera définitive.</p>
             </Modal>
         </>
     )
