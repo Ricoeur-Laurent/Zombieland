@@ -10,7 +10,6 @@ import reservationsRoutes from "./routes/reservations.routes.js";
 import reviewsRoutes from "./routes/reviews.routes.js";
 import signUpRoutes from "./routes/users.routes.js";
 
-
 const router = express.Router();
 
 router.use("/signUp", signUpRoutes);
@@ -20,6 +19,7 @@ router.use("/attractions", attractionsRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/myReservations", verifyToken, reservationsRoutes);
 router.use("/reviews", reviewsRoutes);
+router.use("/myProfil", verifyToken, signUpRoutes);
 
 // =================== Admin routes =====================
 
