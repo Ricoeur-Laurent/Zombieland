@@ -106,7 +106,8 @@ export default function MyProfil() {
 				router.push(`/connexion?redirect=${redirectPath}`);
 			}, 3000);
 			return () => clearTimeout(timeout);
-		}
+		} 
+
 	}, [token, user, router, searchParams]);
 
 
@@ -139,19 +140,16 @@ export default function MyProfil() {
 			} catch (error) {
 				console.error("Erreur lors de la récupération des informations du profil", error);
 			} finally {
-				// todo voir avec Gabriel et Laurent pourquoi j'ai du ajouter setRedirecting(false) pour débloquer l'affichage vs reservationsList qui se débloque seul
 				setLoading(false);
-				setRedirecting(false)
 			}
 		};
 		if (token && user && user.id) {
 			displayProfil();
 		} else {
 			setLoading(false);
+			setRedirecting(false)
 		}
 	}, [token, user]);
-
-
 
 	if (redirecting) {
 		return (
@@ -187,10 +185,9 @@ export default function MyProfil() {
 					id="firstName"
 					name="firstName"
 					type="text"
-					placeholder="votre prénom"
 					value={firstname}
 					onChange={(e) => setFirstName(e.target.value)}
-					required
+					
 					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
 			
 						focus:border-primary placeholder:text-muted`}
@@ -210,10 +207,9 @@ export default function MyProfil() {
 					id="lastName"
 					name="lastName"
 					type="text"
-					placeholder="votre nom"
 					value={lastname}
 					onChange={(e) => setLastName(e.target.value)}
-					required
+					
 					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
 						
 						focus:border-primary placeholder:text-muted`}
@@ -233,10 +229,9 @@ export default function MyProfil() {
 					id="email"
 					name="email"
 					type="email"
-					placeholder="votre@email.com"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
-					required
+					
 					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
 						
 						focus:border-primary placeholder:text-muted`}
@@ -256,10 +251,9 @@ export default function MyProfil() {
 					id="phone"
 					name="phone"
 					type="tel"
-					placeholder="votre téléphone"
 					value={phone}
 					onChange={(e) => setPhone(formatPhone(e.target.value))}
-					required
+					
 					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
 						
 						focus:border-primary placeholder:text-muted`}
@@ -268,7 +262,6 @@ export default function MyProfil() {
 					<p className="text-red-500 text-sm font-body">{errors.phone}</p>
 				)}
 			</div>
-
 
 			{error && <p className="text-red-500 text-sm font-body">{error}</p>}
 			{/* todo a styliser */}
@@ -279,8 +272,8 @@ export default function MyProfil() {
 				className="bg-primary text-black font-subtitle uppercase tracking-wide py-2 rounded-lg hover:bg-primary-dark transition flex items-center justify-center gap-2"
 			>
 				{/* <LogIn size={18} /> */}
-				Sauvegarder mes modifications
-				{}
+				Modifier
+				{ }
 			</button>
 		</form>
 	)
