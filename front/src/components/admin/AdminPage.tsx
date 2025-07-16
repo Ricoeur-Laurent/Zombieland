@@ -1,6 +1,6 @@
 import AttractionsSection from "@/components/admin/sections/AttractionsSection";
 import CategoriesSection from "@/components/admin/sections/CategoriesSection";
-import UsersSection from "@/components/admin/sections/UsersSection";
+import MembersSection from "@/components/admin/sections/MembersSection";
 import ReservationsSection from "./sections/ReservationsSection";
 
 export default function AdminPage() {
@@ -12,7 +12,7 @@ export default function AdminPage() {
 
 			<AttractionsSection />
 			<CategoriesSection />
-			<UsersSection />
+			<MembersSection />
 			<ReservationsSection />
 		</div>
 	);

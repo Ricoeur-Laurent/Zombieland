@@ -36,12 +36,16 @@ export default function ConnexionForm() {
 			setToken(data.token);
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
 
-			if (data.user.admin === true) {
-				router.push("/admin");
-			} else {
-				const redirectPath = searchParams.get("redirect") || "/reservations";
-				router.push(redirectPath);
+
+			if (data.user?.mustChangePassword) {
+				alert(
+					"⚠️ Votre mot de passe est toujours 'changeme'. Veuillez le modifier depuis votre profil.",
+				);
 			}
+
+			const redirectPath = searchParams.get("redirect") || "/reservations";
+			router.push(redirectPath);
+
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
