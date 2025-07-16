@@ -174,7 +174,7 @@ export default function ReservationList() {
 		);
 	}
 
-	if (loading) {
+	if (loading || fetchingReservations) {
 		return (
 			<p className="text-center text-primary mt-6">
 				Chargement des réservations...

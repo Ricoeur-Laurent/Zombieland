@@ -25,6 +25,8 @@ export default function CategoriesSection() {
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [categoryName, setCategoryName] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [formError, setFormError] = useState<string | null>(null);
+	const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
 	const fetchCategories = useCallback(async () => {
 		try {
@@ -48,6 +50,8 @@ export default function CategoriesSection() {
 	const handleEdit = (category: Category) => {
 		setSelectedCategory(category);
 		setCategoryName(category.name);
+		setFormErrors({});
+		setFormError(null);
 		setShowEditModal(true);
 	};
 
@@ -62,6 +66,8 @@ export default function CategoriesSection() {
 	const handleUpdate = async () => {
 		if (!selectedCategory || !categoryName) return;
 		setLoading(true);
+		setFormErrors({});
+		setFormError(null);
 		try {
 			const res = await fetch(
 				`${getApiUrl()}/admin/categories/${selectedCategory.id}`,
@@ -75,12 +81,27 @@ export default function CategoriesSection() {
 					credentials: "include",
 				},
 			);
-			if (res.ok) {
-				fetchCategories();
-				setShowEditModal(false);
+
+			const data = await res.json();
+
+			if (!res.ok) {
+				if (res.status === 400 && Array.isArray(data.error)) {
+					const errors = Object.fromEntries(
+						data.error.map((err: any) => [err.path[0], err.message]),
+					);
+					setFormErrors(errors);
+					return;
+				}
+				setFormError("Erreur inattendue.");
+				return;
 			}
+
+			fetchCategories();
+			setShowEditModal(false);
+			setCategoryName("");
 		} catch (err) {
 			console.error("Erreur modification :", err);
+			setFormError("Erreur de connexion au serveur.");
 		} finally {
 			setLoading(false);
 		}
@@ -116,8 +137,9 @@ export default function CategoriesSection() {
 	const handleCreate = async () => {
 		if (!categoryName) return;
 		setLoading(true);
+		setFormErrors({});
+		setFormError(null);
 		try {
-			console.log("Nom de la catégorie envoyé :", categoryName);
 			const res = await fetch(`${getApiUrl()}/admin/categories`, {
 				method: "POST",
 				headers: {
@@ -127,12 +149,26 @@ export default function CategoriesSection() {
 				body: JSON.stringify({ name: categoryName }),
 				credentials: "include",
 			});
-			if (res.ok) {
-				fetchCategories();
-				setShowCreateModal(false);
+
+			const data = await res.json();
+			if (!res.ok) {
+				if (res.status === 400 && Array.isArray(data.error)) {
+					const errors = Object.fromEntries(
+						data.error.map((err: any) => [err.path[0], err.message]),
+					);
+					setFormErrors(errors);
+					return;
+				}
+				setFormError("Erreur inattendue.");
+				return;
 			}
+
+			fetchCategories();
+			setShowCreateModal(false);
+			setCategoryName("");
 		} catch (err) {
 			console.error("Erreur création :", err);
+			setFormError("Erreur de connexion au serveur.");
 		} finally {
 			setLoading(false);
 		}
@@ -147,6 +183,8 @@ export default function CategoriesSection() {
 				title="Gestion des catégories"
 				onCreate={() => {
 					setCategoryName("");
+					setFormErrors({});
+					setFormError(null);
 					setShowCreateModal(true);
 				}}
 			>
@@ -155,13 +193,13 @@ export default function CategoriesSection() {
 					onEdit={(i) => handleEdit(visibleItems[i])}
 					onDelete={(i) => handleDelete(visibleItems[i].id)}
 				/>
-
 				<ShowMoreButton
 					hasMore={hasMore}
 					onClick={() => setVisible((v) => v + 4)}
 				/>
 			</AdminSection>
 
+			{/* Modale Edition */}
 			<Modal
 				isOpen={showEditModal}
 				title="Modifier la catégorie"
@@ -175,10 +213,16 @@ export default function CategoriesSection() {
 					type="text"
 					value={categoryName}
 					onChange={(e) => setCategoryName(e.target.value)}
-					className="w-full border border-muted rounded p-2"
+					className={`w-full rounded p-2 border ${formErrors.name ? "border-red-500" : "border-muted"}`}
+					aria-invalid={!!formErrors.name}
 				/>
+				{formErrors.name && (
+					<p className="text-sm text-red-500 mt-1">{formErrors.name}</p>
+				)}
+				{formError && <p className="text-sm text-red-500 mt-2">{formError}</p>}
 			</Modal>
 
+			{/* Modale Suppression */}
 			<Modal
 				isOpen={showDeleteModal}
 				title="Supprimer la catégorie"
@@ -192,6 +236,7 @@ export default function CategoriesSection() {
 				</p>
 			</Modal>
 
+			{/* Modale Création */}
 			<Modal
 				isOpen={showCreateModal}
 				title="Créer une catégorie"
@@ -205,8 +250,13 @@ export default function CategoriesSection() {
 					type="text"
 					value={categoryName}
 					onChange={(e) => setCategoryName(e.target.value)}
-					className="w-full border border-muted rounded p-2"
+					className={`w-full rounded p-2 border ${formErrors.name ? "border-red-500" : "border-muted"}`}
+					aria-invalid={!!formErrors.name}
 				/>
+				{formErrors.name && (
+					<p className="text-sm text-red-500 mt-1">{formErrors.name}</p>
+				)}
+				{formError && <p className="text-sm text-red-500 mt-2">{formError}</p>}
 			</Modal>
 		</>
 	);

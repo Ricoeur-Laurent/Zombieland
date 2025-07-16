@@ -84,7 +84,6 @@ export default function RegistrationForm() {
 			}
 
 			setToken(data.token);
-			Cookies.set("token", data.token, { secure: true, sameSite: "strict" });
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
 		} catch (e) {
