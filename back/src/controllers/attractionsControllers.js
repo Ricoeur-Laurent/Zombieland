@@ -1,8 +1,9 @@
-
-import { Categories, Attractions } from '../models/index.js';
-import { createAttractionSchema, updateAttractionSchema } from '../schemas/attractions.js';
-import paramsSchema from '../schemas/params.js';
-
+import validator from "validator";
+import { Attractions, Categories } from "../models/index.js";
+import {
+	createAttractionSchema,
+	updateAttractionSchema,
+} from "../schemas/attractions.js";
 
 const attractionsController = {
 	// retrieve all attractions
@@ -30,7 +31,6 @@ const attractionsController = {
 
 	// retrieve one attraction
 	async getOneAttraction(req, res) {
-
 		const { id } = req.checkedParams;
 
 		try {
@@ -81,26 +81,63 @@ const attractionsController = {
 
 	//  create one attraction
 	async createAttraction(req, res) {
-
-
 		// Data control with Zod
-		const newAttraction = createAttractionSchema.safeParse(req.body)
+		const newAttraction = createAttractionSchema.safeParse(req.body);
 		if (!newAttraction.success) {
-			return res
-				.status(400)
-				.json({
-					message: "Erreur lors de la validation des données via Zod",
-					errors: newAttraction.error.issues
-				})
+			return res.status(400).json({
+				message: "Erreur lors de la validation des données via Zod",
+				errors: newAttraction.error.issues,
+			});
+		}
 
+		// Sanitize and validate input fields
+		const rawImage = newAttraction.data.image.trim();
+
+		// Allow only .jpeg, .jpg, or .webp image file extensions
+		const allowedExtensions = [".jpeg", ".jpg", ".webp"];
+		const lowerImage = rawImage.toLowerCase();
+		const hasValidExtension = allowedExtensions.some((ext) =>
+			lowerImage.endsWith(ext),
+		);
+		if (!hasValidExtension) {
+			return res.status(400).json({
+				message: "L'URL de l'image doit se terminer par .jpeg, .jpg ou .webp.",
+			});
+		}
+
+		// Prepare sanitized data to store in database
+		const sanitizedData = {
+			name: validator.whitelist(newAttraction.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-"),
+			image: rawImage,
+			description: validator.escape(newAttraction.data.description.trim()),
+			slug: validator.whitelist(
+				newAttraction.data.slug.trim().toLowerCase(),
+				"a-z0-9-",
+			),
+		};
+
+		// Check if the name already exists
+		const nameExists = await Attractions.findOne({
+			where: { name: sanitizedData.name },
+		});
+		if (nameExists) {
+			return res.status(409).json({ error: "Nom d'attraction déjà utilisé." });
+		}
+
+		// Check if the image URL already exists
+		const imageExists = await Attractions.findOne({
+			where: { image: sanitizedData.image },
+		});
+		if (imageExists) {
+			return res.status(409).json({ error: "URL déjà utilisé." });
 		}
 
 		// New attraction creation
 		try {
-
-			const attraction = await Attractions.create(newAttraction.data);
-			return res.status(201).json({ message: 'Attraction créée avec succès', attraction });
-
+			const attraction = await Attractions.create(sanitizedData);
+			return res
+				.status(201)
+				.json({ message: "Attraction créée avec succès", attraction });
 		} catch (error) {
 			console.error(`Erreur lors de la création de l'attraction `, error);
 			res.status(500).json({
@@ -111,18 +148,15 @@ const attractionsController = {
 
 	// update one attraction
 	async updateAttraction(req, res) {
-
-		const { id } = req.checkedParams
+		const { id } = req.checkedParams;
 
 		// Data control with Zod
-		const attractionUpdate = updateAttractionSchema.safeParse(req.body)
+		const attractionUpdate = updateAttractionSchema.safeParse(req.body);
 		if (!attractionUpdate.success) {
-			return res
-				.status(400)
-				.json({
-					message: "Erreur lors de la validation des données via Zod",
-					errors: attractionUpdate.error.issues
-				})
+			return res.status(400).json({
+				message: "Erreur lors de la validation des données via Zod",
+				errors: attractionUpdate.error.issues,
+			});
 		}
 		// Attraction update
 		try {
@@ -132,7 +166,52 @@ const attractionsController = {
 					.status(404)
 					.json({ message: `L'attraction est introuvable` });
 			}
-			await attraction.update(attractionUpdate.data);
+
+			const sanitizedData = {
+				name: validator.whitelist(attractionUpdate.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-"),
+				description: validator.escape(attractionUpdate.data.description.trim()),
+				slug: validator.whitelist(
+					attractionUpdate.data.slug.trim().toLowerCase(),
+					"a-z0-9-",
+				),
+				image: attractionUpdate.data.image.trim(),
+			};
+
+			// Check allowed extensions
+			const allowedExtensions = [".jpeg", ".jpg", ".webp"];
+			const lowerImage = sanitizedData.image.toLowerCase();
+			const hasValidExtension = allowedExtensions.some((ext) =>
+				lowerImage.endsWith(ext),
+			);
+			if (!hasValidExtension) {
+				return res.status(400).json({
+					message:
+						"L'URL de l'image doit se terminer par .jpeg, .jpg ou .webp.",
+				});
+			}
+
+			// --- Uniqueness checks if values are changing ---
+			if (sanitizedData.name !== attraction.name) {
+				const nameExists = await Attractions.findOne({
+					where: { name: sanitizedData.name },
+				});
+				if (nameExists) {
+					return res
+						.status(409)
+						.json({ error: "Nom d'attraction déjà utilisé." });
+				}
+			}
+
+			if (sanitizedData.image !== attraction.image) {
+				const imageExists = await Attractions.findOne({
+					where: { image: sanitizedData.image },
+				});
+				if (imageExists) {
+					return res.status(409).json({ error: "URL déjà utilisée." });
+				}
+			}
+
+			await attraction.update(sanitizedData);
 			return res.status(200).json({
 				message: "Attraction modifiée avec succès.",
 				attraction,
@@ -147,8 +226,7 @@ const attractionsController = {
 
 	// delete one attraction
 	async deleteAttraction(req, res) {
-	
-		const { id } = req.checkedParams
+		const { id } = req.checkedParams;
 
 		try {
 			const attraction = await Attractions.findByPk(id);
@@ -171,8 +249,7 @@ const attractionsController = {
 
 	// Get attractions by category
 	async getAttractionsByCategory(req, res) {
-
-		const { id } = req.checkedParams
+		const { id } = req.checkedParams;
 		try {
 			const category = await Categories.findByPk(id, {
 				include: {
@@ -186,9 +263,7 @@ const attractionsController = {
 				return res.status(404).json({ error: "Catégorie non trouvée." });
 			}
 
-			res
-			.status(200)
-			.json({
+			res.status(200).json({
 				message: `Attractions récupérées avec succès`,
 				category: category.name,
 				attractions: category.attractions,

@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 
 interface Reservation {
 	id: string;
@@ -14,9 +15,9 @@ interface Reservation {
 }
 
 export default function ReservationList() {
-	const { token, user } = useTokenContext();
+	const { token, user, loading } = useTokenContext();
 	const [reservations, setReservations] = useState<Reservation[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [fetchingReservations, setFetchingReservations] = useState(true);
 	const [redirecting, setRedirecting] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -45,7 +46,7 @@ export default function ReservationList() {
 		setIsDeleting(true);
 		try {
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/myReservations/${selectedReservation.id}`,
+				`${getApiUrl()}/myReservations/${selectedReservation.id}`,
 				{
 					method: "DELETE",
 					headers: {
@@ -89,7 +90,7 @@ export default function ReservationList() {
 		try {
 			const isoDate = new Date(newDate).toISOString();
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/myReservations/${selectedReservation.id}`,
+				`${getApiUrl()}/myReservations/${selectedReservation.id}`,
 				{
 					method: "PATCH",
 					headers: {
@@ -121,6 +122,8 @@ export default function ReservationList() {
 	};
 
 	useEffect(() => {
+		if (loading) return; // ⛔️ do not take effect if loading
+
 		if (!token || !user || !user.id) {
 			setRedirecting(true);
 			const timeout = setTimeout(() => {
@@ -130,22 +133,19 @@ export default function ReservationList() {
 			}, 3000);
 			return () => clearTimeout(timeout);
 		}
-	}, [token, user, router, searchParams]);
+	}, [loading, token, user, router, searchParams]);
 
 	useEffect(() => {
 		const fetchReservations = async () => {
 			try {
-				const response = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/myReservations/${user?.id}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${token}`,
-						},
-						credentials: "include",
+				const response = await fetch(`${getApiUrl()}/myReservations/userId`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
 					},
-				);
+					credentials: "include",
+				});
 				if (!response.ok) {
 					console.error("Erreur lors de la récupération des réservations");
 					return;
@@ -155,13 +155,13 @@ export default function ReservationList() {
 			} catch (error) {
 				console.error("Erreur lors de la récupération des réservations", error);
 			} finally {
-				setLoading(false);
+				setFetchingReservations(false);
 			}
 		};
 		if (token && user && user.id) {
 			fetchReservations();
 		} else {
-			setLoading(false);
+			setFetchingReservations(false);
 		}
 	}, [token, user]);
 

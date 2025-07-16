@@ -3,13 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 import PaiementValidation from "./PaiementValidation";
 
 export default function PaiementSection() {
-	const { token } = useTokenContext();
+	const { token, loading } = useTokenContext();
 	const router = useRouter();
 	const [showModal, setShowModal] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [paymentLoading, setPaymentLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const [reservation, setReservation] = useState<{
@@ -20,10 +21,10 @@ export default function PaiementSection() {
 
 	// Redirect user to /connexion if not authenticated
 	useEffect(() => {
-		if (!token) {
+		if (!loading && !token) {
 			router.push("/connexion?redirect=/paiement");
 		}
-	}, [token, router]);
+	}, [token, loading, router]);
 
 	useEffect(() => {
 		const stored = localStorage.getItem("zombieland_reservation");
@@ -38,11 +39,11 @@ export default function PaiementSection() {
 	const handlePayment = async () => {
 		if (!reservation || !token) return;
 
-		setLoading(true);
+		setPaymentLoading(true);
 		setError(null);
 
 		try {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reservations`, {
+			const response = await fetch(`${getApiUrl()}/reservations`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -52,8 +53,7 @@ export default function PaiementSection() {
 					visit_date: reservation.date,
 					nb_participants: reservation.visitors,
 					amount: reservation.calculatedPrice,
-			}),
-			
+				}),
 			});
 
 			if (!response.ok) {
@@ -72,12 +72,17 @@ export default function PaiementSection() {
 			console.error(err);
 			setError("Le paiement a échoué. Veuillez réessayer.");
 		} finally {
-			setLoading(false);
+			setPaymentLoading(false);
 		}
 	};
 
 	if (!reservation) {
-		return <p className="text-center text-text">Aucune réservation trouvée, vous allez être redirigé vers la page de réservation.</p>;
+		return (
+			<p className="text-center text-text">
+				Aucune réservation trouvée, vous allez être redirigé vers la page de
+				réservation.
+			</p>
+		);
 	}
 
 	return (
@@ -94,10 +99,10 @@ export default function PaiementSection() {
 			<button
 				type="button"
 				onClick={handlePayment}
-				disabled={loading}
+				disabled={paymentLoading}
 				className={`mt-6 mx-auto flex items-center justify-center rounded-lg font-bold transition
     ${
-			loading
+			paymentLoading
 				? "bg-primary/50 cursor-not-allowed text-bg"
 				: "bg-primary text-bg hover:bg-primary-dark"
 		}
