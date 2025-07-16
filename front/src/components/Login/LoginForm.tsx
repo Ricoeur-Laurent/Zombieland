@@ -36,6 +36,7 @@ export default function ConnexionForm() {
 			setToken(data.token);
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
 
+
 			if (data.user?.mustChangePassword) {
 				alert(
 					"⚠️ Votre mot de passe est toujours 'changeme'. Veuillez le modifier depuis votre profil.",
@@ -44,6 +45,7 @@ export default function ConnexionForm() {
 
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
+
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
