@@ -17,12 +17,6 @@ const handleSubmit = async (e: FormEvent) => {
   setError("");
   setSuccess("");
 
-	// Check if user is logged in (token exists)
-  if (!token) {
-    setError("Vous devez être connecté pour envoyer un message.");
-    return;
-  }
-
 	// Prepare data object to send to EmailJS, keys must match template variables
 		const formData = {
 		firstname: firstname,
