@@ -1,4 +1,4 @@
-import MyProfil from "@/components/mon-profil/MyProfile";
+import MyProfile from "@/components/myProfile/MyProfile";
 
 export const metadata = {
     title: "Mon profil – Zombieland",
@@ -8,11 +8,13 @@ export const metadata = {
 
 export default function MonProfilPage() {
     return (
-        <main className="max-w-md mx-auto p-4">
-            <h1 className="text-primary font-subtitle text-3xl text-center mt-4">
-                Mon profil
-            </h1>
-            <MyProfil />
-        </main>
-    );
+    <div className="max-w-md mx-auto px-4 py-8 text-text font-body">
+                <h1 className="text-3xl font-subtitle text-primary text-center mb-8 uppercase">
+                    Gesiont du profil
+                </h1>
+                <MyProfile />
+    
+
+            </div>
+    )
 }

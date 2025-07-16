@@ -65,7 +65,7 @@ export default function BurgerProfil() {
 						<ul className="mt-8 flex flex-grow flex-col gap-6">
 							<li>
 								<Link
-									href="/profil"
+									href="/mon-profil"
 									onClick={() => setOpen(false)}
 									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>

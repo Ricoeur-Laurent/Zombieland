@@ -7,12 +7,14 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+
 import validator from "validator";
 import {
 	adminUserCreateSchema,
 	signUpSchema,
 	updateUserSchema,
 } from "../schemas/user.js";
+
 
 const signUpControllers = {
 	// Get all users

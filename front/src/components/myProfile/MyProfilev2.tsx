@@ -1,5 +1,6 @@
 "use client"
 import { useTokenContext } from "@/context/TokenProvider";
+import { getApiUrl } from "@/utils/getApi";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 
@@ -42,7 +43,7 @@ export default function MyProfil() {
 
 		try {
 			const response = await fetch(
-				`${process.env.NEXT_PUBLIC_API_URL}/myProfil/${user?.id}`,
+				`${getApiUrl()}/myProfil/${user?.id}`,
 				{
 					method: "PATCH",
 					headers: { "Content-Type": "application/json" },
@@ -106,7 +107,7 @@ export default function MyProfil() {
 				router.push(`/connexion?redirect=${redirectPath}`);
 			}, 3000);
 			return () => clearTimeout(timeout);
-		} 
+		}
 
 	}, [token, user, router, searchParams]);
 
@@ -117,7 +118,7 @@ export default function MyProfil() {
 			// Retrieving data from the user's profile
 			try {
 				const response = await fetch(
-					`${process.env.NEXT_PUBLIC_API_URL}/myProfil/${user?.id}`,
+					`${getApiUrl()}/myProfil/${user?.id}`,
 					{
 						method: "GET",
 						headers: {
@@ -170,111 +171,125 @@ export default function MyProfil() {
 	}
 
 	return (
-		<form
-			onSubmit={handleSubmit}
-			className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg"
-		>
-			<div className="flex flex-col gap-1">
-				<label
-					htmlFor="firstName"
-					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
-				>
-					Prénom
-				</label>
-				<input
-					id="firstName"
-					name="firstName"
-					type="text"
-					value={firstname}
-					onChange={(e) => setFirstName(e.target.value)}
-					
-					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
-			
-						focus:border-primary placeholder:text-muted`}
-				/>
-				{errors.firstname && (
-					<p className="text-red-500 text-sm font-body">{errors.firstname}</p>
-				)}
-			</div>
-			<div className="flex flex-col gap-1">
-				<label
-					htmlFor="lastName"
-					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
-				>
-					Nom
-				</label>
-				<input
-					id="lastName"
-					name="lastName"
-					type="text"
-					value={lastname}
-					onChange={(e) => setLastName(e.target.value)}
-					
-					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
-						
-						focus:border-primary placeholder:text-muted`}
-				/>
-				{errors.lastname && (
-					<p className="text-red-500 text-sm font-body">{errors.lastname}</p>
-				)}
-			</div>
-			<div className="flex flex-col gap-1">
-				<label
-					htmlFor="email"
-					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
-				>
-					Email
-				</label>
-				<input
-					id="email"
-					name="email"
-					type="email"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					
-					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
-						
-						focus:border-primary placeholder:text-muted`}
-				/>
-				{errors.email && (
-					<p className="text-red-500 text-sm font-body">{errors.email}</p>
-				)}
-			</div>
-			<div className="flex flex-col gap-1">
-				<label
-					htmlFor="phone"
-					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
-				>
-					Téléphone
-				</label>
-				<input
-					id="phone"
-					name="phone"
-					type="tel"
-					value={phone}
-					onChange={(e) => setPhone(formatPhone(e.target.value))}
-					
-					className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
-						
-						focus:border-primary placeholder:text-muted`}
-				/>
-				{errors.phone && (
-					<p className="text-red-500 text-sm font-body">{errors.phone}</p>
-				)}
-			</div>
-
-			{error && <p className="text-red-500 text-sm font-body">{error}</p>}
-			{/* todo a styliser */}
-			{successMessage && <p className="text-primary text-md text-center prose prose-invert font-body">{successMessage}</p>}
-
-			<button
-				type="submit"
-				className="bg-primary text-black font-subtitle uppercase tracking-wide py-2 rounded-lg hover:bg-primary-dark transition flex items-center justify-center gap-2"
-			>
-				{/* <LogIn size={18} /> */}
-				Modifier
-				{ }
-			</button>
-		</form>
+	<div>
+		<ul>
+			<li>
+				
+			</li>
+		</ul>
+	</div>
 	)
 }
+// <div>
+// 	<main className="max-w-md mx-auto p-4">
+// 		<h1 className="text-primary font-subtitle text-3xl text-center mt-4">
+// 			Mon profil
+// 		</h1>
+// 	</main>
+// 	<form
+// 		onSubmit={handleSubmit}
+// 		className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg"
+// 	>
+// 		<div className="flex flex-col gap-1">
+// 			<label
+// 				htmlFor="firstName"
+// 				className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+// 			>
+// 				Prénom
+// 			</label>
+// 			<input
+// 				id="firstName"
+// 				name="firstName"
+// 				type="text"
+// 				value={firstname}
+// 				onChange={(e) => setFirstName(e.target.value)}
+
+// 				className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+						
+// 									focus:border-primary placeholder:text-muted`}
+// 			/>
+// 			{errors.firstname && (
+// 				<p className="text-red-500 text-sm font-body">{errors.firstname}</p>
+// 			)}
+// 		</div>
+// 		<div className="flex flex-col gap-1">
+// 			<label
+// 				htmlFor="lastName"
+// 				className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+// 			>
+// 				Nom
+// 			</label>
+// 			<input
+// 				id="lastName"
+// 				name="lastName"
+// 				type="text"
+// 				value={lastname}
+// 				onChange={(e) => setLastName(e.target.value)}
+
+// 				className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+									
+// 									focus:border-primary placeholder:text-muted`}
+// 			/>
+// 			{errors.lastname && (
+// 				<p className="text-red-500 text-sm font-body">{errors.lastname}</p>
+// 			)}
+// 		</div>
+// 		<div className="flex flex-col gap-1">
+// 			<label
+// 				htmlFor="email"
+// 				className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+// 			>
+// 				Email
+// 			</label>
+// 			<input
+// 				id="email"
+// 				name="email"
+// 				type="email"
+// 				value={email}
+// 				onChange={(e) => setEmail(e.target.value)}
+
+// 				className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+									
+// 									focus:border-primary placeholder:text-muted`}
+// 			/>
+// 			{errors.email && (
+// 				<p className="text-red-500 text-sm font-body">{errors.email}</p>
+// 			)}
+// 		</div>
+// 		<div className="flex flex-col gap-1">
+// 			<label
+// 				htmlFor="phone"
+// 				className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+// 			>
+// 				Téléphone
+// 			</label>
+// 			<input
+// 				id="phone"
+// 				name="phone"
+// 				type="tel"
+// 				value={phone}
+// 				onChange={(e) => setPhone(formatPhone(e.target.value))}
+
+// 				className={`bg-bg text-text border rounded-lg px-3 py-2 focus:outline-none font-body text xl
+									
+// 									focus:border-primary placeholder:text-muted`}
+// 			/>
+// 			{errors.phone && (
+// 				<p className="text-red-500 text-sm font-body">{errors.phone}</p>
+// 			)}
+// 		</div>
+
+// 		{error && <p className="text-red-500 text-sm font-body">{error}</p>}
+// 		{/* todo a styliser */}
+// 		{successMessage && <p className="text-primary text-md text-center prose prose-invert font-body">{successMessage}</p>}
+
+// 		<button
+// 			type="submit"
+// 			className="bg-primary text-black font-subtitle uppercase tracking-wide py-2 rounded-lg hover:bg-primary-dark transition flex items-center justify-center gap-2"
+// 		>
+// 			{/* <LogIn size={18} /> */}
+// 			Modifier
+// 			{ }
+// 		</button>
+// 	</form>
+// </div>
