@@ -1,4 +1,5 @@
 "use client";
+import Cookies from "js-cookie";
 import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -83,6 +84,7 @@ export default function RegistrationForm() {
 			}
 
 			setToken(data.token);
+			Cookies.set("token", data.token, { secure: true, sameSite: "strict" });
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
 		} catch (e) {
