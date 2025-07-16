@@ -65,7 +65,7 @@ export default function Burger({
 							</li>
 						))}
 						<li className="block sm:hidden">
-							<BurgerProfil />
+							<BurgerProfil onOpenProfil={() => setOpen(false)} />
 						</li>
 					</ul>
 				</div>
