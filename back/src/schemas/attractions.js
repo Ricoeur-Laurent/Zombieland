@@ -1,4 +1,4 @@
-import * as z from 'zod/v4';
+import * as z from "zod/v4";
 
 // Zod schema for attraction creation
 export const createAttractionSchema = z.object({

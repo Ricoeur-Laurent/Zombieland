@@ -1,6 +1,9 @@
-import { Categories } from '../models/categories.js';
-import { createCategorySchema, updateCategorySchema } from '../schemas/categories.js';
-import validator from 'validator';
+import validator from "validator";
+import { Categories } from "../models/categories.js";
+import {
+	createCategorySchema,
+	updateCategorySchema,
+} from "../schemas/categories.js";
 
 const categoriesControllers = {
 	// Retrieve all categories
@@ -13,9 +16,9 @@ const categoriesControllers = {
 				categories,
 			});
 		} catch (error) {
-			console.error('Erreur lors de la récupération des catégories :', error);
+			console.error("Erreur lors de la récupération des catégories :", error);
 			return res.status(500).json({
-				error: 'Erreur serveur lors de la récupération des catégories.',
+				error: "Erreur serveur lors de la récupération des catégories.",
 			});
 		}
 	},
@@ -36,7 +39,10 @@ const categoriesControllers = {
 				oneCategory,
 			});
 		} catch (error) {
-			console.error(`Erreur lors de la récupération de la catégorie n° ${id} `, error);
+			console.error(
+				`Erreur lors de la récupération de la catégorie n° ${id} `,
+				error,
+			);
 			res.status(500).json({
 				message: `Erreur serveur interne lors de la récupération de la catégorie`,
 			});
@@ -49,7 +55,7 @@ const categoriesControllers = {
 		const newCategory = createCategorySchema.safeParse(req.body);
 		if (!newCategory.success) {
 			return res.status(400).json({
-				message: 'Erreur lors de la validation des données via Zod',
+				message: "Erreur lors de la validation des données via Zod",
 				error: newCategory.error.issues,
 			});
 		}
@@ -61,21 +67,25 @@ const categoriesControllers = {
 
 		try {
 			// Check if name already exists
-			const nameExists = await Categories.findOne({ where: { name: sanitizedData.name } });
+			const nameExists = await Categories.findOne({
+				where: { name: sanitizedData.name },
+			});
 			if (nameExists) {
-				return res.status(409).json({ error: 'Nom de catégorie déjà utilisé.' });
+				return res
+					.status(409)
+					.json({ error: "Nom de catégorie déjà utilisé." });
 			}
 
 			// category creation
 			const category = await Categories.create(sanitizedData);
 			return res.status(201).json({
-				message: 'Catégorie créée avec succès.',
+				message: "Catégorie créée avec succès.",
 				category,
 			});
 		} catch (error) {
-			console.error('Erreur lors de la création de la catégorie :', error);
+			console.error("Erreur lors de la création de la catégorie :", error);
 			return res.status(500).json({
-				error: 'Erreur serveur lors de la création de la catégorie.',
+				error: "Erreur serveur lors de la création de la catégorie.",
 			});
 		}
 	},
@@ -88,7 +98,7 @@ const categoriesControllers = {
 		const newCategoryName = updateCategorySchema.safeParse(req.body);
 		if (!newCategoryName.success) {
 			return res.status(400).json({
-				message: 'Erreur lors de la validation des données via Zod',
+				message: "Erreur lors de la validation des données via Zod",
 				error: newCategoryName.error.issues,
 			});
 		}
@@ -101,13 +111,17 @@ const categoriesControllers = {
 			const category = await Categories.findByPk(id);
 
 			if (!category) {
-				return res.status(404).json({ error: 'Catégorie non trouvée.' });
+				return res.status(404).json({ error: "Catégorie non trouvée." });
 			}
 
 			// Check if another category already uses this name
-			const categoryExists = await Categories.findOne({ where: { name: newName } });
+			const categoryExists = await Categories.findOne({
+				where: { name: newName },
+			});
 			if (categoryExists) {
-				return res.status(409).json({ error: 'Nom de catégorie déjà utilisé.' });
+				return res
+					.status(409)
+					.json({ error: "Nom de catégorie déjà utilisé." });
 			}
 
 			// Apply update
@@ -115,13 +129,13 @@ const categoriesControllers = {
 			await category.save();
 
 			return res.status(200).json({
-				message: 'Catégorie mise à jour avec succès.',
+				message: "Catégorie mise à jour avec succès.",
 				category,
 			});
 		} catch (error) {
-			console.error('Erreur lors de la mise à jour de la catégorie :', error);
+			console.error("Erreur lors de la mise à jour de la catégorie :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la mise à jour de la catégorie.',
+				error: "Erreur serveur lors de la mise à jour de la catégorie.",
 			});
 		}
 	},
@@ -133,16 +147,18 @@ const categoriesControllers = {
 			const category = await Categories.findByPk(id);
 
 			if (!category) {
-				return res.status(404).json({ error: 'Catégorie non trouvée.' });
+				return res.status(404).json({ error: "Catégorie non trouvée." });
 			}
 
 			await category.destroy();
 
-			return res.status(200).json({ message: 'Catégorie supprimée avec succès.' });
+			return res
+				.status(200)
+				.json({ message: "Catégorie supprimée avec succès." });
 		} catch (error) {
-			console.error('Erreur lors de la suppression de la catégorie :', error);
+			console.error("Erreur lors de la suppression de la catégorie :", error);
 			res.status(500).json({
-				error: 'Erreur serveur lors de la suppression de la catégorie.',
+				error: "Erreur serveur lors de la suppression de la catégorie.",
 			});
 		}
 	},

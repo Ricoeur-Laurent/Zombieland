@@ -18,6 +18,7 @@ type TokenContextType = {
 	token: string | null;
 	setToken: (token: string | null) => void;
 	user: UserType;
+	loading: boolean;
 };
 
 // Create the context with default values
@@ -25,19 +26,21 @@ const TokenContext = createContext<TokenContextType>({
 	token: null,
 	setToken: () => {},
 	user: null,
+	loading: true, // important ici
 });
 
 export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 	const [token, setTokenState] = useState<string | null>(
-		() => Cookies.get("zombieland_token") || null,
+		() => Cookies.get("zombieland_token") || null
 	);
-
 	const [user, setUser] = useState<UserType>(null);
+	const [loading, setLoading] = useState(true); // ✅ charging state
 
 	useEffect(() => {
 		const checkToken = async () => {
 			if (!token) {
 				setUser(null);
+				setLoading(false);
 				return;
 			}
 
@@ -49,43 +52,39 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 							Authorization: `Bearer ${token}`,
 						},
 						credentials: "include",
-					},
+					}
 				);
 
 				if (!response.ok) {
-					Cookies.remove("token");
+					Cookies.remove("zombieland_token");
 					setTokenState(null);
 					setUser(null);
-					return;
+				} else {
+					const data = await response.json();
+					setUser(data.user);
 				}
-
-				const data = await response.json();
-				setTokenState(token);
-				setUser(data.user);
 			} catch (error) {
-				if (process.env.NODE_ENV === "development") {
-					console.error("Erreur lors du check token :", error);
-				}
-				Cookies.remove("token");
+				console.error("Erreur lors du check token :", error);
+				Cookies.remove("zombieland_token");
 				setTokenState(null);
 				setUser(null);
+			} finally {
+				setLoading(false); // ✅ Marque la fin du chargement
 			}
 		};
 
 		checkToken();
-	}, [token]); // ✅ added token here so if token change the use effect is triggered
+	}, [token]);
 
 	const setToken = (newToken: string | null) => {
 		if (newToken) {
-			// Store the token in cookies securely
 			Cookies.set("zombieland_token", newToken, {
-				expires: 1, // 1 day
-				secure: process.env.NODE_ENV === "production", // HTTPS only in production
+				expires: 1,
+				secure: process.env.NODE_ENV === "production",
 				sameSite: "strict",
 			});
 			setTokenState(newToken);
 		} else {
-			// Remove token and clear user on logout
 			Cookies.remove("zombieland_token");
 			setTokenState(null);
 			setUser(null);
@@ -93,10 +92,11 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 	};
 
 	return (
-		<TokenContext.Provider value={{ token, setToken, user }}>
+		<TokenContext.Provider value={{ token, setToken, user, loading }}>
 			{children}
 		</TokenContext.Provider>
 	);
 };
+
 
 export const useTokenContext = () => useContext(TokenContext);

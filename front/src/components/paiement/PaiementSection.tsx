@@ -7,10 +7,10 @@ import { getApiUrl } from "@/utils/getApi";
 import PaiementValidation from "./PaiementValidation";
 
 export default function PaiementSection() {
-	const { token } = useTokenContext();
+	const { token, loading } = useTokenContext();
 	const router = useRouter();
 	const [showModal, setShowModal] = useState(false);
-	const [loading, setLoading] = useState(false);
+	const [paymentLoading, setPaymentLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const [reservation, setReservation] = useState<{
@@ -21,10 +21,10 @@ export default function PaiementSection() {
 
 	// Redirect user to /connexion if not authenticated
 	useEffect(() => {
-		if (!token) {
+		if (!loading && !token) {
 			router.push("/connexion?redirect=/paiement");
 		}
-	}, [token, router]);
+	}, [token, loading, router]);
 
 	useEffect(() => {
 		const stored = localStorage.getItem("zombieland_reservation");
@@ -39,7 +39,7 @@ export default function PaiementSection() {
 	const handlePayment = async () => {
 		if (!reservation || !token) return;
 
-		setLoading(true);
+		setPaymentLoading(true);
 		setError(null);
 
 		try {
@@ -72,7 +72,7 @@ export default function PaiementSection() {
 			console.error(err);
 			setError("Le paiement a échoué. Veuillez réessayer.");
 		} finally {
-			setLoading(false);
+			setPaymentLoading(false);
 		}
 	};
 
@@ -99,10 +99,10 @@ export default function PaiementSection() {
 			<button
 				type="button"
 				onClick={handlePayment}
-				disabled={loading}
+				disabled={paymentLoading}
 				className={`mt-6 mx-auto flex items-center justify-center rounded-lg font-bold transition
     ${
-			loading
+			paymentLoading
 				? "bg-primary/50 cursor-not-allowed text-bg"
 				: "bg-primary text-bg hover:bg-primary-dark"
 		}
