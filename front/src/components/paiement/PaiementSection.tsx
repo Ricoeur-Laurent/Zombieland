@@ -1,15 +1,18 @@
 "use client";
 
+import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
-import PaiementValidation from "./PaiementValidation";
+
+const stripePromise = loadStripe(
+	process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+);
 
 export default function PaiementSection() {
-	const { token, loading } = useTokenContext();
+	const { token, loading, user } = useTokenContext();
 	const router = useRouter();
-	const [showModal, setShowModal] = useState(false);
 	const [paymentLoading, setPaymentLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +22,6 @@ export default function PaiementSection() {
 		calculatedPrice: number;
 	} | null>(null);
 
-	// Redirect user to /connexion if not authenticated
 	useEffect(() => {
 		if (!loading && !token) {
 			router.push("/connexion?redirect=/paiement");
@@ -28,7 +30,6 @@ export default function PaiementSection() {
 
 	useEffect(() => {
 		const stored = localStorage.getItem("zombieland_reservation");
-		// Check if reservation data exists in localStorage
 		if (stored) {
 			setReservation(JSON.parse(stored));
 		} else {
@@ -43,31 +44,32 @@ export default function PaiementSection() {
 		setError(null);
 
 		try {
-			const response = await fetch(`${getApiUrl()}/reservations`, {
+			const response = await fetch(`${getApiUrl()}/stripe`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${token}`,
 				},
-				credentials: "include", // send cookies with request
 				body: JSON.stringify({
 					visit_date: reservation.date,
 					nb_participants: reservation.visitors,
+					calculated_price: reservation.calculatedPrice,
+					userId: user?.id,
 				}),
 			});
 
 			if (!response.ok) {
-				throw new Error(`Erreur API: ${response.status}`);
+				throw new Error("Erreur lors de la création de la session Stripe.");
 			}
 
-			setShowModal(true);
-			// Clear localStorage to avoid duplicate reservations if user revisits this page
-			localStorage.removeItem("zombieland_reservation");
+			const data = await response.json();
+			const stripe = await stripePromise;
 
-			// Show success modal and redirect after 5 seconds
-			setTimeout(() => {
-				router.push("/mes-reservations");
-			}, 5000);
+			if (!stripe) {
+				throw new Error("Stripe n’a pas pu être initialisé.");
+			}
+
+			await stripe.redirectToCheckout({ sessionId: data.id }); // back end send back the id
 		} catch (err) {
 			console.error(err);
 			setError("Le paiement a échoué. Veuillez réessayer.");
@@ -101,17 +103,15 @@ export default function PaiementSection() {
 				onClick={handlePayment}
 				disabled={paymentLoading}
 				className={`mt-6 mx-auto flex items-center justify-center rounded-lg font-bold transition
-    ${
-			paymentLoading
-				? "bg-primary/50 cursor-not-allowed text-bg"
-				: "bg-primary text-bg hover:bg-primary-dark"
-		}
-    px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base`}
+					${
+						paymentLoading
+							? "bg-primary/50 cursor-not-allowed text-bg"
+							: "bg-primary text-bg hover:bg-primary-dark"
+					}
+					px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base`}
 			>
-				{loading ? "Paiement en cours..." : "Valider le paiement"}
+				{paymentLoading ? "Paiement en cours..." : "Valider le paiement"}
 			</button>
-
-			{showModal && <PaiementValidation />}
 		</div>
 	);
 }

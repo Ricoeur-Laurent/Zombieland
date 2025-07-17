@@ -15,7 +15,9 @@ export default function ConnexionForm() {
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+
 	const [showPasswordWarning, setShowPasswordWarning] = useState(false);
+
 	const [error, setError] = useState("");
 	const redirect = searchParams.get("redirect") || "/";
 	const handleSubmit = async (e: FormEvent) => {
@@ -46,6 +48,7 @@ export default function ConnexionForm() {
 				const redirectPath = searchParams.get("redirect") || "/reservations";
 				router.push(redirectPath);
 			}
+
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
