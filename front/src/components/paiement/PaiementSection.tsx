@@ -11,7 +11,7 @@ const stripePromise = loadStripe(
 );
 
 export default function PaiementSection() {
-	const { token, loading } = useTokenContext();
+	const { token, loading, user } = useTokenContext();
 	const router = useRouter();
 	const [paymentLoading, setPaymentLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -54,6 +54,7 @@ export default function PaiementSection() {
 					visit_date: reservation.date,
 					nb_participants: reservation.visitors,
 					calculated_price: reservation.calculatedPrice,
+					userId: user?.id,
 				}),
 			});
 

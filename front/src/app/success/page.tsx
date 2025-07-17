@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { PartyPopper } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -12,6 +12,9 @@ export default function SuccessPage() {
 		}, 4000);
 		return () => clearTimeout(timer);
 	}, [router]);
+	useEffect(() => {
+		localStorage.removeItem("zombieland_reservation");
+	}, []);
 
 	return (
 		<div className="max-w-4xl mx-auto px-4 py-12 text-center">

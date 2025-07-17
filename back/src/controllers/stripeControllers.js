@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 	apiVersion: "2023-10-16",
 });
 export const createCheckoutSession = async (req, res) => {
-	const { visit_date, nb_participants, calculated_price, user_id } = req.body;
+	const { visit_date, nb_participants, calculated_price, userId } = req.body;
 
 	try {
 		console.log("💬 Body reçu :", req.body);
@@ -27,13 +27,14 @@ export const createCheckoutSession = async (req, res) => {
 			metadata: {
 				visit_date,
 				nb_participants,
-				user_id,
+				userId,
+				amount: calculated_price,
 			},
 			success_url: "http://localhost:3001/success",
 			cancel_url: "http://localhost:3001/cancel",
 		});
 
-		res.status(200).json({ id:session.id });
+		res.status(200).json({ id: session.id });
 	} catch (error) {
 		console.error("❌ Erreur création session Stripe :", error.message);
 		res.status(500).json({ error: "Erreur création session Stripe" });
@@ -62,19 +63,21 @@ export async function handleStripeWebhook(req, res) {
 
 		const visit_date = session.metadata?.visit_date;
 		const nb_participants = parseInt(session.metadata?.nb_participants, 10);
-		const user_id = parseInt(session.metadata?.user_id, 10);
+		const userId = parseInt(session.metadata?.userId, 10);
+		const amount = parseFloat(session.metadata?.amount);
 
 		console.log("✅ Payment confirmed - Creating reservation:", {
 			visit_date,
 			nb_participants,
-			user_id,
+			userId,
 		});
 
 		try {
 			await Reservations.create({
 				visit_date,
 				nb_participants,
-				user_id,
+				userId,
+				amount,
 			});
 		} catch (err) {
 			console.error("❌ Failed to save reservation:", err.message);
