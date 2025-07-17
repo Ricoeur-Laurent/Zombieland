@@ -34,7 +34,6 @@ export default function ConnexionForm() {
 			}
 
 			const data = await response.json();
-			console.log(data);
 
 			setToken(data.token);
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
