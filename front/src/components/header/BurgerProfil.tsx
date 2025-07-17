@@ -30,7 +30,8 @@ export default function BurgerProfil({
 	const handleLogout = () => {
 		// Remove the token from the cookies
 		Cookies.remove("zombieland_token");
-
+		// Remove localstorage with logout
+		localStorage.removeItem("zombieland_reservation");
 		// Clear the token from the context
 		setToken(null);
 
