@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { Reservations } from "../models/index.js";
 
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 	apiVersion: "2023-10-16",
 });
@@ -17,7 +18,7 @@ export const createCheckoutSession = async (req, res) => {
 					price_data: {
 						currency: "eur",
 						product_data: {
-							name: `Réservation du ${visit_date}`,
+							name: `Réservation du ${visit_date}`,g
 						},
 						unit_amount: calculated_price * 100, // Stripe await cents
 					},
