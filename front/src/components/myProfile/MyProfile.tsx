@@ -38,8 +38,8 @@ export default function MyProfil() {
 
     // formate phone input from user
     function formatPhone(value: string) {
-        const digits = value.replace(/\D/g, "").slice(0, 10); 
-        return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim(); 
+        const digits = value.replace(/\D/g, "").slice(0, 10);
+        return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
     }
 
     // logout user after account deletion
@@ -90,7 +90,13 @@ export default function MyProfil() {
         setErrors({});
         setError("");
         if (!champActif) return;
-
+        if (champActif === "phone") {
+            const digits = name.replace(/\D/g, "");
+            if (!/^0[1-9]\d{8}$/.test(digits)) {
+                setError("Numéro de téléphone invalide.");
+                return;
+            }
+        }
 
         try {
             const response = await fetch(
@@ -341,13 +347,12 @@ export default function MyProfil() {
                 <input
                     value={name}
                     onChange={(e) => {
-                        const userInput = e.target.value;
-                        if (champActif === "phone") {
-                            setName(formatPhone(userInput));
-                        } else {
-                            setName(userInput);
-                        }
+                        const raw = e.target.value;
+                        setName(
+                            champActif === "phone" ? formatPhone(raw) : raw
+                        );
                     }}
+                    inputMode={champActif === "phone" ? "numeric" : undefined}
                     className="w-full mb-2 p-2 border rounded"
                 />
 
