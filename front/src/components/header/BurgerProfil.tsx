@@ -37,6 +37,7 @@ export default function BurgerProfil({
 
 		// Close the burger menu
 		setOpen(false);
+		handleOpen();
 
 		// Redirect the user to the home page after logout
 		router.push("/");
