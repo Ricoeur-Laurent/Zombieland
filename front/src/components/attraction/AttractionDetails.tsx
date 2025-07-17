@@ -33,7 +33,7 @@ export default function AttractionDetails({
 
 			{/* Description */}
 			<article className="prose prose-invert max-w-none">
-				<p>{attraction.description}</p>
+				<p className="text-justify">{attraction.description}</p>
 			</article>
 		</div>
 	);
