@@ -19,6 +19,7 @@ export default function MapComponent() {
 			center={[47.9811, 2.7519]} // Initial center of the map (latitude, longitude)
 			zoom={13}
 			style={{ height: "400px", width: "100%" }}
+			className="z-0"
 		>
 			<TileLayer
 				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
