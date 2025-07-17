@@ -77,6 +77,10 @@ export default function PaiementSection() {
 			setPaymentLoading(false);
 		}
 	};
+	const handleCancel = () => {
+		localStorage.removeItem("zombieland_reservation");
+		router.push("/");
+	};
 
 	if (!reservation) {
 		return (
@@ -88,30 +92,53 @@ export default function PaiementSection() {
 	}
 
 	return (
-		<div className="bg-background p-6 rounded shadow-lg text-text text-center border border-primary">
+		<div className="bg-background p-6 rounded shadow-lg text-text text-center border-2 border-primary">
 			<h2 className="text-2xl font-bold text-primary-light mb-4">
 				Confirmation de votre réservation
 			</h2>
-			<p>Date : {reservation.date}</p>
-			<p>Nombre de visiteurs : {reservation.visitors}</p>
-			<p>Prix total : {reservation.calculatedPrice} €</p>
+
+			<div className="mt-3 text-lg mb-4">
+				<p>Date : {reservation.date}</p>
+				<p>Nombre de visiteurs : {reservation.visitors}</p>
+				<p>Prix total : {reservation.calculatedPrice} €</p>
+			</div>
+			<p className="border-2 border-red-600 p-6">
+				Ce site est un projet scolaire. Aucun produit ou service réel n’est
+				proposé à la vente. <br />
+				Vous pouvez tester le processus de paiement en utilisant une carte de
+				test fournie par Stripe : <br />
+				Numéro : 4242 4242 4242 4242 <br />
+				Expiration : n’importe quelle date future <br />
+				CVC : n’importe quel code à 3 chiffres
+				<br /> Nom / Adresse : libre
+				<br /> ⚠️ Aucune somme ne sera réellement débitée.
+			</p>
 
 			{error && <p className="text-red-500 mt-2">{error}</p>}
 
-			<button
-				type="button"
-				onClick={handlePayment}
-				disabled={paymentLoading}
-				className={`mt-6 mx-auto flex items-center justify-center rounded-lg font-bold transition
-					${
-						paymentLoading
-							? "bg-primary/50 cursor-not-allowed text-bg"
-							: "bg-primary text-bg hover:bg-primary-dark"
-					}
-					px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base`}
-			>
-				{paymentLoading ? "Paiement en cours..." : "Valider le paiement"}
-			</button>
+			<div className="flex">
+				<button
+					type="button"
+					onClick={handlePayment}
+					disabled={paymentLoading}
+					className={`mt-6 mx-auto flex items-center justify-center rounded-lg font-bold transition
+						${
+							paymentLoading
+								? "bg-primary/50 cursor-not-allowed text-bg"
+								: "bg-primary text-bg hover:bg-primary-dark"
+						}
+						px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base`}
+				>
+					{paymentLoading ? "Paiement en cours..." : "Valider le paiement"}
+				</button>
+				<button
+					type="button"
+					onClick={handleCancel}
+					className="mt-6 mx-auto bg-red-600 text-bg flex items-center justify-center rounded-lg font-bold transition px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base"
+				>
+					Annuler
+				</button>
+			</div>
 		</div>
 	);
 }
