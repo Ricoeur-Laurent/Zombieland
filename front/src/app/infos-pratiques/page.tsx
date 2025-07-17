@@ -6,6 +6,7 @@ import {
 	ParkingSquare,
 	Ticket,
 } from "lucide-react";
+import MapWrapper from "@/components/map/MapWrraper";
 
 export const metadata = {
 	title: "Infos pratiques – Zombieland",
@@ -46,6 +47,7 @@ const sections = [
 					Zombieland se situe à seulement 20 minutes de la gare de Montargis.
 					Accès en voiture via la D2060, sortie Z.
 				</p>
+				<MapWrapper />
 				<p className="mt-2">
 					<strong>Adresse :</strong>
 					<br />
@@ -75,7 +77,7 @@ const sections = [
 		icon: HelpCircle,
 		content: (
 			<>
-				<p>Email : zombie@zombie.com</p>
+				<p>Email : zombieland.zombieland666@gmail.com</p>
 				<p>Tél : 0666.66.66.66</p>
 			</>
 		),
