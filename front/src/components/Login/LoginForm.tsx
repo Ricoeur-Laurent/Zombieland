@@ -12,8 +12,8 @@ export default function ConnexionForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
-	const [email, setEmail] = useState("votre@email.com");
-	const [password, setPassword] = useState("password");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const redirect = searchParams.get("redirect") || "/";
 	const handleSubmit = async (e: FormEvent) => {
@@ -36,16 +36,13 @@ export default function ConnexionForm() {
 			setToken(data.token);
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
 
-
 			if (data.user?.mustChangePassword) {
 				alert(
 					"⚠️ Votre mot de passe est toujours 'changeme'. Veuillez le modifier depuis votre profil.",
 				);
 			}
-
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
-
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
