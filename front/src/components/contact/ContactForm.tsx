@@ -1,10 +1,10 @@
 "use client";
-import emailjs from "@emailjs/browser";
-import { type FormEvent, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+
+import emailjs from '@emailjs/browser';
+import { useState, FormEvent } from "react";
+
 
 export default function ContactForm() {
-	const { token } = useTokenContext();
 	const [firstname, setFirstName] = useState("");
 	const [lastname, setLastName] = useState("");
 	const [email, setEmail] = useState("");
