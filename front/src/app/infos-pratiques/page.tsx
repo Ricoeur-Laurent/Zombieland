@@ -66,7 +66,7 @@ const sections = [
 		icon: ParkingSquare,
 		content: (
 			<p>
-				Parking gratuit de 666 places, dont des emplacements réservés aux PMR,
+				Parking gratuit de 666 places, avec des emplacements réservés aux PMR,
 				vélos et motos.
 			</p>
 		),
