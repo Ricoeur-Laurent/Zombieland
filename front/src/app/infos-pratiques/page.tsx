@@ -77,7 +77,7 @@ const sections = [
 		icon: HelpCircle,
 		content: (
 			<>
-				<p>Email : zombie@zombie.com</p>
+				<p>Email : zombieland.zombieland666@gmail.com</p>
 				<p>Tél : 0666.66.66.66</p>
 			</>
 		),

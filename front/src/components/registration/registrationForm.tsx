@@ -1,5 +1,4 @@
 "use client";
-import Cookies from "js-cookie";
 import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";

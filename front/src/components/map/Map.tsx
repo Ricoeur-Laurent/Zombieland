@@ -16,7 +16,7 @@ L.Icon.Default.mergeOptions({
 export default function MapComponent() {
 	return (
 		<MapContainer
-			center={[48.8584, 2.2945]} // Initial center of the map (latitude, longitude)
+			center={[47.9811, 2.7519]} // Initial center of the map (latitude, longitude)
 			zoom={13}
 			style={{ height: "400px", width: "100%" }}
 		>
@@ -24,7 +24,7 @@ export default function MapComponent() {
 				url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 				attribution="© OpenStreetMap"
 			/>
-			<Marker position={[48.8584, 2.2945]}>
+			<Marker position={[47.9811, 2.7519]}>
 				<Popup>Ici, c’est ZombieLand !</Popup>
 			</Marker>
 		</MapContainer>
