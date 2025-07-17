@@ -1,6 +1,10 @@
 "use client";
-import emailjs from "@emailjs/browser";
-import { type FormEvent, useState } from "react";
+
+
+import emailjs from '@emailjs/browser';
+import { useState, FormEvent } from "react";
+
+
 
 export default function ContactForm() {
 	const [firstname, setFirstName] = useState("");
