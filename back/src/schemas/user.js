@@ -18,6 +18,11 @@ const updateUserSchema = z.object({
 	admin: z.boolean().optional(),
 });
 
+const updatePswdSchema = z.object ({
+	oldPswd : z.string().min(4),
+	newPswd : z.string().min(4)
+});
+
 const loginSchema = z.object({
 	email: z.string().email(),
 	password: z.string().min(4),
@@ -30,4 +35,4 @@ const adminUserCreateSchema = z.object({
 	phone: z.string().min(10),
 	admin: z.boolean().optional(),
 });
-export { signUpSchema, loginSchema, updateUserSchema, adminUserCreateSchema };
+export { signUpSchema, updatePswdSchema, loginSchema, updateUserSchema, adminUserCreateSchema };

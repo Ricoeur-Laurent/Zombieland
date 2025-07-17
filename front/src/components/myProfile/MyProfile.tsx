@@ -1,14 +1,14 @@
 "use client"
 import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
-import { Edit, Plus, Trash2 } from "lucide-react";
+import { Edit, Eye, Plus, Trash2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import Modal from "@/components/modal/Modal";
 import Cookies from "js-cookie";
 
 
-export default function MyProfil() {
+export default function MyProfile() {
     const { user, token, setToken } = useTokenContext();
     const [loading, setLoading] = useState(true);
     const [redirecting, setRedirecting] = useState(false);
@@ -23,6 +23,15 @@ export default function MyProfil() {
 
     // usestate pour modal delete
     const [showDeleteModal, setshowDeleteModal] = useState(false)
+
+    // usestate pour modale edit password
+    const [showPswdEditModal, setShowPswdEditModal] = useState(false)
+    const [oldPswd, setOldPswd] = useState("")
+    const [newPswd, setNewPswd] = useState("")
+    const [newPswdConfirm, setNewPswdConfirm] = useState("")
+    const [showNewPswd, setShowNewPswd] = useState(false)
+    const [showOldPswd, setShowOldPswd] = useState(false)
+    const [showNewPswdConf, setShowNewPswdConf] = useState(false)
 
     const [firstname, setFirstName] = useState("");
     const [lastname, setLastName] = useState("");
@@ -58,7 +67,7 @@ export default function MyProfil() {
         // Retrieving data from the user's profile
         try {
             const response = await fetch(
-                `${getApiUrl()}/myProfil/${user?.id}`,
+                `${getApiUrl()}/myProfile/${user?.id}`,
                 {
                     method: "GET",
                     headers: {
@@ -85,7 +94,43 @@ export default function MyProfil() {
         }
     };
 
-    // edit profile in database after user update
+    // edit user paswword
+    const handlePswdEdit = async () => {
+        setErrors({});
+        setError("");
+
+        if (newPswd !== newPswdConfirm) {
+            setError("Echec lors de la confirmation du nouveau mot de passe")
+            return
+        }
+        try {
+            const response = await fetch(
+                `${getApiUrl()}/myProfile/pswd/${user?.id}`,
+                {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        newPswd: newPswd,
+                        oldPswd: oldPswd,
+                    }),
+                    credentials: "include",
+                }
+            )
+            if (!response.ok) {
+                console.error("erreur serveur lors de la mise à jour du mot de passe", error)
+            }
+
+            setShowPswdEditModal(false)
+
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour du mot de passe", error);
+        }
+    }
+
+    // edit profile in database with user update
     const handleEdit = async () => {
         setErrors({});
         setError("");
@@ -100,7 +145,7 @@ export default function MyProfil() {
 
         try {
             const response = await fetch(
-                `${getApiUrl()}/myProfil/${user?.id}`,
+                `${getApiUrl()}/myProfile/${user?.id}`,
                 {
                     method: "PATCH",
                     headers: {
@@ -161,7 +206,7 @@ export default function MyProfil() {
     const handleDelete = async () => {
 
         try {
-            const response = await fetch(`${getApiUrl()}/myProfil/${user?.id}`,
+            const response = await fetch(`${getApiUrl()}/myProfile/${user?.id}`,
                 {
                     method: "DELETE",
                     headers: {
@@ -236,14 +281,15 @@ export default function MyProfil() {
 
     return (
         <>
-            <section className="mb-10">
+            <section className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg">
                 <ul className="space-y-2">
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between items-center mb-1">
                         <h2 className="text-xl font-subtitle text-primary-light">
                             Prénom
                         </h2>
                     </div>
-                    <li className="flex justify-between items-center px-4 py-2 bg-surface border border-muted rounded">
+                    <li className="bg-bg text-text border rounded-lg px-3 py-2 mb-3 focus:outline-none font-body text xl
+						focus:border-primary flex justify-between items-center  border-muted ">
                         <span>{firstname}</span>
                         <div className="flex gap-2">
                             <Edit
@@ -256,12 +302,13 @@ export default function MyProfil() {
                             />
                         </div>
                     </li>
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between items-center mb-1">
                         <h2 className="text-xl font-subtitle text-primary-light">
                             Nom
                         </h2>
                     </div>
-                    <li className="flex justify-between items-center px-4 py-2 bg-surface border border-muted rounded">
+                    <li className="bg-bg text-text border rounded-lg px-3 py-2 mb-3 focus:outline-none font-body text xl
+						focus:border-primary flex justify-between items-center  border-muted ">
 
                         <span>{lastname}</span>
                         <div className="flex gap-2">
@@ -275,12 +322,13 @@ export default function MyProfil() {
                             />
                         </div>
                     </li>
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between items-center mb-1">
                         <h2 className="text-xl font-subtitle text-primary-light">
                             Email
                         </h2>
                     </div>
-                    <li className="flex justify-between items-center px-4 py-2 bg-surface border border-muted rounded">
+                    <li className="bg-bg text-text border rounded-lg px-3 py-2 mb-3 focus:outline-none font-body text xl
+						focus:border-primary flex justify-between items-center  border-muted ">
                         <span>{email}</span>
                         <div className="flex gap-2">
                             <Edit
@@ -293,12 +341,13 @@ export default function MyProfil() {
                             />
                         </div>
                     </li>
-                    <div className="flex justify-between items-center mb-3">
+                    <div className="flex justify-between items-center mb-1">
                         <h2 className="text-xl font-subtitle text-primary-light">
                             Téléphone
                         </h2>
                     </div>
-                    <li className="flex justify-between items-center px-4 py-2 bg-surface border border-muted rounded">
+                    <li className="bg-bg text-text border rounded-lg px-3 py-2 mb-3 focus:outline-none font-body text xl
+						focus:border-primary flex justify-between items-center  border-muted ">
                         <span>{phone}</span>
                         <div className="flex gap-2">
                             <Edit
@@ -312,29 +361,33 @@ export default function MyProfil() {
                         </div>
                     </li>
                 </ul>
-            </section>
-            <div className="text-center mt-6">
+
+                {/* Password modification */}
                 <button
                     type="button"
-                    // onClick={onClick}
+                    onClick={() =>
+                        setShowPswdEditModal(true)
+                    }
                     className="bg-primary text-bg px-6 py-2 rounded-lg font-bold hover:bg-primary-dark"
                 >
                     Modifier mon mot de passe
                 </button>
-            </div>		<div className="text-center mt-6">
-                <button
-                    type="button"
-                    onClick={() =>
-                        setshowDeleteModal(true)
-                    }
-                    className="bg-primary text-bg px-6 py-2 rounded-lg font-bold hover:bg-primary-dark"
-                >
-                    {error && <p className="text-red-500 text-sm font-body">{error}</p>}
 
-                    Supprimer mon compte
-                </button>
-            </div>
-            {/* edit modale */}
+                {/* Account deletion */}
+                <p className="mt-4 text-sm text-center">
+                    Pour supprimer votre compte, {" "}
+                    <a href=""
+                        onClick={(e) => {
+                            e.preventDefault()
+                            setshowDeleteModal(true)
+                        }}
+                        className="text-primary hover:underline">
+
+                        cliquez ici !
+                    </a>
+                </p>
+            </section>
+            {/* edit profile modale */}
             <Modal
                 isOpen={showEditModal}
                 onClose={() => {
@@ -355,9 +408,59 @@ export default function MyProfil() {
                     inputMode={champActif === "phone" ? "numeric" : undefined}
                     className="w-full mb-2 p-2 border rounded"
                 />
-
+                {error && <p className="text-red-500 text-sm font-body">{error}</p>}
             </Modal>
-
+            {/* edit password modale */}
+            <Modal
+                isOpen={showPswdEditModal}
+                onClose={() => {
+                    setShowPswdEditModal(false);
+                }}
+                title="Modification du mot de passe"
+                confirmText="Confirmer"
+                onConfirm={handlePswdEdit}
+            >
+                <div className="flex gap-2 items-center ">
+                    <input
+                        type={showOldPswd ? "text" : "password"}
+                        className="w-full mb-2 p-2 border rounded"
+                        placeholder="Ancien mot de passe"
+                        value={oldPswd}
+                        onChange={(e) => setOldPswd(e.target.value)}
+                        required
+                    />
+                    <Eye
+                        className="mb-2 text-primary"
+                        onClick={() => { setShowOldPswd(!showOldPswd) }} />
+                </div>
+                <div className="flex gap-2 items-center ">
+                    <input
+                        type={showNewPswd ? "text" : "password"}
+                        className="w-full mb-2 p-2 border rounded"
+                        placeholder="Nouveau mot de passe"
+                        value={newPswd}
+                        onChange={(e) => setNewPswd(e.target.value)}
+                        required
+                    />
+                    <Eye
+                        className="mb-2 text-primary"
+                        onClick={() => { setShowNewPswd(!showNewPswd) }} />
+                </div>
+                <div className="flex gap-2 items-center ">
+                    <input
+                        type={showNewPswdConf ? "text" : "password"}
+                        className="w-full mb-2 p-2 border rounded"
+                        placeholder="Confirmation nouveau mot de passe"
+                        value={newPswdConfirm}
+                        onChange={(e) => setNewPswdConfirm(e.target.value)}
+                        required
+                    />
+                    <Eye
+                        className="mb-2 text-primary"
+                        onClick={() => { setShowNewPswdConf(!showNewPswdConf) }} />
+                </div>
+                {error && <p className="text-red-500 text-sm font-body">{error}</p>}
+            </Modal>
             {/* delete modal */}
             <Modal
                 isOpen={showDeleteModal}
