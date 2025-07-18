@@ -1,15 +1,15 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import validator from 'validator';
-import { loginSchema } from '../schemas/user.js';
-import { Users } from '../models/users.js';
-import dotenv from 'dotenv';
+import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import validator from "validator";
+import { Users } from "../models/users.js";
+import { loginSchema } from "../schemas/user.js";
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
-	throw new Error('La clé JWT_SECRET est manquante dans le fichier .env');
+	throw new Error("La clé JWT_SECRET est manquante dans le fichier .env");
 }
 
 const loginControllers = {
@@ -19,7 +19,7 @@ const loginControllers = {
 		const loginAttempt = loginSchema.safeParse(req.body);
 		if (!loginAttempt.success) {
 			return res.status(400).json({
-				message: 'Erreur lors de la validation des données via Zod',
+				message: "Erreur lors de la validation des données via Zod",
 				errors: loginAttempt.error.issues,
 			});
 		}
@@ -31,14 +31,20 @@ const loginControllers = {
 		try {
 			const user = await Users.findOne({ where: { email } });
 			if (!user) {
-				return res.status(401).json({ error: 'Identifiants invalides' });
+				return res.status(401).json({ error: "Identifiants invalides" });
 			}
 
 			// Compare provided password with hashed password in the database
 			const passwordMatch = await bcrypt.compare(password, user.password);
 			if (!passwordMatch) {
-				return res.status(401).json({ error: 'Identifiants invalides' });
+				return res.status(401).json({ error: "Identifiants invalides" });
 			}
+
+			// check if user is still using the default password
+			const mustChangePassword = await bcrypt.compare(
+				"changeme",
+				user.password,
+			);
 
 			// Build JWT payload with basic user info
 			const tokenPayload = {
@@ -55,9 +61,16 @@ const loginControllers = {
 			});
 
 			// Extract user info to return in the response (excluding password)
-			const { id, firstname, lastname, email: safeEmail, admin, created_at } = user;
+			const {
+				id,
+				firstname,
+				lastname,
+				email: safeEmail,
+				admin,
+				created_at,
+			} = user;
 			res.status(200).json({
-				message: 'Connexion réussie',
+				message: "Connexion réussie",
 				token,
 				user: {
 					id,
@@ -66,11 +79,12 @@ const loginControllers = {
 					safeEmail,
 					admin,
 					created_at,
+					mustChangePassword, //flag used so the user can be alerted to change his password if it's still the default password
 				},
 			});
 		} catch (error) {
-			console.error('Erreur lors du login :', error);
-			res.status(500).json({ error: 'Erreur serveur lors du login' });
+			console.error("Erreur lors du login :", error);
+			res.status(500).json({ error: "Erreur serveur lors du login" });
 		}
 	},
 };

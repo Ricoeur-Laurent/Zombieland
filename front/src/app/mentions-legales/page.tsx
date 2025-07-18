@@ -1,8 +1,8 @@
 export const metadata = {
 	title: "Mentions légales – Zombieland",
-	description: "Retrouvez les mentions légales de Zombieland, incluant les informations légales, éditeur, hébergeur et conditions d'utilisation du site.",
+	description:
+		"Retrouvez les mentions légales de Zombieland, incluant les informations légales, éditeur, hébergeur et conditions d'utilisation du site.",
 };
-
 
 export default function LegalPage() {
 	return (
@@ -12,7 +12,7 @@ export default function LegalPage() {
 				<h1 className="text-3xl font-subtitle text-primary-light uppercase mb-4">
 					Mentions légales
 				</h1>
-				<p>
+				<p className="text-justify">
 					<b>Identification de l'éditeur du site</b>
 					<br />
 					Nom : Zombieland
@@ -30,7 +30,7 @@ export default function LegalPage() {
 					<br />
 					Téléphone : +33 6 66 66 66 66
 				</p>
-				<p className="mt-4">
+				<p className="mt-4 text-justify">
 					<b>Hébergement</b>
 					<br />
 					Hébergeur : HostBrain
@@ -46,7 +46,7 @@ export default function LegalPage() {
 				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
 					Conditions Générales d'Utilisation
 				</h2>
-				<p>
+				<p className="text-justify">
 					L’utilisation de ce site implique l’acceptation pleine et entière des
 					conditions générales d’utilisation décrites ici. Celles-ci peuvent
 					être modifiées ou complétées à tout moment, les utilisateurs du site
@@ -59,13 +59,13 @@ export default function LegalPage() {
 				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
 					Politique de Confidentialité
 				</h2>
-				<p>
+				<p className="text-justify">
 					Zombieland collecte des informations personnelles relatives à
 					l’utilisateur uniquement pour le besoin des services proposés par le
 					site. L’utilisateur fournit ces informations en toute connaissance de
 					cause, notamment lorsqu’il procède par lui-même à leur saisie.
 				</p>
-				<p className="mt-2">
+				<p className="mt-2 text-justify">
 					Conformément aux dispositions des articles 38 et suivants de la loi
 					78-17, tout utilisateur dispose d’un droit d’accès, de rectification
 					et d’opposition aux données personnelles le concernant.
@@ -77,7 +77,7 @@ export default function LegalPage() {
 				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
 					Accessibilité
 				</h2>
-				<p>
+				<p className="text-justify">
 					Zombieland s’engage à rendre son site accessible conformément à
 					l’article 47 de la loi n°2005-102. Pour toute demande ou signalement
 					concernant l’accessibilité, veuillez nous contacter à
@@ -90,7 +90,7 @@ export default function LegalPage() {
 				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
 					Propriété Intellectuelle
 				</h2>
-				<p>
+				<p className="text-justify">
 					Le contenu du site Zombieland, incluant mais non limité aux textes,
 					images, graphismes, logo et icônes, est la propriété exclusive de
 					Zombieland. Toute reproduction, représentation, modification,
@@ -104,7 +104,7 @@ export default function LegalPage() {
 				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
 					Cookies
 				</h2>
-				<p>
+				<p className="text-justify">
 					La navigation sur le site Zombieland est susceptible de provoquer
 					l’installation de cookie(s) sur l’ordinateur de l’utilisateur afin de
 					faciliter la navigation et de mesurer la fréquentation du site.
@@ -116,7 +116,7 @@ export default function LegalPage() {
 				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
 					Droit Applicable
 				</h2>
-				<p>
+				<p className="text-justify">
 					Tout litige en relation avec l’utilisation du site Zombieland est
 					soumis au droit français. Il est fait attribution exclusive de
 					juridiction aux tribunaux compétents de Zombieville.

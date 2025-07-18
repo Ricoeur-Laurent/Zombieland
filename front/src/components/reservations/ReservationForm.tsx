@@ -23,30 +23,32 @@ export default function ReservationForm() {
 	}, [token, router]);
 
 	useEffect(() => {
+		if (visitors && visitors > 0) {
+			const pricePerVisitor = 66;
+			setCalculatedPrice(visitors * pricePerVisitor);
+		} else {
+			setCalculatedPrice(0);
+		}
+	}, [visitors]);
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		// here we check if the user is connected with his token, if he got one he goes to the paiement page else, he need to connect before being redirected
 		if (!date || !visitors || visitors <= 0) {
 			return;
 		}
-		const pricePerVisitor = 66;
-		// here we need to check if visitors is not undefined or 0
-		const visitorsNumber = visitors ?? 0;
-		const price = visitorsNumber * pricePerVisitor;
-		setCalculatedPrice(price);
 
 		const reservationData = {
 			date,
 			visitors,
-			calculatedPrice: price,
+			calculatedPrice,
 		};
 		// we store the data in the local storage so when the user is later redirected to "paiement" he won't have to do it all over again
 		localStorage.setItem(
 			"zombieland_reservation",
 			JSON.stringify(reservationData),
 		);
-	}, [visitors, date]);
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		// here we check if the user is connected with his token, if he got one he goes to the paiement page else, he need to connect before being redirected
 		if (token) {
 			router.push("/paiement");
 		} else {
