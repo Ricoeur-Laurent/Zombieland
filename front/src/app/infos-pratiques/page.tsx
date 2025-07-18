@@ -6,6 +6,7 @@ import {
 	ParkingSquare,
 	Ticket,
 } from "lucide-react";
+import MapWrapper from "@/components/map/MapWrraper";
 
 export const metadata = {
 	title: "Infos pratiques – Zombieland",
@@ -46,6 +47,7 @@ const sections = [
 					Zombieland se situe à seulement 20 minutes de la gare de Montargis.
 					Accès en voiture via la D2060, sortie Z.
 				</p>
+				<MapWrapper />
 				<p className="mt-2">
 					<strong>Adresse :</strong>
 					<br />
@@ -64,7 +66,7 @@ const sections = [
 		icon: ParkingSquare,
 		content: (
 			<p>
-				Parking gratuit de 666 places, dont des emplacements réservés aux PMR,
+				Parking gratuit de 666 places, avec des emplacements réservés aux PMR,
 				vélos et motos.
 			</p>
 		),
@@ -75,7 +77,7 @@ const sections = [
 		icon: HelpCircle,
 		content: (
 			<>
-				<p>Email : zombie@zombie.com</p>
+				<p>Email : zombieland.zombieland666@gmail.com</p>
 				<p>Tél : 0666.66.66.66</p>
 			</>
 		),
@@ -95,19 +97,19 @@ const sections = [
 
 export default function VisitorInfoPage() {
 	return (
-		<div className="max-w-4xl mx-auto px-4 py-12">
-			<h1 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
+		<div className="px-4 py-6 max-w-6xl mx-auto">
+			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				Infos pratiques
-			</h1>
+			</h2>
 
 			<div className="mt-12 space-y-12">
 				{sections.map(({ id, title, icon: Icon, content }) => (
 					<section key={id} id={id} className="scroll-mt-20">
 						<div className="flex items-center gap-3 mb-4">
 							<Icon className="size-7 text-primary" aria-hidden />
-							<h2 className="text-xl sm:text-2xl font-subtitle uppercase tracking-wide text-text">
+							<h3 className="text-xl sm:text-2xl font-subtitle uppercase tracking-wide text-text">
 								{title}
-							</h2>
+							</h3>
 						</div>
 						<div className="text-text text-base leading-relaxed">{content}</div>
 					</section>

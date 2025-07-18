@@ -7,9 +7,16 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
 
-export default function BurgerProfil() {
+export default function BurgerProfil({
+	onOpenProfil,
+}: {
+	onOpenProfil?: () => void;
+}) {
 	const [open, setOpen] = useState(false);
-
+	const handleOpen = () => {
+		if (onOpenProfil) onOpenProfil?.();
+		setOpen(false);
+	};
 	/* Bloque le scroll quand le drawer est ouvert */
 	useEffect(() => {
 		document.body.style.overflow = open ? "hidden" : "";
@@ -23,12 +30,14 @@ export default function BurgerProfil() {
 	const handleLogout = () => {
 		// Remove the token from the cookies
 		Cookies.remove("zombieland_token");
-
+		// Remove localstorage with logout
+		localStorage.removeItem("zombieland_reservation");
 		// Clear the token from the context
 		setToken(null);
 
 		// Close the burger menu
 		setOpen(false);
+		handleOpen();
 
 		// Redirect the user to the home page after logout
 		router.push("/");
@@ -65,8 +74,10 @@ export default function BurgerProfil() {
 						<ul className="mt-8 flex flex-grow flex-col gap-6">
 							<li>
 								<Link
+
 									href="/mon-profil"
 									onClick={() => setOpen(false)}
+
 									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Mon profil
@@ -76,7 +87,7 @@ export default function BurgerProfil() {
 							<li>
 								<Link
 									href="/mes-reservations"
-									onClick={() => setOpen(false)}
+									onClick={handleOpen}
 									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Mes réservations
@@ -87,7 +98,7 @@ export default function BurgerProfil() {
 								<li>
 									<Link
 										href="/admin"
-										onClick={() => setOpen(false)}
+										onClick={handleOpen}
 										className="flex items-center gap-3 py-2 text-red-500 font-bold transition-colors hover:text-red-700"
 									>
 										Espace Admin
@@ -110,7 +121,7 @@ export default function BurgerProfil() {
 							<li>
 								<Link
 									href="/connexion"
-									onClick={() => setOpen(false)}
+									onClick={handleOpen}
 									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Connexion
@@ -119,7 +130,7 @@ export default function BurgerProfil() {
 							<li>
 								<Link
 									href="/inscription"
-									onClick={() => setOpen(false)}
+									onClick={handleOpen}
 									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Inscription

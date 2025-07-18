@@ -6,14 +6,18 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
 import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
+import Modal from "../modal/Modal";
 
 export default function ConnexionForm() {
 	const { setToken } = useTokenContext();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
-	const [email, setEmail] = useState("votre@email.com");
-	const [password, setPassword] = useState("password");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+
+	const [showPasswordWarning, setShowPasswordWarning] = useState(false);
+
 	const [error, setError] = useState("");
 	const redirect = searchParams.get("redirect") || "/";
 	const handleSubmit = async (e: FormEvent) => {
@@ -36,15 +40,14 @@ export default function ConnexionForm() {
 			setToken(data.token);
 			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
 
-
 			if (data.user?.mustChangePassword) {
-				alert(
-					"⚠️ Votre mot de passe est toujours 'changeme'. Veuillez le modifier depuis votre profil.",
-				);
+				setShowPasswordWarning(true);
+			} else if (data.user?.admin === true) {
+				router.push("/admin");
+			} else {
+				const redirectPath = searchParams.get("redirect") || "/reservations";
+				router.push(redirectPath);
 			}
-
-			const redirectPath = searchParams.get("redirect") || "/reservations";
-			router.push(redirectPath);
 
 		} catch (e) {
 			if (e instanceof Error) {
@@ -58,66 +61,83 @@ export default function ConnexionForm() {
 	};
 
 	return (
-		<form
-			onSubmit={handleSubmit}
-			className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg"
-		>
-			<div className="flex flex-col gap-1">
-				<label
-					htmlFor="email"
-					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
-				>
-					Email
-				</label>
-				<input
-					id="email"
-					name="email"
-					type="email"
-					placeholder="votre@email.com"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					required
-					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text xl"
-				/>
-			</div>
-
-			<div className="flex flex-col gap-1">
-				<label
-					htmlFor="password"
-					className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
-				>
-					Mot de passe
-				</label>
-				<input
-					id="password"
-					name="password"
-					type="password"
-					placeholder="password"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-					required
-					className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text-xl"
-				/>
-			</div>
-
-			{error && <p className="text-red-500 text-sm font-body">{error}</p>}
-
-			<button
-				type="submit"
-				className="bg-primary text-black font-subtitle uppercase tracking-wide py-2 rounded-lg hover:bg-primary-dark transition flex items-center justify-center gap-2"
+		<>
+			<form
+				onSubmit={handleSubmit}
+				className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg"
 			>
-				<LogIn size={18} />
-				Me connecter
-			</button>
-			<p className="mt-4 text-sm text-center">
-				Pas encore de compte ?{" "}
-				<Link
-					href={`/inscription${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
-					className="text-primary hover:underline"
+				<div className="flex flex-col gap-1">
+					<label
+						htmlFor="email"
+						className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+					>
+						Email
+					</label>
+					<input
+						id="email"
+						name="email"
+						type="email"
+						placeholder="votre@email.com"
+						value={email}
+						onChange={(e) => setEmail(e.target.value)}
+						required
+						className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text-xl"
+					/>
+				</div>
+
+				<div className="flex flex-col gap-1">
+					<label
+						htmlFor="password"
+						className="text-primary-light font-subtitle uppercase tracking-wide text-xl"
+					>
+						Mot de passe
+					</label>
+					<input
+						id="password"
+						name="password"
+						type="password"
+						placeholder="password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+						required
+						className="bg-bg text-text border border-muted rounded-lg px-3 py-2 focus:outline-none focus:border-primary placeholder:text-muted font-body text-xl"
+					/>
+				</div>
+
+				{error && <p className="text-red-500 text-sm font-body">{error}</p>}
+
+				<button
+					type="submit"
+					className="bg-primary text-black font-subtitle uppercase tracking-wide py-2 rounded-lg hover:bg-primary-dark transition flex items-center justify-center gap-2"
 				>
-					Créez un compte ici
-				</Link>
-			</p>
-		</form>
+					<LogIn size={18} />
+					Me connecter
+				</button>
+				<p className="mt-4 text-sm text-center">
+					Pas encore de compte ?{" "}
+					<Link
+						href={`/inscription${redirect ? `?redirect=${encodeURIComponent(redirect)}` : ""}`}
+						className="text-primary hover:underline"
+					>
+						Créez un compte ici
+					</Link>
+				</p>
+			</form>
+			<Modal
+				isOpen={showPasswordWarning}
+				onClose={() => setShowPasswordWarning(false)}
+				title="Mot de passe par défaut"
+				confirmText="OK"
+				onConfirm={() => {
+					setShowPasswordWarning(false);
+					router.push("/profil");
+				}}
+			>
+				<p className="text-text font-body">
+					Votre mot de passe est toujours <strong>“changeme”</strong>. <br />
+					Pensez à le modifier depuis votre profil pour sécuriser votre compte !
+				</p>
+			</Modal>
+		</>
 	);
 }

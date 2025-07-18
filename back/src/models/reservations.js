@@ -1,6 +1,6 @@
-import { sequelize } from './sequelize.js';
-import { Model, DataTypes } from 'sequelize';
-import { Users } from './users.js';
+import { DataTypes, Model } from "sequelize";
+import { sequelize } from "./sequelize.js";
+import { Users } from "./users.js";
 
 export class Reservations extends Model {}
 
@@ -28,16 +28,16 @@ Reservations.init(
 			allowNull: false,
 			references: {
 				model: Users,
-				key: 'id',
-				onDelete: 'CASCADE',
+				key: "id",
+				onDelete: "CASCADE",
 			},
 		},
 	},
 	{
 		sequelize,
-		tableName: 'reservations',
+		tableName: "reservations",
 		timestamps: true,
-		createdAt: 'created_at',
-		updatedAt: 'updated_at',
+		createdAt: "created_at",
+		updatedAt: "updated_at",
 	},
 );

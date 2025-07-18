@@ -14,8 +14,8 @@ export default function RegistrationForm() {
 	const [firstname, setFirstName] = useState("");
 	const [lastname, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
-	const [email, setEmail] = useState("votre@email.com");
-	const [password, setPassword] = useState("password");
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
 	const [errors, setErrors] = useState<{
 		email?: string;
 		phone?: string;
