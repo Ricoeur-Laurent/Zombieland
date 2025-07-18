@@ -1,4 +1,4 @@
-import MyProfil from "@/components/mon-profil/MyProfile";
+import MyProfile from "@/components/myProfile/MyProfile";
 
 export const metadata = {
     title: "Mon profil – Zombieland",
@@ -6,13 +6,13 @@ export const metadata = {
         "Consultez et modifiez votre profil facilement depuis votre espace personnel"
 };
 
-export default function MonProfilPage() {
+export default function ProfilePage() {
     return (
-        <main className="max-w-md mx-auto p-4">
-            <h1 className="text-primary font-subtitle text-3xl text-center mt-4">
-                Mon profil
-            </h1>
-            <MyProfil />
-        </main>
-    );
+        <div className="px-4 py-6 max-w-6xl mx-auto">
+            <h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
+                Gestion du profil
+            </h2>
+            <MyProfile />
+        </div>
+    )
 }

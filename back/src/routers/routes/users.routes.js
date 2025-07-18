@@ -13,6 +13,9 @@ router.post('/', usersControllers.userCreate);
 // Get one user
 router.get('/:id', checkParams, usersControllers.getOneUser);
 
+// get user's password
+router.patch('/pswd/:id', checkParams, usersControllers.editUserPswd)
+
 // Update one user
 router.patch('/:id', checkParams, usersControllers.updateUser);
 

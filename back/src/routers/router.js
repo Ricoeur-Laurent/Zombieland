@@ -19,7 +19,7 @@ router.use("/attractions", attractionsRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/myReservations", verifyToken, reservationsRoutes);
 router.use("/reviews", reviewsRoutes);
-router.use("/myProfil", verifyToken, signUpRoutes);
+router.use("/myProfile", verifyToken, signUpRoutes);
 
 // =================== Admin routes =====================
 

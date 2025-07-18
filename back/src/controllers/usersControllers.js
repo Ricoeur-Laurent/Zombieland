@@ -7,12 +7,15 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+
 import validator from "validator";
 import {
 	adminUserCreateSchema,
 	signUpSchema,
 	updateUserSchema,
+	updatePswdSchema
 } from "../schemas/user.js";
+
 
 const signUpControllers = {
 	// Get all users
@@ -87,7 +90,7 @@ const signUpControllers = {
 
 			// Secure the password with bcrypt hashing before saving
 			const hashedPassword = await bcrypt.hash(password, 10);
-			
+
 			const admin = isAdminRoute ? newUser.data.admin === true : false;
 
 			const user = await Users.create({
@@ -244,6 +247,56 @@ const signUpControllers = {
 				error: "Erreur serveur lors de la suppression.",
 			});
 		}
+	},
+
+	// update user password
+	async editUserPswd(req, res) {
+
+		// validate incoming data using Zod
+		const { id } = req.checkedParams;
+		const pswdUpdate = updatePswdSchema.safeParse(req.body);
+
+		if (!pswdUpdate.success) {
+			return res.status(400).json({
+				message: "Erreur lors de la validation des données via Zod",
+				errors: pswdUpdate.error.issues,
+			});
+		}
+
+		// sanitize input fields
+		const oldPassword = pswdUpdate.data.oldPswd.trim()
+		const newPassword = pswdUpdate.data.newPswd.trim()
+
+		// collect current pswd and match it against provided password
+		try {
+			const user = await Users.findByPk(id);
+
+			if (!user) {
+				return res.status(404).json({ error: "Utilisateur non trouvé." });
+			}
+
+			const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+
+			if (!passwordMatch) {
+				return res.status(401).json({ error: "le mot de passe fournit est incorrect" });
+			}
+
+			// Hash new password before saving it in database
+			const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+			// update user's password in database
+			user.password = hashedPassword
+
+			await user.save()
+			res.status(200).json({ message: "Mot de passe mis à jour avec succès" });
+
+		} catch (error) {
+			console.error("Erreur lors de la récupération du mot de passe :", error);
+			res.status(500).json({
+				error: "Erreur serveur lors de la récupération du mot de passe.",
+			});
+		}
+
 	},
 };
 

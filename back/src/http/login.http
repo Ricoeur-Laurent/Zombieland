@@ -1,3 +1,5 @@
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3RuYW1lIjoiQWRtaW4iLCJsYXN0bmFtZSI6IlpvbWJpZSIsImVtYWlsIjoiYWRtaW5Aem9tYmllLmNvbSIsImFkbWluIjp0cnVlLCJpYXQiOjE3NTI3NjM2MTYsImV4cCI6MTc1Mjg1MDAxNn0.klQlYowxTsHmr6eWwW0PHPRfaf3NbMd-QHGX3ZvVRhQ
 # Create a user
 POST http://localhost:5000/api/signUp
 content-type: application/json
@@ -10,6 +12,19 @@ content-type: application/json
   "phone" : "123456789"
 }
 ###
+
+# Edit one user's password
+PATCH http://localhost:5000/api/myProfile/pswd/1
+content-type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "oldPswd" :  "admin",
+  "newPswd" : "admin"
+}
+
+###
+
 
 # Login as a user
 POST http://localhost:5000/api/login
