@@ -19,7 +19,7 @@ export default function MyProfile() {
     // usestate pour modale edit
     const [showEditModal, setShowEditModal] = useState(false);
     const [name, setName] = useState("")
-    const [champActif, setChampActif] = useState<"firstname" | "lastname" | "email" | "phone" | null>(null);
+    const [champActif, setChampActif] = useState<"firstname" | "lastname" | "email" | "phone">("firstname");
 
     // usestate pour modal delete
     const [showDeleteModal, setshowDeleteModal] = useState(false)
@@ -44,6 +44,13 @@ export default function MyProfile() {
         lastname?: string;
     }>({});
     const [error, setError] = useState("");
+
+const fieldTitles = {
+    firstname: "du prénom",
+    lastname: "du nom", 
+    email: "de l'email",
+    phone: "du téléphone"
+};
 
     // formate phone input from user
     function formatPhone(value: string) {
@@ -99,10 +106,16 @@ export default function MyProfile() {
         setErrors({});
         setError("");
 
+        if (oldPswd === ""){
+            setError("L'ancien mot de passe est obligatoire")
+            return
+        }
+
         if (newPswd !== newPswdConfirm) {
             setError("Echec lors de la confirmation du nouveau mot de passe")
             return
         }
+        
         try {
             const response = await fetch(
                 `${getApiUrl()}/myProfile/pswd/${user?.id}`,
@@ -393,7 +406,7 @@ export default function MyProfile() {
                 onClose={() => {
                     setShowEditModal(false);
                 }}
-                title="Champs à modifier"
+                title={`Modification ${fieldTitles[champActif]}`}
                 confirmText="Confirmer"
                 onConfirm={handleEdit}
             >
