@@ -18,7 +18,7 @@ export const createCheckoutSession = async (req, res) => {
 					price_data: {
 						currency: "eur",
 						product_data: {
-							name: `Réservation du ${visit_date}`,g
+							name: `Réservation du ${visit_date}`,
 						},
 						unit_amount: calculated_price * 100, // Stripe await cents
 					},
