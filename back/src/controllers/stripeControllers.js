@@ -31,8 +31,8 @@ export const createCheckoutSession = async (req, res) => {
 				userId,
 				amount: calculated_price,
 			},
-			success_url: "http://localhost:3001/success",
-			cancel_url: "http://localhost:3001/cancel",
+			success_url: "https://zombieland-front-vercel.vercel.app/success",
+			cancel_url: "https://zombieland-front-vercel.vercel.app/cancel",
 		});
 
 		res.status(200).json({ id: session.id });
