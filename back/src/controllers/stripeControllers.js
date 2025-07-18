@@ -6,11 +6,14 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 	apiVersion: "2023-10-16",
 });
 export const createCheckoutSession = async (req, res) => {
-	const { visit_date, nb_participants, calculated_price, userId } = req.body;
+	const { visit_date, nb_participants, calculated_price } = req.body;
+	const { id: userId, email } = req.user; // ← get them from the  token JWT
 
 	try {
+		const customer = await stripe.customers.create({ email });
 		console.log("💬 Body reçu :", req.body);
 		const session = await stripe.checkout.sessions.create({
+			customer: customer.id,
 			payment_method_types: ["card"],
 			mode: "payment",
 			line_items: [
