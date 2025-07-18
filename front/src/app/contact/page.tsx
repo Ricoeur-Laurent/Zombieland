@@ -7,15 +7,11 @@ export const metadata = {
 
 export default function ContactPage() {
 	return (
-		<main className="flex flex-col items-center justify-between min-h-screen px-4 py-12">
-			<div className="w-full flex flex-col items-center">
-				<h1 className="text-4xl font-title text-primary mb-8 uppercase tracking-wide">
-					Contactez-nous
-				</h1>
-				<ContactForm />
-			</div>
-		</main>
+		<div className="px-4 py-6 max-w-6xl mx-auto">
+			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
+				Contactez-nous
+			</h2>
+			<ContactForm />
+		</div>
 	);
 }
-
-

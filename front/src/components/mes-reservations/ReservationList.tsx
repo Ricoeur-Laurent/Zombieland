@@ -77,7 +77,7 @@ export default function ReservationList() {
 		if (!selectedReservation || !newDate) return;
 
 		const today = new Date();
-		const visitDate = new Date(selectedReservation.visit_date);
+		const visitDate = new Date(newDate); // ✅ correction ici
 		const diffTime = visitDate.getTime() - today.getTime();
 		const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
@@ -88,7 +88,7 @@ export default function ReservationList() {
 
 		setIsEditing(true);
 		try {
-			const isoDate = new Date(newDate).toISOString();
+			const isoDate = visitDate.toISOString(); // déjà calculé
 			const response = await fetch(
 				`${getApiUrl()}/myReservations/${selectedReservation.id}`,
 				{
@@ -98,7 +98,6 @@ export default function ReservationList() {
 						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify({ visit_date: isoDate }),
-					credentials: "include",
 				},
 			);
 
@@ -175,7 +174,7 @@ export default function ReservationList() {
 		);
 	}
 
-	if (loading) {
+	if (loading || fetchingReservations) {
 		return (
 			<p className="text-center text-primary mt-6">
 				Chargement des réservations...
@@ -189,6 +188,11 @@ export default function ReservationList() {
 				Vous n'avez pas encore de réservations.
 			</p>
 		);
+	}
+	function getMinReservationDate(): string {
+		const today = new Date();
+		today.setDate(today.getDate() + 10);
+		return today.toISOString().split("T")[0];
 	}
 
 	return (
@@ -279,6 +283,7 @@ export default function ReservationList() {
 					type="date"
 					value={newDate}
 					onChange={(e) => setNewDate(e.target.value)}
+					min={getMinReservationDate()}
 					className="w-full mb-4 p-2 border rounded bg-bg text-text"
 				/>
 			</Modal>

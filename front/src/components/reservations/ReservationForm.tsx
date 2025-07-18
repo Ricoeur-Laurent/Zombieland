@@ -22,7 +22,9 @@ export default function ReservationForm() {
 		}
 	}, [token, router]);
 
-	useEffect(() => {
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault();
+		// here we check if the user is connected with his token, if he got one he goes to the paiement page else, he need to connect before being redirected
 		if (!date || !visitors || visitors <= 0) {
 			return;
 		}
@@ -42,11 +44,7 @@ export default function ReservationForm() {
 			"zombieland_reservation",
 			JSON.stringify(reservationData),
 		);
-	}, [visitors, date]);
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		// here we check if the user is connected with his token, if he got one he goes to the paiement page else, he need to connect before being redirected
 		if (token) {
 			router.push("/paiement");
 		} else {

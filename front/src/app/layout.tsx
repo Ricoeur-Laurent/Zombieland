@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Footer from "@/components/footer/Footer";
 import Header from "@/components/header/Header";
 import "./globals.css";
+import AgeGateModal from "@/components/legalAge/AgeGateModal";
 import { Providers } from "@/components/provider/Provider";
 
 export const metadata: Metadata = {
@@ -20,6 +21,7 @@ export default function RootLayout({
 		<html lang="fr">
 			<body className="min-h-screen flex flex-col bg-bg text-text">
 				<Providers>
+					<AgeGateModal />
 					<Header />
 					<main className="flex-1">{children}</main>
 					<Footer />

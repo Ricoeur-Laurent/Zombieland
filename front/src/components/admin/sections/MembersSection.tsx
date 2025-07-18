@@ -16,6 +16,16 @@ interface Member {
 	phone: string;
 	admin: boolean;
 }
+type MemberFormData = {
+	firstname: string;
+	lastname: string;
+	email: string;
+	phone: string;
+	admin: boolean;
+	password?: string;
+};
+
+type MemberFormErrors = Partial<Record<keyof MemberFormData, string>>;
 
 export default function MembersSection() {
 	const { token } = useTokenContext();
@@ -27,15 +37,7 @@ export default function MembersSection() {
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [isCreating, setIsCreating] = useState(false);
-
-	const [form, setForm] = useState<{
-		firstname: string;
-		lastname: string;
-		email: string;
-		phone: string;
-		admin: boolean;
-		password?: string;
-	}>({
+	const [form, setForm] = useState<MemberFormData>({
 		firstname: "",
 		lastname: "",
 		email: "",
@@ -43,6 +45,7 @@ export default function MembersSection() {
 		admin: false,
 		password: "",
 	});
+	const [formErrors, setFormErrors] = useState<MemberFormErrors>({});
 
 	const fetchMembers = useCallback(async () => {
 		try {
@@ -62,15 +65,15 @@ export default function MembersSection() {
 	}, [token, fetchMembers]);
 
 	const handleEdit = (member: Member) => {
-    console.log("Membre édité :", member);
+		console.log("Membre édité :", member);
 		setSelectedMember(member);
 		setForm({
-      firstname: member.firstname,
-      lastname: member.lastname,
-      email: member.email,
-      phone: member.phone,
-      admin: !!member.admin, // ✅ to force a boolean 
-    });
+			firstname: member.firstname,
+			lastname: member.lastname,
+			email: member.email,
+			phone: member.phone,
+			admin: !!member.admin, // ✅ to force a boolean
+		});
 		setIsCreating(false);
 		setShowEditModal(true);
 	};
@@ -86,6 +89,7 @@ export default function MembersSection() {
 	const handleUpdate = async () => {
 		if (!selectedMember) return;
 		setLoading(true);
+		setFormErrors({});
 		try {
 			const rawPhone = form.phone.replace(/\D/g, "");
 			// ✅ Déstructuring before the fetch
@@ -106,17 +110,31 @@ export default function MembersSection() {
 				},
 			);
 
-			if (res.ok) {
-				fetchMembers();
-				setShowEditModal(false);
+			const data = await res.json();
+
+			if (!res.ok) {
+				if (res.status === 400 && Array.isArray(data.errors)) {
+					const errors = Object.fromEntries(
+						data.errors.map((err: { path: string[]; message: string }) => [
+							err.path[0],
+							err.message,
+						]),
+					);
+					setFormErrors(errors);
+					return;
+				}
+				console.error("Erreur modification membre :", data);
+				return;
 			}
+
+			fetchMembers();
+			setShowEditModal(false);
 		} catch (err) {
 			console.error("Erreur modification membre :", err);
 		} finally {
 			setLoading(false);
 		}
 	};
-
 	const handleRemove = async () => {
 		if (!selectedMember) return;
 		setLoading(true);
@@ -142,6 +160,7 @@ export default function MembersSection() {
 
 	const handleCreate = async () => {
 		setLoading(true);
+		setFormErrors({}); // reset
 		try {
 			const rawPhone = form.phone.replace(/\D/g, "");
 			const payload = {
@@ -159,10 +178,22 @@ export default function MembersSection() {
 				credentials: "include",
 				body: JSON.stringify(payload),
 			});
-			if (res.ok) {
-				fetchMembers();
-				setShowCreateModal(false);
+			const data = await res.json();
+
+			if (!res.ok) {
+				if (res.status === 400 && Array.isArray(data.error)) {
+					const errors = Object.fromEntries(
+						data.error.map((err: any) => [err.path[0], err.message]),
+					);
+					setFormErrors(errors);
+					return;
+				}
+				console.error("Erreur création membre :", data);
+				return;
 			}
+
+			fetchMembers();
+			setShowCreateModal(false);
 		} catch (err) {
 			console.error("Erreur création membre :", err);
 		} finally {
@@ -215,7 +246,12 @@ export default function MembersSection() {
 				disableConfirm={!form.firstname || !form.lastname || !form.email}
 				loading={loading}
 			>
-				<MemberForm form={form} setForm={setForm} isCreating={isCreating} />
+				<MemberForm
+					form={form}
+					setForm={setForm}
+					isCreating={isCreating}
+					formErrors={formErrors}
+				/>
 			</Modal>
 
 			{/* Modale Suppression */}
@@ -242,7 +278,12 @@ export default function MembersSection() {
 				disableConfirm={!form.firstname || !form.lastname || !form.email}
 				loading={loading}
 			>
-				<MemberForm form={form} setForm={setForm} isCreating={isCreating} />
+				<MemberForm
+					form={form}
+					setForm={setForm}
+					isCreating={isCreating}
+					formErrors={formErrors}
+				/>
 			</Modal>
 		</>
 	);
@@ -252,72 +293,102 @@ function MemberForm({
 	form,
 	setForm,
 	isCreating,
+	formErrors,
 }: {
-	form: any;
-	setForm: any;
+	form: MemberFormData;
+	setForm: React.Dispatch<React.SetStateAction<MemberFormData>>;
 	isCreating: boolean;
+	formErrors: MemberFormErrors;
 }) {
 	function formatPhone(value: string) {
 		const digits = value.replace(/\D/g, "").slice(0, 10);
 		return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
 	}
+
 	return (
 		<div className="space-y-3">
+			{/* First name */}
 			<input
 				type="text"
 				placeholder="Prénom"
-				className="w-full border border-muted rounded p-2"
+				className={`w-full rounded p-2 border ${formErrors.firstname ? "border-red-500" : "border-muted"}`}
+				aria-invalid={!!formErrors.firstname}
 				value={form.firstname}
-				onChange={(e) =>
-					setForm((f: any) => ({ ...f, firstname: e.target.value }))
-				}
+				onChange={(e) => setForm((f) => ({ ...f, firstname: e.target.value }))}
 			/>
+			{formErrors.firstname && (
+				<p className="text-sm text-red-500">{formErrors.firstname}</p>
+			)}
+
+			{/* Last name */}
 			<input
 				type="text"
 				placeholder="Nom"
-				className="w-full border border-muted rounded p-2"
+				className={`w-full rounded p-2 border ${formErrors.lastname ? "border-red-500" : "border-muted"}`}
+				aria-invalid={!!formErrors.lastname}
 				value={form.lastname}
-				onChange={(e) =>
-					setForm((f: any) => ({ ...f, lastname: e.target.value }))
-				}
+				onChange={(e) => setForm((f) => ({ ...f, lastname: e.target.value }))}
 			/>
+			{formErrors.lastname && (
+				<p className="text-sm text-red-500 mt-1">{formErrors.lastname}</p>
+			)}
+
+			{/* Email */}
 			<input
 				type="email"
 				placeholder="Email"
-				className="w-full border border-muted rounded p-2"
+				className={`w-full rounded p-2 border ${formErrors.email ? "border-red-500" : "border-muted"}`}
+				aria-invalid={!!formErrors.email}
 				value={form.email}
-				onChange={(e) => setForm((f: any) => ({ ...f, email: e.target.value }))}
+				onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
 			/>
+			{formErrors.email && (
+				<p className="text-sm text-red-500 mt-1">{formErrors.email}</p>
+			)}
+
+			{/* Phone */}
 			<input
 				type="tel"
 				placeholder="Téléphone"
-				className="w-full border border-muted rounded p-2"
+				className={`w-full rounded p-2 border ${formErrors.phone ? "border-red-500" : "border-muted"}`}
+				aria-invalid={!!formErrors.phone}
 				value={form.phone}
 				onChange={(e) =>
-					setForm((f: any) => ({
+					setForm((f) => ({
 						...f,
 						phone: formatPhone(e.target.value),
 					}))
 				}
 			/>
-			{isCreating && (
-				<input
-					type="password"
-					placeholder="Mot de passe (optionnel)"
-					className="w-full border border-muted rounded p-2"
-					value={form.password || ""}
-					onChange={(e) =>
-						setForm((f: any) => ({ ...f, password: e.target.value }))
-					}
-				/>
+			{formErrors.phone && (
+				<p className="text-sm text-red-500 mt-1">{formErrors.phone}</p>
 			)}
-			<label className="flex items-center gap-2">
+
+			{/* password if create */}
+			{isCreating && (
+				<div>
+					<input
+						type="password"
+						placeholder="Mot de passe (optionnel)"
+						className={`w-full rounded p-2 border ${formErrors.password ? "border-red-500" : "border-muted"}`}
+						aria-invalid={!!formErrors.password}
+						value={form.password || ""}
+						onChange={(e) =>
+							setForm((f) => ({ ...f, password: e.target.value }))
+						}
+					/>
+					{formErrors.password && (
+						<p className="text-sm text-red-500 mt-1">{formErrors.password}</p>
+					)}
+				</div>
+			)}
+			{/* Checkbox admin */}
+			<label htmlFor="admin" className="flex items-center gap-2">
 				<input
+					id="admin"
 					type="checkbox"
 					checked={form.admin}
-					onChange={(e) =>
-						setForm((f: any) => ({ ...f, admin: e.target.checked }))
-					}
+					onChange={(e) => setForm((f) => ({ ...f, admin: e.target.checked }))}
 				/>
 				<span>Admin</span>
 			</label>
