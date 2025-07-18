@@ -14,7 +14,12 @@ import stripeWebhookRouter from "./src/routers/routes/stripeWebhook.routes.js";
 const app = express();
 
 const corsOptions = {
-	origin: ["http://localhost:3000", "http://localhost:3001"],
+
+	origin: [
+		"http://localhost:3000",
+		"http://localhost:3001",
+		"https://zombieland-front-vercel.vercel.app", // ✅ domaine Vercel
+	],
 	credentials: true,
 	methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
 };
