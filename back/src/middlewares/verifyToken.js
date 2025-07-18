@@ -7,17 +7,8 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 export function verifyToken(req, res, next) {
 	// Try to get the token from the Authorization header first
-	let token = null;
 
-	const authHeader = req.headers.authorization;
-	if (authHeader?.startsWith("Bearer ")) {
-		token = authHeader.split(" ")[1];
-	}
-
-	// If not found, try to get it from the cookies
-	if (!token && req.cookies && req.cookies.token) {
-		token = req.cookies.token;
-	}
+	const token = req.cookies.zombieland_token;
 
 	// If still no token, deny access
 	if (!token) {

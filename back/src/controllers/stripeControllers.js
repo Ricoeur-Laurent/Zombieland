@@ -1,7 +1,6 @@
 import Stripe from "stripe";
 import { Reservations } from "../models/index.js";
 
-
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 	apiVersion: "2023-10-16",
 });
@@ -34,8 +33,8 @@ export const createCheckoutSession = async (req, res) => {
 				userId,
 				amount: calculated_price,
 			},
-			success_url: "https://zombieland-front-vercel.vercel.app/success",
-			cancel_url: "https://zombieland-front-vercel.vercel.app/cancel",
+			success_url: "http://localhost:3001/success",
+			cancel_url: "http://localhost:3001/cancel",
 		});
 
 		res.status(200).json({ id: session.id });

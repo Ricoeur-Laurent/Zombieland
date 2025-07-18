@@ -50,7 +50,7 @@ export default function MembersSection() {
 	const fetchMembers = useCallback(async () => {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/users`, {
-				headers: { Authorization: `Bearer ${token}` },
+				headers: {  },
 				credentials: "include",
 			});
 			const data = await res.json();
@@ -103,7 +103,7 @@ export default function MembersSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
+						
 					},
 					credentials: "include",
 					body: JSON.stringify(payload),
@@ -143,7 +143,7 @@ export default function MembersSection() {
 				`${getApiUrl()}/admin/users/${selectedMember.id}`,
 				{
 					method: "DELETE",
-					headers: { Authorization: `Bearer ${token}` },
+					headers: {  },
 					credentials: "include",
 				},
 			);
@@ -173,7 +173,7 @@ export default function MembersSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
+					
 				},
 				credentials: "include",
 				body: JSON.stringify(payload),
