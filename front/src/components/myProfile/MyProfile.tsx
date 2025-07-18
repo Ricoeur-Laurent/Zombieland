@@ -19,7 +19,7 @@ export default function MyProfile() {
     // usestate pour modale edit
     const [showEditModal, setShowEditModal] = useState(false);
     const [name, setName] = useState("")
-    const [champActif, setChampActif] = useState<"firstname" | "lastname" | "email" | "phone">("firstname");
+    const [champActif, setChampActif] = useState<"firstname" | "lastname" | "email" | "phone" | "password">("firstname");
 
     // usestate pour modal delete
     const [showDeleteModal, setshowDeleteModal] = useState(false)
@@ -37,20 +37,23 @@ export default function MyProfile() {
     const [lastname, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
+    const [password, setPassword] = useState("")
     const [errors, setErrors] = useState<{
         email?: string;
         phone?: string;
         firstname?: string;
         lastname?: string;
+        password?: string;
     }>({});
     const [error, setError] = useState("");
 
-const fieldTitles = {
-    firstname: "du prénom",
-    lastname: "du nom", 
-    email: "de l'email",
-    phone: "du téléphone"
-};
+    const fieldTitles = {
+        firstname: "du prénom",
+        lastname: "du nom",
+        email: "de l'email",
+        phone: "du téléphone",
+        password: "du mot de passe"
+    };
 
     // formate phone input from user
     function formatPhone(value: string) {
@@ -106,7 +109,7 @@ const fieldTitles = {
         setErrors({});
         setError("");
 
-        if (oldPswd === ""){
+        if (oldPswd === "") {
             setError("L'ancien mot de passe est obligatoire")
             return
         }
@@ -115,7 +118,7 @@ const fieldTitles = {
             setError("Echec lors de la confirmation du nouveau mot de passe")
             return
         }
-        
+
         try {
             const response = await fetch(
                 `${getApiUrl()}/myProfile/pswd/${user?.id}`,
@@ -294,7 +297,7 @@ const fieldTitles = {
 
     return (
         <>
-            <section className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg">
+            <section className="flex flex-col gap-4 w-full max-w-md mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg">
                 <ul className="space-y-2">
                     <div className="flex justify-between items-center mb-1">
                         <h2 className="text-xl font-subtitle text-primary-light">
@@ -373,19 +376,26 @@ const fieldTitles = {
                             />
                         </div>
                     </li>
+                    <div className="flex justify-between items-center mb-1">
+                        <h2 className="text-xl font-subtitle text-primary-light">
+                            Mot de Passe
+                        </h2>
+                    </div>
+                    <li className="bg-bg text-text border rounded-lg px-3 py-2 mb-3 focus:outline-none font-body text xl
+						focus:border-primary flex justify-between items-center  border-muted ">
+                        <span>**********</span>
+                        <div className="flex gap-2">
+                            <Edit
+                                onClick={() => {
+                                    setShowPswdEditModal(true)
+                                    setName(password);
+                                    setChampActif("password")
+                                }}
+                                className="size-4 text-primary cursor-pointer"
+                            />
+                        </div>
+                    </li>
                 </ul>
-
-                {/* Password modification */}
-                <button
-                    type="button"
-                    onClick={() =>
-                        setShowPswdEditModal(true)
-                    }
-                    className="bg-primary text-bg px-6 py-2 rounded-lg font-bold hover:bg-primary-dark"
-                >
-                    Modifier mon mot de passe
-                </button>
-
                 {/* Account deletion */}
                 <p className="mt-4 text-sm text-center">
                     Pour supprimer votre compte, {" "}
@@ -433,43 +443,44 @@ const fieldTitles = {
                 confirmText="Confirmer"
                 onConfirm={handlePswdEdit}
             >
-                <div className="flex gap-2 items-center ">
+                <div className="flex gap-2 items-center mb-2 border rounded">
                     <input
                         type={showOldPswd ? "text" : "password"}
-                        className="w-full mb-2 p-2 border rounded"
+                        className="w-full p-2 focus:outline-none focus:ring-0 focus:border-none"
                         placeholder="Ancien mot de passe"
                         value={oldPswd}
                         onChange={(e) => setOldPswd(e.target.value)}
                         required
                     />
                     <Eye
-                        className="mb-2 text-primary"
+                        className="text-primary mr-2"
                         onClick={() => { setShowOldPswd(!showOldPswd) }} />
                 </div>
-                <div className="flex gap-2 items-center ">
+                <div className="flex gap-2 items-center mb-2 border rounded">
+
                     <input
                         type={showNewPswd ? "text" : "password"}
-                        className="w-full mb-2 p-2 border rounded"
+                        className="w-full p-2 focus:outline-none focus:ring-0 focus:border-none"
                         placeholder="Nouveau mot de passe"
                         value={newPswd}
                         onChange={(e) => setNewPswd(e.target.value)}
                         required
                     />
                     <Eye
-                        className="mb-2 text-primary"
+                        className="text-primary mr-2"
                         onClick={() => { setShowNewPswd(!showNewPswd) }} />
                 </div>
-                <div className="flex gap-2 items-center ">
+                <div className="flex gap-2 items-center mb-2 border rounded">
                     <input
                         type={showNewPswdConf ? "text" : "password"}
-                        className="w-full mb-2 p-2 border rounded"
+                        className="w-full p-2 focus:outline-none focus:ring-0 focus:border-none"
                         placeholder="Confirmation nouveau mot de passe"
                         value={newPswdConfirm}
                         onChange={(e) => setNewPswdConfirm(e.target.value)}
                         required
                     />
                     <Eye
-                        className="mb-2 text-primary"
+                        className="text-primary mr-2"
                         onClick={() => { setShowNewPswdConf(!showNewPswdConf) }} />
                 </div>
                 {error && <p className="text-red-500 text-sm font-body">{error}</p>}
