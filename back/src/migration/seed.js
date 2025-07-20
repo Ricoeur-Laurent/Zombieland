@@ -1,27 +1,28 @@
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
 import {
 	Attractions,
-  Categories,
-  Reservations,
-  Reviews,
-  sequelize,
-  Users,
-} from "../models/index.js";
+	Categories,
+	Reservations,
+	Reviews,
+	sequelize,
+	Users,
+} from '../models/index.js';
 
+// Seed function to populate the database with initial data
 async function seed() {
-
 	try {
-		
+		// Create categories
 		const categories = await Categories.bulkCreate([
-			{ name: "Survival" },
-			{ name: "Escape Game" },
-			{ name: "Manege" },
-			{ name: "Simulation urbaine" },
-			{ name: "Paintball" },
-			{ name: "VR" },
+			{ name: 'Survival' },
+			{ name: 'Escape Game' },
+			{ name: 'Manege' },
+			{ name: 'Simulation urbaine' },
+			{ name: 'Paintball' },
+			{ name: 'VR' },
 		]);
 
+		// Create attractions
 		const attractions = await Attractions.bulkCreate([
 			{
 				name: `Le Dedale Maudit`,
@@ -103,6 +104,7 @@ async function seed() {
 			},
 		]);
 
+		// Associate each attraction with a category
 		await attractions[0].addCategories([categories[0]]);
 		await attractions[1].addCategories([categories[1]]);
 		await attractions[2].addCategories([categories[1]]);
@@ -117,70 +119,74 @@ async function seed() {
 		await attractions[11].addCategories([categories[3]]);
 		await attractions[12].addCategories([categories[5]]);
 
-		const hashedPasswordAdmin = await bcrypt.hash("admin", 10);
-		const hashedPasswordUser = await bcrypt.hash("user", 10);
-		const hashedPasswordUser2 = await bcrypt.hash("user2", 10);
+		// Hash passwords for users
+		const hashedPasswordAdmin = await bcrypt.hash('admin', 10);
+		const hashedPasswordUser = await bcrypt.hash('user', 10);
+		const hashedPasswordUser2 = await bcrypt.hash('user2', 10);
 
+		// Create users (admin and regular users)
 		const users = await Users.bulkCreate([
 			{
-				firstname: "Admin",
-				lastname: "Zombie",
-				email: "admin@zombie.com",
+				firstname: 'Admin',
+				lastname: 'Zombie',
+				email: 'admin@zombie.com',
 				password: hashedPasswordAdmin,
-				phone: "0600000001",
+				phone: '0600000001',
 				admin: true,
 			},
 			{
-				firstname: "User",
-				lastname: "Zombie",
-				email: "user@zombie.com",
+				firstname: 'User',
+				lastname: 'Zombie',
+				email: 'user@zombie.com',
 				password: hashedPasswordUser,
-				phone: "0600000002",
+				phone: '0600000002',
 				admin: false,
 			},
 			{
-				firstname: "User2",
-				lastname: "Zombie",
-				email: "user2@zombie.com",
+				firstname: 'User2',
+				lastname: 'Zombie',
+				email: 'user2@zombie.com',
 				password: hashedPasswordUser2,
-				phone: "0600000003",
+				phone: '0600000003',
 				admin: false,
 			},
 		]);
 
+		// Create reservations linked to users
 		const reservations = await Reservations.bulkCreate([
 			{
-				visit_date: "2025-09-30",
+				visit_date: '2025-09-30',
 				amount: 66,
 				nb_participants: 1,
 				userId: users[0].id,
 			},
 			{
-				visit_date: "2025-09-25",
+				visit_date: '2025-09-25',
 				amount: 330,
 				nb_participants: 5,
 				userId: users[1].id,
 			},
 			{
-				visit_date: "2025-07-26",
+				visit_date: '2025-07-26',
 				amount: 264,
 				nb_participants: 4,
 				userId: users[2].id,
 			},
 			{
-				visit_date: "2025-09-27",
+				visit_date: '2025-09-27',
 				amount: 66,
 				nb_participants: 1,
 				userId: users[0].id,
 			},
 			{
-				visit_date: "2025-09-05",
+				visit_date: '2025-09-05',
 				amount: 198,
 				nb_participants: 3,
 				userId: users[1].id,
 			},
 		]);
 
+		// Create reviews from users about attractions
 		const reviews = await Reviews.bulkCreate([
 			{
 				rating: 3,
@@ -213,7 +219,6 @@ async function seed() {
 				attractionId: attractions[4].id,
 			},
 		]);
-
 
 		console.log('Données insérées avec succès');
 		// process.exit();

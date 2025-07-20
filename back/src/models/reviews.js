@@ -3,8 +3,10 @@ import { Model, DataTypes } from 'sequelize';
 import { Users } from './users.js';
 import { Attractions } from './attractions.js';
 
+// Define the Reviews model extending Sequelize's Model class
 export class Reviews extends Model {}
 
+// Initialize the Reviews model schema and options
 Reviews.init(
 	{
 		id: {
