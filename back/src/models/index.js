@@ -9,7 +9,7 @@ import { Reservations } from './reservations.js';
 import { Attractions } from './attractions.js';
 import { Categories } from './categories.js';
 
-
+// One-to-Many: A user can write multiple reviews
 Users.hasMany(Reviews, {
 	foreignKey: {
 		name: 'userId',
@@ -18,6 +18,7 @@ Users.hasMany(Reviews, {
 	onDelete: 'CASCADE',
 });
 
+// Many-to-One: Each review belongs to one user
 Reviews.belongsTo(Users, {
 	foreignKey: {
 		name: 'userId',
@@ -26,6 +27,7 @@ Reviews.belongsTo(Users, {
 	onDelete: 'CASCADE',
 });
 
+// One-to-Many: A user can make multiple reservations
 Users.hasMany(Reservations, {
 	foreignKey: {
 		name: 'userId',
@@ -34,6 +36,7 @@ Users.hasMany(Reservations, {
 	onDelete: 'CASCADE',
 });
 
+// Many-to-One: Each reservation belongs to one user
 Reservations.belongsTo(Users, {
 	foreignKey: {
 		name: 'userId',
@@ -42,6 +45,7 @@ Reservations.belongsTo(Users, {
 	onDelete: 'CASCADE',
 });
 
+// One-to-Many: An attraction can have many reviews
 Attractions.hasMany(Reviews, {
 	foreignKey: {
 		name: 'attractionId',
@@ -50,6 +54,7 @@ Attractions.hasMany(Reviews, {
 	onDelete: 'CASCADE',
 });
 
+// Many-to-One: A review belongs to one attraction
 Reviews.belongsTo(Attractions, {
 	foreignKey: {
 		name: 'attractionId',
@@ -58,7 +63,8 @@ Reviews.belongsTo(Attractions, {
 	onDelete: 'CASCADE',
 });
 
-
+// Many-to-Many: A category can have many attractions
+// and an attraction can belong to many categories
 Categories.belongsToMany(Attractions, {
 	through: 'attractions_has_categories',
 	foreignKey: 'categoryId',
@@ -66,6 +72,7 @@ Categories.belongsToMany(Attractions, {
 	as: 'attractions', 
 });
 
+// Many-to-Many: An attraction can have many categories
 Attractions.belongsToMany(Categories, {
 	through: 'attractions_has_categories',
 	foreignKey: 'attractionId',
