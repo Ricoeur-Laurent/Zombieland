@@ -16,7 +16,7 @@ async function seed() {
 		const categories = await Categories.bulkCreate([
 			{ name: "Survival" },
 			{ name: "Escape Game" },
-			{ name: "Manège" },
+			{ name: "Manege" },
 			{ name: "Simulation urbaine" },
 			{ name: "Paintball" },
 			{ name: "VR" },
@@ -24,13 +24,13 @@ async function seed() {
 
 		const attractions = await Attractions.bulkCreate([
 			{
-				name: `Le Dédale Maudit`,
+				name: `Le Dedale Maudit`,
 				slug: `le-dédale-maudit`,
 				image: `le-dédale-maudit.jpg`,
 				description: `Entrez si vous l’osez… Le Zombie Labyrinthe vous ouvre ses portes, mais rien ne garantit que vous en sortirez indemne !\nDans ce labyrinthe sombre et angoissant, chaque détour peut cacher l’impensable. Des créatures contaminées rôdent dans l’ombre, affamées de chair humaine, prêtes à bondir au moindre bruit… Votre mission : trouver la sortie, éviter les pièges et surtout… ne pas vous faire mordre !\nEntre effets spéciaux, ambiance immersive et décors à couper le souffle, cette attraction est réservée aux plus courageux. Êtes-vous prêt à affronter vos peurs les plus profondes ?`,
 			},
 			{
-				name: `Le Manoir des Âmes Perdues`,
+				name: `Le Manoir des Ames Perdues`,
 				slug: `le-manoir-des-âmes-perdues`,
 				image: `le-manoir-des-âmes-perdues.jpg`,
 				description: `Bienvenue dans le Manoir Zombie, un ancien domaine abandonné depuis des décennies… ou presque. Des rumeurs parlent d’expériences interdites, de cris dans la nuit… et de morts revenus à la vie.\nVous et votre équipe êtes envoyés en mission pour enquêter. Une fois les portes refermées derrière vous, une seule chose est sûre : le compte à rebours a commencé.\nVous avez 60 minutes pour explorer les lieux, résoudre les énigmes et échapper aux griffes des zombies avant qu’il ne soit trop tard…\n Un escape game immersif mêlant horreur, suspense et réflexion\nÉnigmes, fouilles, manipulations… chaque indice compte\nLes zombies rôdent… restez sur vos gardes à chaque instant\nActeurs en chair et (putréfaction) os pour une tension maximale !`,
@@ -78,7 +78,7 @@ async function seed() {
 				description: `Vous ouvrez les yeux dans un hôpital désert, les couloirs sont vides, les néons vacillent, et un silence oppressant règne…\nMais quelque chose ne tourne pas rond : à l’extérieur, le chaos a éclaté. L’invasion des infectés a transformé le monde en un cauchemar vivant.\nÀ peine sorti de votre coma, vous devez explorer cet hôpital abandonné, chercher des indices, des survivants… et surtout, éviter les créatures affamées qui rôdent encore dans l’ombre.\nChaque pièce recèle un danger, chaque bruit peut être le dernier.\nAmbiance sombre et tendue, effets sonores angoissants\nRésolvez les mystères du réveil et découvrez ce qui s’est passé\nVivez une immersion intense à la 28 jours plus tard`,
 			},
 			{
-				name: `Les Ombres du Cimetière`,
+				name: `Les Ombres du Cimetiere`,
 				slug: `les-ombres-du-cimetière`,
 				image: `les-ombres-du-cimetière.jpg`,
 				description: `La nuit tombe sur un vieux cimetière abandonné…\nSoudain, la terre se fissure, les tombes s’ouvrent, et les morts reprennent vie pour hanter les vivants !\nOserez-vous vous aventurer dans ce lieu maudit où chaque pas peut réveiller des hordes de zombies affamés ?\nParcourez les allées sombres, évitez les pièges et préparez-vous à des rencontres terrifiantes… car ici, la mort n’est qu’un début.\nAtmosphère lugubre et brumeuse\nZombies surgissant du sol avec effets spéciaux réalistes\nN’hésitez pas à venir équipé d’une lampe torche… vous en aurez besoin !`,
@@ -151,31 +151,31 @@ async function seed() {
 		const reservations = await Reservations.bulkCreate([
 			{
 				visit_date: "2025-09-30",
-				amount: 44.64,
+				amount: 66,
 				nb_participants: 1,
 				userId: users[0].id,
 			},
 			{
 				visit_date: "2025-09-25",
-				amount: 25.66,
+				amount: 330,
 				nb_participants: 5,
 				userId: users[1].id,
 			},
 			{
 				visit_date: "2025-07-26",
-				amount: 92.15,
+				amount: 264,
 				nb_participants: 4,
 				userId: users[2].id,
 			},
 			{
 				visit_date: "2025-09-27",
-				amount: 24.69,
+				amount: 66,
 				nb_participants: 1,
 				userId: users[0].id,
 			},
 			{
 				visit_date: "2025-09-05",
-				amount: 78.1,
+				amount: 198,
 				nb_participants: 3,
 				userId: users[1].id,
 			},
