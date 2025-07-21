@@ -13,6 +13,7 @@ interface Category {
 }
 
 export default function CategoriesSection() {
+	// ========== State Management ==========
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [visible, setVisible] = useState(4);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -25,7 +26,7 @@ export default function CategoriesSection() {
 	const [loading, setLoading] = useState(false);
 	const [formError, setFormError] = useState<string | null>(null);
 	const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
+	// ========== Fetch Categories ==========
 	const fetchCategories = useCallback(async () => {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/categories`, {

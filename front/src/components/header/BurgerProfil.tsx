@@ -12,22 +12,23 @@ export default function BurgerProfil({
 	onOpenProfil?: () => void;
 }) {
 	const [open, setOpen] = useState(false);
+	// Toggles drawer visibility and optionally triggers parent action
 	const handleOpen = () => {
 		if (onOpenProfil) onOpenProfil?.();
 		setOpen(false);
 	};
-	/* Bloque le scroll quand le drawer est ouvert */
+	// Locks page scroll when the drawer is open
 	useEffect(() => {
 		document.body.style.overflow = open ? "hidden" : "";
 	}, [open]);
 	// we get the token in the burger to check if the user is connected and swap the  burger optin connect/disconnect
-	const { user, logout } = useAuthContext(); // au lieu de useTokenContext
+	const { user, logout } = useAuthContext();
 	const router = useRouter();
 
 	// disconnect function, we call the backend to clear the cookie and we use the authcontext to refresh it after.
 	const handleLogout = async () => {
-		await logout();
-		localStorage.removeItem("zombieland_reservation");
+		await logout(); // clears the cookie via API and resets user context
+		localStorage.removeItem("zombieland_reservation"); // optional: clear any local data
 		setOpen(false);
 		handleOpen();
 		router.push("/");
@@ -35,7 +36,7 @@ export default function BurgerProfil({
 
 	return (
 		<>
-			{/* bouton User qui déclenche l’ouverture */}
+			{/* Trigger button (User icon) */}
 			<button
 				type="button"
 				aria-label="Profil"
@@ -47,10 +48,10 @@ export default function BurgerProfil({
 				<User className="h-6 w-6" />
 			</button>
 
-			{/* drawer Profil */}
+			{/* Drawer menu - appears over full screen when open */}
 			{open && (
 				<div className="fixed inset-0 z-50 flex flex-col bg-bg/95 backdrop-blur px-6 py-8 text-xl font-subtitle uppercase">
-					{/* close */}
+					{/* Close button (top right) */}
 					<button
 						type="button"
 						aria-label="Fermer"
@@ -61,12 +62,12 @@ export default function BurgerProfil({
 					</button>
 
 					{user ? (
-						<ul className="mt-8 flex flex-grow flex-col gap-6">
+						<ul className="mt-8 flex flex-grow flex-col gap-6 items-end">
 							<li>
 								<Link
 									href="/mon-profil"
 									onClick={handleOpen}
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Mon profil
 								</Link>
@@ -76,7 +77,7 @@ export default function BurgerProfil({
 								<Link
 									href="/mes-reservations"
 									onClick={handleOpen}
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Mes réservations
 								</Link>
@@ -87,7 +88,7 @@ export default function BurgerProfil({
 									<Link
 										href="/admin"
 										onClick={handleOpen}
-										className="flex items-center gap-3 py-2 text-red-500 font-bold transition-colors hover:text-red-700"
+										className="flex gap-3 py-2 text-red-500 font-bold transition-colors hover:text-red-700"
 									>
 										Espace Admin
 									</Link>
@@ -98,19 +99,19 @@ export default function BurgerProfil({
 								<button
 									type="button"
 									onClick={handleLogout}
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Déconnexion
 								</button>
 							</li>
 						</ul>
 					) : (
-						<ul className="mt-8 flex flex-grow flex-col gap-6">
+						<ul className="mt-8 flex flex-grow flex-col gap-6 items-end">
 							<li>
 								<Link
 									href="/connexion"
 									onClick={handleOpen}
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Connexion
 								</Link>

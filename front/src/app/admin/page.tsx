@@ -22,7 +22,7 @@ export default function AdminRouteGuard() {
 	if (loading) return <p className="text-center mt-6">Chargement...</p>;
 
 	if (!user || !user.admin) {
-		// ⛔ Blocage strict du rendu si redirection nécessaire
+		//  Strictly block rendering if redirection is necessary
 		return null;
 	}
 

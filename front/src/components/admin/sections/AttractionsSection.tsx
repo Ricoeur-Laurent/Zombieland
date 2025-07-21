@@ -7,6 +7,7 @@ import { getApiUrl } from "@/utils/getApi";
 import ShowMoreButton from "../ui/ShowMoreButton";
 
 export default function AttractionsSection() {
+	// === Component State Setup ===
 	const [attractions, setAttractions] = useState<Attraction[]>([]);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -18,9 +19,11 @@ export default function AttractionsSection() {
 	const [name, setName] = useState("");
 	const [description, setDescription] = useState("");
 
+	// === Pagination & Visible Items ===
 	const visibleItems = attractions.slice(0, visible);
 	const hasMore = visible < attractions.length;
-
+	// === Slug Generation ===
+	// Convert a string to a slugified format (lowercase, hyphen-separated, no accents).
 	const slugify = (str: string) =>
 		str
 			.normalize("NFD")
@@ -52,6 +55,7 @@ export default function AttractionsSection() {
 		fetchAttractions();
 	}, [fetchAttractions]);
 
+	//edit attractions function
 	const handleEdit = async () => {
 		if (!selectedAttraction) return;
 		try {
@@ -83,7 +87,7 @@ export default function AttractionsSection() {
 			console.error(err);
 		}
 	};
-
+	//create attractions function
 	const handleCreate = async () => {
 		try {
 			console.log(
@@ -118,6 +122,7 @@ export default function AttractionsSection() {
 			console.error(err);
 		}
 	};
+	//delete attractions functions
 	const handleDelete = async () => {
 		if (!selectedAttraction) return;
 		try {
