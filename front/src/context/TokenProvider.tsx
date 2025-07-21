@@ -1,5 +1,4 @@
 "use client";
-Hello;
 
 import Cookies from "js-cookie";
 import type React from "react";
