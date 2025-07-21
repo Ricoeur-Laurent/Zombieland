@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 			if (res.ok) {
 				const data = await res.json();
 				setUser(data.user);
+				//we got an error 401 when someone not connected log for the first time, its the awaited comportment, and it's fine.
 			} else if (res.status === 401) {
 				setUser(null);
 			} else {
