@@ -7,9 +7,14 @@ import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
 // Initialize Stripe with the public key from the environment
-const stripePromise = loadStripe(
-	process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-);
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripeKey) {
+	throw new Error("Missing Stripe public key");
+}
+
+// Load Stripe later when needed
+const stripePromise = loadStripe(stripeKey);
+
 
 export default function PaiementSection() {
 	const { loading, user } = useAuthContext();
