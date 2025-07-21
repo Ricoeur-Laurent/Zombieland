@@ -12,6 +12,8 @@ import signUpRoutes from "./routes/users.routes.js";
 
 const router = express.Router();
 
+// =================== Public routes =====================
+
 router.use("/signUp", signUpRoutes);
 router.use("/login", loginRoutes);
 router.use("/reservations", verifyToken, reservationsRoutes);
