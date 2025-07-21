@@ -62,7 +62,7 @@ export default function BurgerProfil({
 					</button>
 
 					{user ? (
-						<ul className="mt-8 flex flex-grow flex-col gap-6 items-end">
+						<ul className="mt-8 flex flex-grow flex-col gap-6 ">
 							<li>
 								<Link
 									href="/mon-profil"
@@ -106,7 +106,7 @@ export default function BurgerProfil({
 							</li>
 						</ul>
 					) : (
-						<ul className="mt-8 flex flex-grow flex-col gap-6 items-end">
+						<ul className="mt-8 flex flex-grow flex-col gap-6 ">
 							<li>
 								<Link
 									href="/connexion"

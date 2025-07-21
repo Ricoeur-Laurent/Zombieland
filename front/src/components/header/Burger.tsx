@@ -52,7 +52,7 @@ export default function Burger({
 						<X className="h-7 w-7 text-primary  active:bg-primary/40" />
 					</button>
 					{/* Navigation links list */}
-					<ul className="mt-8 flex flex-grow flex-col gap-6 items-end">
+					<ul className="mt-8 flex flex-grow flex-col gap-6 ">
 						{links.map(({ href, label }) => (
 							<li key={href}>
 								<Link
