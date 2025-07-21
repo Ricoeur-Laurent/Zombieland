@@ -4,11 +4,14 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node index.js",
-		"dev": "node --watch  index.js",
-		"test": "jest",
+		"dev": "cross-env NODE_ENV=development node --watch index.js",
 		"db:create": "node ./src/migration/sync.js",
 		"db:seed": "node ./src/migration/seed.js",
-		"db:reset": "npm run db:create && npm run db:seed"
+		"db:reset": "npm run db:create && npm run db:seed",
+		"db:test:create": "cross-env NODE_ENV=test node ./src/migration/syncTest.js",
+		"db:test:seed": "cross-env NODE_ENV=test node ./src/migration/seedTest.js",
+		"db:test:reset": "npm run db:test:create && npm run db:test:seed",
+		"test": "cross-env NODE_ENV=test jest"
 	},
 	"type": "module",
 	"keywords": [],
@@ -30,6 +33,7 @@
 	},
 	"description": "",
 	"devDependencies": {
+		"cross-env": "^7.0.3",
 		"jest": "^30.0.4",
 		"supertest": "^7.1.3"
 	}
