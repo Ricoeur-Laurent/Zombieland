@@ -98,7 +98,7 @@ const loginControllers = {
 	logout(req, res) {
 		res.clearCookie("zombieland_token", {
 			httpOnly: true,
-			sameSite: "lax", // même config que pour le login
+			sameSite: "none", // même config que pour le login
 			secure: process.env.NODE_ENV === "production",
 		});
 		res.status(200).json({ message: "Déconnexion réussie" });
