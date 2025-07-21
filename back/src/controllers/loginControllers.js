@@ -62,7 +62,7 @@ const loginControllers = {
 
 			res.cookie("zombieland_token", token, {
 				httpOnly: true,
-				sameSite: "lax", // ✅ for Stripe compatibility
+				sameSite: "none", // ✅ for Stripe compatibility
 				secure: process.env.NODE_ENV === "production",
 				maxAge: 24 * 60 * 60 * 1000, // 1 day
 			});
