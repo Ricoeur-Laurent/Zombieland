@@ -78,5 +78,5 @@ Attractions.belongsToMany(Categories, {
 	otherKey: 'categoryId',
 	as: 'categories', 
 });
-console.log(Categories.associations.attractions);
+
 export { sequelize, Users, Reservations, Attractions, Reviews, Categories };

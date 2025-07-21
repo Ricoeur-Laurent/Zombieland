@@ -4,14 +4,14 @@
 	"main": "index.js",
 	"scripts": {
 		"start": "node index.js",
-		"dev": "cross-env NODE_ENV=development node --watch index.js",
+		"dev": "NODE_ENV=development node --watch index.js",
 		"db:create": "node ./src/migration/sync.js",
 		"db:seed": "node ./src/migration/seed.js",
 		"db:reset": "npm run db:create && npm run db:seed",
-		"db:test:create": "cross-env NODE_ENV=test node ./src/migration/syncTest.js",
-		"db:test:seed": "cross-env NODE_ENV=test node ./src/migration/seedTest.js",
+		"db:test:create": "NODE_ENV=test node ./src/migration/syncTest.js",
+		"db:test:seed": "NODE_ENV=test node ./src/migration/seedTest.js",
 		"db:test:reset": "npm run db:test:create && npm run db:test:seed",
-		"test": "cross-env NODE_ENV=test jest"
+		"test": "NODE_ENV=test jest"
 	},
 	"type": "module",
 	"keywords": [],
