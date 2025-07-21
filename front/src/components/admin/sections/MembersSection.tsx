@@ -7,6 +7,7 @@ import AdminSection from "../ui/AdminSection";
 import ItemList from "../ui/ItemList";
 import ShowMoreButton from "../ui/ShowMoreButton";
 
+// Member type returned by the backend
 interface Member {
 	id: number;
 	firstname: string;
@@ -15,6 +16,7 @@ interface Member {
 	phone: string;
 	admin: boolean;
 }
+// Data structure used in forms
 type MemberFormData = {
 	firstname: string;
 	lastname: string;
@@ -24,17 +26,23 @@ type MemberFormData = {
 	password?: string;
 };
 
+// Form validation errors
 type MemberFormErrors = Partial<Record<keyof MemberFormData, string>>;
 
 export default function MembersSection() {
 	const [members, setMembers] = useState<Member[]>([]);
 	const [visible, setVisible] = useState(4);
 	const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
+	// Modal visibility
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
 	const [showCreateModal, setShowCreateModal] = useState(false);
+
 	const [loading, setLoading] = useState(false);
 	const [isCreating, setIsCreating] = useState(false);
+
+	// Form state
 	const [form, setForm] = useState<MemberFormData>({
 		firstname: "",
 		lastname: "",
@@ -45,6 +53,7 @@ export default function MembersSection() {
 	});
 	const [formErrors, setFormErrors] = useState<MemberFormErrors>({});
 
+	// Fetch members from the API
 	const fetchMembers = useCallback(async () => {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/users`, {
@@ -109,6 +118,7 @@ export default function MembersSection() {
 
 			const data = await res.json();
 
+			// Handle validation errors
 			if (!res.ok) {
 				if (res.status === 400 && Array.isArray(data.errors)) {
 					const errors = Object.fromEntries(
@@ -179,6 +189,7 @@ export default function MembersSection() {
 			if (!res.ok) {
 				if (res.status === 400 && Array.isArray(data.error)) {
 					const errors = Object.fromEntries(
+						// biome-ignore lint/suspicious/noExplicitAny: error object structure is dynamic (from Zod)
 						data.error.map((err: any) => [err.path[0], err.message]),
 					);
 					setFormErrors(errors);
@@ -285,6 +296,7 @@ export default function MembersSection() {
 	);
 }
 
+// Form used in both create and edit modals
 function MemberForm({
 	form,
 	setForm,

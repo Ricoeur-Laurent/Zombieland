@@ -38,6 +38,12 @@ export default function ReservationList() {
 		const diffTime = visitDate.getTime() - today.getTime();
 		const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
+		// Prevent deletion if the reservation is less than 10 days away
+		if (diffDays <= 10) {
+			console.warn("Deletion not allowed within 10 days of the visit.");
+			return;
+		}
+
 		if (diffDays <= 10) {
 			console.warn("Suppression interdite à moins de 10 jours.");
 			return;
@@ -80,6 +86,7 @@ export default function ReservationList() {
 		const diffTime = visitDate.getTime() - today.getTime();
 		const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
+		// Prevent editing if the reservation is less than 10 days away
 		if (diffDays <= 10) {
 			console.warn("Modification interdite à moins de 10 jours.");
 			return;
@@ -118,6 +125,7 @@ export default function ReservationList() {
 		}
 	};
 
+	// If the user is not authenticated, redirect to login after 3 seconds
 	useEffect(() => {
 		if (loading) return; // ⛔️ do not take effect if loading
 
@@ -186,6 +194,7 @@ export default function ReservationList() {
 			</p>
 		);
 	}
+	// User can only select a new date at least 10 days from today
 	function getMinReservationDate(): string {
 		const today = new Date();
 		today.setDate(today.getDate() + 10);

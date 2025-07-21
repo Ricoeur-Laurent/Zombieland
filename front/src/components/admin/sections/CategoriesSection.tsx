@@ -85,6 +85,7 @@ export default function CategoriesSection() {
 			if (!res.ok) {
 				if (res.status === 400 && Array.isArray(data.error)) {
 					const errors = Object.fromEntries(
+						// biome-ignore lint/suspicious/noExplicitAny: error object structure is dynamic (from Zod)
 						data.error.map((err: any) => [err.path[0], err.message]),
 					);
 					setFormErrors(errors);
@@ -129,7 +130,7 @@ export default function CategoriesSection() {
 			setLoading(false);
 		}
 	};
-// when we create a category we don't need previous data, that's why there isn't a handle... before we can directly call the function with the modal
+	// when we create a category we don't need previous data, that's why there isn't a handle... before we can directly call the function with the modal and the + button is in the SectionHeader of the AdminSection
 	const handleCreate = async () => {
 		if (!categoryName) return;
 		setLoading(true);
@@ -149,6 +150,7 @@ export default function CategoriesSection() {
 			if (!res.ok) {
 				if (res.status === 400 && Array.isArray(data.error)) {
 					const errors = Object.fromEntries(
+						// biome-ignore lint/suspicious/noExplicitAny: error object structure is dynamic (from Zod)
 						data.error.map((err: any) => [err.path[0], err.message]),
 					);
 					setFormErrors(errors);
@@ -196,6 +198,7 @@ export default function CategoriesSection() {
 			</AdminSection>
 
 			{/* Modale Edition */}
+			{/* here I use the modal component and fill it with the childrens I need */}
 			<Modal
 				isOpen={showEditModal}
 				title="Modifier la catégorie"

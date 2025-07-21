@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
+// Initialize Stripe with the public key from the environment
 const stripePromise = loadStripe(
 	process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
 );
@@ -22,12 +23,14 @@ export default function PaiementSection() {
 		calculatedPrice: number;
 	} | null>(null);
 
+	// Redirect to login if user is not authenticated
 	useEffect(() => {
 		if (!loading && !user) {
 			router.push("/connexion?redirect=/paiement");
 		}
 	}, [user, loading, router]);
 
+	// Load reservation data from localStorage
 	useEffect(() => {
 		const stored = localStorage.getItem("zombieland_reservation");
 		if (stored) {
@@ -37,6 +40,7 @@ export default function PaiementSection() {
 		}
 	}, [router]);
 
+	// Create Stripe Checkout session and redirect to Stripe
 	const handlePayment = async () => {
 		if (!reservation || !user) return;
 
@@ -69,6 +73,7 @@ export default function PaiementSection() {
 				throw new Error("Stripe n’a pas pu être initialisé.");
 			}
 
+			// Redirect user to Stripe checkout page
 			await stripe.redirectToCheckout({ sessionId: data.id }); // back end send back the id
 		} catch (err) {
 			console.error(err);
@@ -77,11 +82,13 @@ export default function PaiementSection() {
 			setPaymentLoading(false);
 		}
 	};
+	// Cancel reservation (clears local storage and redirects home)
 	const handleCancel = () => {
 		localStorage.removeItem("zombieland_reservation");
 		router.push("/");
 	};
 
+	// No reservation found
 	if (!reservation) {
 		return (
 			<p className="text-center text-text">

@@ -6,6 +6,7 @@ import Modal from "@/components/modal/Modal";
 import { getApiUrl } from "@/utils/getApi";
 import ShowMoreButton from "../ui/ShowMoreButton";
 
+// Reservation type returned by the backend
 type Reservation = {
 	id: number;
 	visit_date: string;
@@ -27,6 +28,7 @@ export default function ReservationsSection() {
 	const [filterDate, setFilterDate] = useState("");
 	const step = 4;
 
+
 	async function handleDeleteReservation() {
 		if (!selectedReservation) return;
 
@@ -42,6 +44,7 @@ export default function ReservationsSection() {
 			);
 
 			if (res.ok) {
+				// Remove the deleted reservation from state
 				setReservations((prev) =>
 					prev.filter((r) => r.id !== selectedReservation.id),
 				);
@@ -76,6 +79,7 @@ export default function ReservationsSection() {
 			);
 
 			if (res.ok) {
+				// Update the reservation in state
 				setReservations((prev) =>
 					prev.map((r) =>
 						r.id === selectedReservation.id ? { ...r, visit_date: isoDate } : r,
@@ -91,7 +95,7 @@ export default function ReservationsSection() {
 			setIsEditing(false);
 		}
 	}
-
+// Fetch all reservations when component mounts
 	useEffect(() => {
 		async function fetchReservations() {
 			try {
@@ -109,6 +113,7 @@ export default function ReservationsSection() {
 		fetchReservations();
 	}, []);
 
+	// Filter by name and date
 	const filtered = reservations.filter((r) => {
 		const matchesName =
 			r.User &&
@@ -129,12 +134,14 @@ export default function ReservationsSection() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 
+	// Open edit modal
 	function handleEdit(reservation: Reservation) {
 		setSelectedReservation(reservation);
 		setNewDate(reservation.visit_date.slice(0, 10));
 		setShowEditModal(true);
 	}
 
+	// Open delete confirmation modal
 	function handleDelete(reservationId: number) {
 		const reservation = reservations.find((r) => r.id === reservationId);
 		if (reservation) {

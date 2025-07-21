@@ -1,17 +1,20 @@
-import he from "he"; // decode HTML
+import he from "he"; // decode HTML entities (e.g., &amp; → &)
 import { Edit, Trash2 } from "lucide-react";
 
+// Each item in the list has an ID and a name
 type Item = {
 	id: number;
 	name: string;
 };
 
+// Props for the ItemList component
 type ItemListProps = {
 	items: Item[];
 	onEdit?: (index: number) => void;
 	onDelete?: (index: number) => void;
 };
 
+// Reusable list component with optional edit and delete actions
 export default function ItemList({
 	items = [],
 	onEdit,
