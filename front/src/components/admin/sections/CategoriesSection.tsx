@@ -38,13 +38,14 @@ export default function CategoriesSection() {
 			console.error("Erreur lors du fetch des catégories :", err);
 		}
 	}, []);
-
+	// we use an use effect here so each time we patch post or delete its changed by an api call
 	useEffect(() => {
 		fetchCategories();
 	}, [fetchCategories]);
 
 	const handleEdit = (category: Category) => {
 		setSelectedCategory(category);
+		// an admin can only update a category name so that's what we 'll send to the api with the function handleUpdate.
 		setCategoryName(category.name);
 		setFormErrors({});
 		setFormError(null);
@@ -52,6 +53,7 @@ export default function CategoriesSection() {
 	};
 
 	const handleDelete = (id: number) => {
+		//we find a c(ategory) by its id so we can open the modal to remove this category.
 		const category = categories.find((c) => c.id === id);
 		if (category) {
 			setSelectedCategory(category);
@@ -126,7 +128,7 @@ export default function CategoriesSection() {
 			setLoading(false);
 		}
 	};
-
+// when we create a category we don't need previous data, that's why there isn't a handle... before we can directly call the function with the modal
 	const handleCreate = async () => {
 		if (!categoryName) return;
 		setLoading(true);
@@ -170,6 +172,7 @@ export default function CategoriesSection() {
 	const hasMore = visible < categories.length;
 
 	return (
+		// we use <> and </> at the end so we can write our AdminSection, then the modals that 'll be opened by the + pencil and trash to create, update or delete
 		<>
 			<AdminSection
 				title="Gestion des catégories"
