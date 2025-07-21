@@ -32,7 +32,7 @@ export default function CategoriesSection() {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/categories`, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					
 				},
 				credentials: "include",
 			});
@@ -75,7 +75,7 @@ export default function CategoriesSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
+						
 					},
 					body: JSON.stringify({ name: categoryName }),
 					credentials: "include",
@@ -116,7 +116,7 @@ export default function CategoriesSection() {
 				{
 					method: "DELETE",
 					headers: {
-						Authorization: `Bearer ${token}`,
+						
 					},
 					credentials: "include",
 				},
@@ -144,7 +144,7 @@ export default function CategoriesSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
+					
 				},
 				body: JSON.stringify({ name: categoryName }),
 				credentials: "include",

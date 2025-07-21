@@ -48,8 +48,9 @@ export default function PaiementSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
+					
 				},
+				credentials: "include",
 				body: JSON.stringify({
 					visit_date: reservation.date,
 					nb_participants: reservation.visitors,

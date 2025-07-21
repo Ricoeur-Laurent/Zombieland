@@ -36,7 +36,7 @@ export default function AttractionsSection() {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/attractions`, {
 				headers: {
-					Authorization: `Bearer ${token}`,
+					
 				},
 				credentials: "include",
 			});
@@ -64,7 +64,7 @@ export default function AttractionsSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
+						
 					},
 					credentials: "include",
 					body: JSON.stringify({
@@ -102,7 +102,7 @@ export default function AttractionsSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
+					
 				},
 				credentials: "include",
 				body: JSON.stringify({
@@ -131,7 +131,7 @@ export default function AttractionsSection() {
 				{
 					method: "DELETE",
 					headers: {
-						Authorization: `Bearer ${token}`,
+						
 					},
 					credentials: "include",
 				},

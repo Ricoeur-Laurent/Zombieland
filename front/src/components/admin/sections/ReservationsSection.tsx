@@ -39,7 +39,7 @@ export default function ReservationsSection() {
 				{
 					method: "DELETE",
 					headers: {
-						Authorization: `Bearer ${token}`,
+						
 					},
 					credentials: "include",
 				},
@@ -73,7 +73,7 @@ export default function ReservationsSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
+						
 					},
 					body: JSON.stringify({ visit_date: isoDate }),
 					credentials: "include",
@@ -103,7 +103,7 @@ export default function ReservationsSection() {
 				const res = await fetch(`${getApiUrl()}/admin/reservations`, {
 					method: "GET",
 					headers: {
-						Authorization: `Bearer ${token}`,
+						
 					},
 					credentials: "include",
 				});

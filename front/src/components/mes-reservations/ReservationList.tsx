@@ -51,7 +51,6 @@ export default function ReservationList() {
 					method: "DELETE",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					credentials: "include",
 				},
@@ -95,7 +94,6 @@ export default function ReservationList() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify({ visit_date: isoDate }),
 				},
@@ -141,7 +139,6 @@ export default function ReservationList() {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					credentials: "include",
 				});

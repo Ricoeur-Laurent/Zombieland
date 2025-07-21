@@ -78,7 +78,7 @@ export default function MyProfile() {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
+					
 				},
 				credentials: "include",
 			});
@@ -125,7 +125,7 @@ export default function MyProfile() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
+						
 					},
 					body: JSON.stringify({
 						newPswd: newPswd,
@@ -165,7 +165,7 @@ export default function MyProfile() {
 				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
+					
 				},
 
 				body: JSON.stringify({
@@ -221,7 +221,7 @@ export default function MyProfile() {
 			const response = await fetch(`${getApiUrl()}/myProfile/${user?.id}`, {
 				method: "DELETE",
 				headers: {
-					Authorization: `Bearer ${token}`,
+					
 				},
 				credentials: "include",
 			});
