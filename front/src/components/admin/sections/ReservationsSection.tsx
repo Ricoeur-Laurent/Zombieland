@@ -3,7 +3,6 @@
 import { Edit, Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
 import ShowMoreButton from "../ui/ShowMoreButton";
 
@@ -22,7 +21,6 @@ type Reservation = {
 };
 
 export default function ReservationsSection() {
-	const { token } = useTokenContext();
 	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [query, setQuery] = useState("");
 	const [visible, setVisible] = useState(4);
@@ -38,9 +36,7 @@ export default function ReservationsSection() {
 				`${getApiUrl()}/admin/reservations/${selectedReservation.id}`,
 				{
 					method: "DELETE",
-					headers: {
-						
-					},
+					headers: {},
 					credentials: "include",
 				},
 			);
@@ -73,7 +69,6 @@ export default function ReservationsSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						
 					},
 					body: JSON.stringify({ visit_date: isoDate }),
 					credentials: "include",
@@ -102,9 +97,7 @@ export default function ReservationsSection() {
 			try {
 				const res = await fetch(`${getApiUrl()}/admin/reservations`, {
 					method: "GET",
-					headers: {
-						
-					},
+					headers: {},
 					credentials: "include",
 				});
 				const data = await res.json();
@@ -113,8 +106,8 @@ export default function ReservationsSection() {
 				console.error("Erreur lors du fetch des réservations :", err);
 			}
 		}
-		if (token) fetchReservations();
-	}, [token]);
+		fetchReservations();
+	}, []);
 
 	const filtered = reservations.filter((r) => {
 		const matchesName =
@@ -151,7 +144,6 @@ export default function ReservationsSection() {
 	}
 
 	return (
-
 		<>
 			<section className="mb-10 text-text font-body">
 				<div className="flex justify-between items-center mb-3">
@@ -260,6 +252,5 @@ export default function ReservationsSection() {
 				/>
 			</Modal>
 		</>
-
 	);
 }

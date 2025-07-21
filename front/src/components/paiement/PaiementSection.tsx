@@ -3,7 +3,7 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
 const stripePromise = loadStripe(
@@ -11,7 +11,7 @@ const stripePromise = loadStripe(
 );
 
 export default function PaiementSection() {
-	const { token, loading, user } = useTokenContext();
+	const { loading, user } = useAuthContext();
 	const router = useRouter();
 	const [paymentLoading, setPaymentLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -23,10 +23,10 @@ export default function PaiementSection() {
 	} | null>(null);
 
 	useEffect(() => {
-		if (!loading && !token) {
+		if (!loading && !user) {
 			router.push("/connexion?redirect=/paiement");
 		}
-	}, [token, loading, router]);
+	}, [user, loading, router]);
 
 	useEffect(() => {
 		const stored = localStorage.getItem("zombieland_reservation");
@@ -38,7 +38,7 @@ export default function PaiementSection() {
 	}, [router]);
 
 	const handlePayment = async () => {
-		if (!reservation || !token) return;
+		if (!reservation || !user) return;
 
 		setPaymentLoading(true);
 		setError(null);
@@ -48,7 +48,6 @@ export default function PaiementSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					
 				},
 				credentials: "include",
 				body: JSON.stringify({

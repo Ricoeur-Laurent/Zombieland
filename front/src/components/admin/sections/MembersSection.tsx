@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
 import AdminSection from "../ui/AdminSection";
 import ItemList from "../ui/ItemList";
@@ -28,7 +27,6 @@ type MemberFormData = {
 type MemberFormErrors = Partial<Record<keyof MemberFormData, string>>;
 
 export default function MembersSection() {
-	const { token } = useTokenContext();
 	const [members, setMembers] = useState<Member[]>([]);
 	const [visible, setVisible] = useState(4);
 	const [selectedMember, setSelectedMember] = useState<Member | null>(null);
@@ -50,7 +48,7 @@ export default function MembersSection() {
 	const fetchMembers = useCallback(async () => {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/users`, {
-				headers: {  },
+				headers: {},
 				credentials: "include",
 			});
 			const data = await res.json();
@@ -58,11 +56,11 @@ export default function MembersSection() {
 		} catch (err) {
 			console.error("Erreur fetch membres :", err);
 		}
-	}, [token]);
+	}, []);
 
 	useEffect(() => {
-		if (token) fetchMembers();
-	}, [token, fetchMembers]);
+		fetchMembers();
+	}, [fetchMembers]);
 
 	const handleEdit = (member: Member) => {
 		console.log("Membre édité :", member);
@@ -103,7 +101,6 @@ export default function MembersSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						
 					},
 					credentials: "include",
 					body: JSON.stringify(payload),
@@ -143,7 +140,7 @@ export default function MembersSection() {
 				`${getApiUrl()}/admin/users/${selectedMember.id}`,
 				{
 					method: "DELETE",
-					headers: {  },
+					headers: {},
 					credentials: "include",
 				},
 			);
@@ -173,7 +170,6 @@ export default function MembersSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					
 				},
 				credentials: "include",
 				body: JSON.stringify(payload),

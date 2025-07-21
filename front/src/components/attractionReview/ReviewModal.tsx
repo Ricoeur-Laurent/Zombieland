@@ -2,7 +2,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Review } from "@/@types";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
 interface Props {
@@ -20,7 +20,7 @@ export default function ReviewModal({
 	initialComment,
 	initialRating,
 }: Props) {
-	const { token } = useTokenContext();
+	const { user } = useAuthContext();
 	const [comment, setComment] = useState(initialComment || "");
 	const [rating, setRating] = useState(initialRating || 5);
 	const [loading, setLoading] = useState(false);
@@ -30,7 +30,7 @@ export default function ReviewModal({
 	const router = useRouter();
 
 	const handleSend = async () => {
-		if (!token) {
+		if (!user) {
 			localStorage.setItem(
 				"pendingReview",
 				JSON.stringify({ comment, rating, attractionId }),
@@ -62,6 +62,7 @@ export default function ReviewModal({
 
 			const { review } = await httpResponse.json();
 			onSubmit(review);
+			// biome-ignore lint/suspicious/noExplicitAny : cast temporary
 		} catch (err: any) {
 			setError(err.message);
 		} finally {

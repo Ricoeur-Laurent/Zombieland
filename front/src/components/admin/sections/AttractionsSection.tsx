@@ -2,12 +2,11 @@ import { Edit, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import type { Attraction } from "@/@types";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
+
 import { getApiUrl } from "@/utils/getApi";
 import ShowMoreButton from "../ui/ShowMoreButton";
 
 export default function AttractionsSection() {
-	const { token } = useTokenContext();
 	const [attractions, setAttractions] = useState<Attraction[]>([]);
 	const [showEditModal, setShowEditModal] = useState(false);
 	const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -35,9 +34,7 @@ export default function AttractionsSection() {
 	const fetchAttractions = useCallback(async () => {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/attractions`, {
-				headers: {
-					
-				},
+				headers: {},
 				credentials: "include",
 			});
 			const data = await res.json();
@@ -49,7 +46,7 @@ export default function AttractionsSection() {
 		} catch (error) {
 			console.error(error);
 		}
-	}, [token]);
+	}, []);
 
 	useEffect(() => {
 		fetchAttractions();
@@ -64,7 +61,6 @@ export default function AttractionsSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						
 					},
 					credentials: "include",
 					body: JSON.stringify({
@@ -102,7 +98,6 @@ export default function AttractionsSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					
 				},
 				credentials: "include",
 				body: JSON.stringify({
@@ -130,9 +125,7 @@ export default function AttractionsSection() {
 				`${getApiUrl()}/admin/attractions/${selectedAttraction.id}`,
 				{
 					method: "DELETE",
-					headers: {
-						
-					},
+					headers: {},
 					credentials: "include",
 				},
 			);

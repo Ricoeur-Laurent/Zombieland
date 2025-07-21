@@ -1,11 +1,10 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { User, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function BurgerProfil({
 	onOpenProfil,
@@ -22,24 +21,15 @@ export default function BurgerProfil({
 		document.body.style.overflow = open ? "hidden" : "";
 	}, [open]);
 	// we get the token in the burger to check if the user is connected and swap the  burger optin connect/disconnect
-	const { user, token, setToken } = useTokenContext();
+	const { user, logout } = useAuthContext(); // au lieu de useTokenContext
 	const router = useRouter();
 
-	// ...
-
-	const handleLogout = () => {
-		// Remove the token from the cookies
-		Cookies.remove("zombieland_token");
-		// Remove localstorage with logout
+	// disconnect function, we call the backend to clear the cookie and we use the authcontext to refresh it after.
+	const handleLogout = async () => {
+		await logout();
 		localStorage.removeItem("zombieland_reservation");
-		// Clear the token from the context
-		setToken(null);
-
-		// Close the burger menu
 		setOpen(false);
 		handleOpen();
-
-		// Redirect the user to the home page after logout
 		router.push("/");
 	};
 
@@ -70,7 +60,7 @@ export default function BurgerProfil({
 						<X className="h-7 w-7" />
 					</button>
 
-					{token ? (
+					{user ? (
 						<ul className="mt-8 flex flex-grow flex-col gap-6">
 							<li>
 								<Link

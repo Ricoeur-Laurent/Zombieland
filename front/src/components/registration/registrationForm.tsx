@@ -3,11 +3,11 @@ import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
 export default function RegistrationForm() {
-	const { setToken } = useTokenContext();
+	const { refreshUser } = useAuthContext();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -82,7 +82,7 @@ export default function RegistrationForm() {
 				return;
 			}
 
-			setToken(data.token);
+			await refreshUser();
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
 		} catch (e) {

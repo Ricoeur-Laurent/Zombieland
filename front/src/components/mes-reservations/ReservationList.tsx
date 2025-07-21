@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
 interface Reservation {
@@ -15,7 +15,7 @@ interface Reservation {
 }
 
 export default function ReservationList() {
-	const { token, user, loading } = useTokenContext();
+	const { user, loading } = useAuthContext();
 	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [fetchingReservations, setFetchingReservations] = useState(true);
 	const [redirecting, setRedirecting] = useState(false);
@@ -76,7 +76,7 @@ export default function ReservationList() {
 		if (!selectedReservation || !newDate) return;
 
 		const today = new Date();
-		const visitDate = new Date(newDate); // ✅ correction ici
+		const visitDate = new Date(newDate);
 		const diffTime = visitDate.getTime() - today.getTime();
 		const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
@@ -121,7 +121,7 @@ export default function ReservationList() {
 	useEffect(() => {
 		if (loading) return; // ⛔️ do not take effect if loading
 
-		if (!token || !user || !user.id) {
+		if (!user || !user.id) {
 			setRedirecting(true);
 			const timeout = setTimeout(() => {
 				const redirectPath =
@@ -130,7 +130,7 @@ export default function ReservationList() {
 			}, 3000);
 			return () => clearTimeout(timeout);
 		}
-	}, [loading, token, user, router, searchParams]);
+	}, [loading, user, router, searchParams]);
 
 	useEffect(() => {
 		const fetchReservations = async () => {
@@ -154,12 +154,12 @@ export default function ReservationList() {
 				setFetchingReservations(false);
 			}
 		};
-		if (token && user && user.id) {
+		if (user?.id) {
 			fetchReservations();
 		} else {
 			setFetchingReservations(false);
 		}
-	}, [token, user]);
+	}, [user]);
 
 	if (redirecting) {
 		return (

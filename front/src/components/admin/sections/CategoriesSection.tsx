@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
 import AdminSection from "../ui/AdminSection";
 import ItemList from "../ui/ItemList";
@@ -14,7 +13,6 @@ interface Category {
 }
 
 export default function CategoriesSection() {
-	const { token } = useTokenContext();
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [visible, setVisible] = useState(4);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -31,9 +29,7 @@ export default function CategoriesSection() {
 	const fetchCategories = useCallback(async () => {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/categories`, {
-				headers: {
-					
-				},
+				headers: {},
 				credentials: "include",
 			});
 			const data = await res.json();
@@ -41,11 +37,11 @@ export default function CategoriesSection() {
 		} catch (err) {
 			console.error("Erreur lors du fetch des catégories :", err);
 		}
-	}, [token]);
+	}, []);
 
 	useEffect(() => {
-		if (token) fetchCategories();
-	}, [token, fetchCategories]);
+		fetchCategories();
+	}, [fetchCategories]);
 
 	const handleEdit = (category: Category) => {
 		setSelectedCategory(category);
@@ -75,7 +71,6 @@ export default function CategoriesSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						
 					},
 					body: JSON.stringify({ name: categoryName }),
 					credentials: "include",
@@ -115,9 +110,7 @@ export default function CategoriesSection() {
 				`${getApiUrl()}/admin/categories/${selectedCategory.id}`,
 				{
 					method: "DELETE",
-					headers: {
-						
-					},
+					headers: {},
 					credentials: "include",
 				},
 			);
@@ -144,7 +137,6 @@ export default function CategoriesSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					
 				},
 				body: JSON.stringify({ name: categoryName }),
 				credentials: "include",

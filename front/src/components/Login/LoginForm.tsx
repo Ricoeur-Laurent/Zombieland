@@ -1,15 +1,14 @@
 "use client";
-import Cookies from "js-cookie";
 import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 import Modal from "../modal/Modal";
 
 export default function ConnexionForm() {
-	const { setToken } = useTokenContext();
+	const { refreshUser } = useAuthContext();
 	const router = useRouter();
 	const searchParams = useSearchParams();
 
@@ -20,15 +19,17 @@ export default function ConnexionForm() {
 
 	const [error, setError] = useState("");
 	const redirect = searchParams.get("redirect") || "/";
+
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setError("");
+
 		try {
 			const response = await fetch(`${getApiUrl()}/login`, {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ email, password }),
-				credentials: "include",
+				credentials: "include", // important pour le cookie HTTP-only
 			});
 
 			if (!response.ok) {
@@ -37,8 +38,7 @@ export default function ConnexionForm() {
 
 			const data = await response.json();
 
-			setToken(data.token);
-			Cookies.set("token", data.token, { secure: true, sameSite: "strict" }); // to work on reload
+			await refreshUser(); // 🔁 recharge the user info's
 
 			if (data.user?.mustChangePassword) {
 				setShowPasswordWarning(true);
@@ -48,7 +48,6 @@ export default function ConnexionForm() {
 				const redirectPath = searchParams.get("redirect") || "/reservations";
 				router.push(redirectPath);
 			}
-
 		} catch (e) {
 			if (e instanceof Error) {
 				console.error(e);
@@ -130,7 +129,7 @@ export default function ConnexionForm() {
 				confirmText="OK"
 				onConfirm={() => {
 					setShowPasswordWarning(false);
-					router.push("/profil");
+					router.push("/mon-profil");
 				}}
 			>
 				<p className="text-text font-body">
