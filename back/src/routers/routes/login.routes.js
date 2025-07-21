@@ -1,9 +1,12 @@
-import express from 'express';
-import loginControllers from '../../controllers/loginControllers.js';
+import express from "express";
+import loginControllers from "../../controllers/loginControllers.js";
 
 const router = express.Router();
 
-// get one user
-router.post('/', loginControllers.getOneUser);
+// connect
+router.post("/", loginControllers.getOneUser);
+
+// Disconnect (remove cookie)
+router.post("/logout", loginControllers.logout);
 
 export default router;

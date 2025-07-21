@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function ReservationForm() {
-	const { token } = useTokenContext();
+	const { user } = useAuthContext();
 	const router = useRouter();
 
 	const [date, setDate] = useState<string>("");
@@ -17,10 +17,10 @@ export default function ReservationForm() {
 
 	useEffect(() => {
 		const storedReservation = localStorage.getItem("zombieland_reservation");
-		if (token && storedReservation) {
+		if (user && storedReservation) {
 			router.push("/paiement");
 		}
-	}, [token, router]);
+	}, [user, router]);
 
 	useEffect(() => {
 		if (visitors && visitors > 0) {
@@ -49,7 +49,7 @@ export default function ReservationForm() {
 			JSON.stringify(reservationData),
 		);
 
-		if (token) {
+		if (user) {
 			router.push("/paiement");
 		} else {
 			router.push("/connexion?redirect=/paiement");

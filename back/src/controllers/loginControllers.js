@@ -60,6 +60,13 @@ const loginControllers = {
 				expiresIn: process.env.JWT_EXPIRES_IN,
 			});
 
+			res.cookie("zombieland_token", token, {
+				httpOnly: true,
+				sameSite: "lax", // ✅ for Stripe compatibility
+				secure: process.env.NODE_ENV === "production",
+				maxAge: 24 * 60 * 60 * 1000, // 1 day
+			});
+
 			// Extract user info to return in the response (excluding password)
 			const {
 				id,
@@ -86,6 +93,15 @@ const loginControllers = {
 			console.error("Erreur lors du login :", error);
 			res.status(500).json({ error: "Erreur serveur lors du login" });
 		}
+	},
+	//disconnect
+	logout(req, res) {
+		res.clearCookie("zombieland_token", {
+			httpOnly: true,
+			sameSite: "lax", // même config que pour le login
+			secure: process.env.NODE_ENV === "production",
+		});
+		res.status(200).json({ message: "Déconnexion réussie" });
 	},
 };
 

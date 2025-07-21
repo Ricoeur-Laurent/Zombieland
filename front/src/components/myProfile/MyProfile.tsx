@@ -1,14 +1,13 @@
 "use client";
-import Cookies from "js-cookie";
 import { Edit, Eye } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
 export default function MyProfile() {
-	const { user, token, setToken } = useTokenContext();
+	const { user, logout } = useAuthContext();
 	const [loading, setLoading] = useState(true);
 	const [redirecting, setRedirecting] = useState(false);
 
@@ -60,25 +59,18 @@ export default function MyProfile() {
 	}
 
 	// logout user after account deletion
-	const handleLogout = () => {
-		// Remove the token from the cookies
-		Cookies.remove("zombieland_token");
-
-		// Clear the token from the context
-		setToken(null);
-
-		// Redirect the user to the home page after logout
+	const handleLogout = async () => {
+		await logout();
 		router.push("/");
 	};
 
-	const displayProfil = async () => {
+	const displayProfil = useCallback(async () => {
 		// Retrieving data from the user's profile
 		try {
 			const response = await fetch(`${getApiUrl()}/myProfile/${user?.id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
-					
 				},
 				credentials: "include",
 			});
@@ -101,7 +93,7 @@ export default function MyProfile() {
 		} finally {
 			setLoading(false);
 		}
-	};
+	}, [user?.id]);
 
 	// edit user paswword
 	const handlePswdEdit = async () => {
@@ -125,7 +117,6 @@ export default function MyProfile() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						
 					},
 					body: JSON.stringify({
 						newPswd: newPswd,
@@ -165,7 +156,6 @@ export default function MyProfile() {
 				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
-					
 				},
 
 				body: JSON.stringify({
@@ -178,6 +168,7 @@ export default function MyProfile() {
 			if (!response.ok) {
 				if (response.status === 400 && Array.isArray(data.errors)) {
 					const zodErrors = Object.fromEntries(
+						// biome-ignore lint/suspicious/noExplicitAny : cast temporary
 						data.errors.map((err: any) => [err.path[0], err.message]),
 					);
 					setErrors(zodErrors);
@@ -220,9 +211,7 @@ export default function MyProfile() {
 		try {
 			const response = await fetch(`${getApiUrl()}/myProfile/${user?.id}`, {
 				method: "DELETE",
-				headers: {
-					
-				},
+				headers: {},
 				credentials: "include",
 			});
 			if (!response.ok) {
@@ -246,7 +235,7 @@ export default function MyProfile() {
 	};
 	// Check if the client is logged in, otherwise redirect him on the connexion page
 	useEffect(() => {
-		if (!token || !user || !user.id) {
+		if (!user || !user.id) {
 			setRedirecting(true);
 			const timeout = setTimeout(() => {
 				const redirectPath = searchParams.get("redirect") || "/mon-profil";
@@ -254,18 +243,18 @@ export default function MyProfile() {
 			}, 3000);
 			return () => clearTimeout(timeout);
 		}
-	}, [token, user, router, searchParams]);
+	}, [user, router, searchParams]);
 
 	// Retrieve user's data to display it on the page
 
 	useEffect(() => {
-		if (token && user && user.id) {
+		if (user?.id) {
 			displayProfil();
 		} else {
 			setLoading(false);
 			setRedirecting(false);
 		}
-	}, [token, user, displayProfil]);
+	}, [user, displayProfil]);
 
 	if (redirecting) {
 		return (
@@ -381,16 +370,13 @@ export default function MyProfile() {
 				{/* Account deletion */}
 				<p className="mt-4 text-sm text-center">
 					Pour supprimer votre compte,{" "}
-					<a
-						href=""
-						onClick={(e) => {
-							e.preventDefault();
-							setshowDeleteModal(true);
-						}}
-						className="text-primary hover:underline"
+					<button
+						type="button"
+						onClick={() => setshowDeleteModal(true)}
+						className="text-primary hover:underline p-0 border-none bg-transparent font-inherit"
 					>
 						cliquez ici !
-					</a>
+					</button>
 				</p>
 			</section>
 			{/* edit profile modale */}

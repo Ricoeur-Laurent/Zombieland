@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import BurgerProfil from "./BurgerProfil";
 
-/* Les props pour injecter les liens depuis Header */
+// Props expected: an array of navigation links
 export default function Burger({
 	links,
 }: {
@@ -13,14 +13,14 @@ export default function Burger({
 }) {
 	const [open, setOpen] = useState(false);
 
-	/* Bloque le scroll quand le drawer est ouvert */
+	// Prevent background scrolling when the drawer is open
 	useEffect(() => {
 		document.body.style.overflow = open ? "hidden" : "";
 	}, [open]);
 
 	return (
 		<>
-			{/* Boutons visibles uniquement en mobile */}
+			{/* Mobile-only container: profile + burger button */}
 
 			<div className="flex items-center gap-3 lg:hidden">
 				{/* Connexion (placeholder) */}
@@ -28,7 +28,7 @@ export default function Burger({
 					<BurgerProfil />
 				</div>
 
-				{/* Burger */}
+				{/* Burger menu button */}
 				<button
 					type="button"
 					aria-label="Ouvrir le menu"
@@ -39,10 +39,10 @@ export default function Burger({
 				</button>
 			</div>
 
-			{/* Drawer pleine largeur : liens principaux */}
+			{/* Full-screen drawer shown when open is true */}
 			{open && (
 				<div className="fixed inset-0 z-50 flex flex-col bg-bg/95 px-6 py-8 text-xl font-subtitle uppercase backdrop-blur">
-					{/* Bouton fermeture */}
+					{/* Close (X) button, top right */}
 					<button
 						type="button"
 						aria-label="Fermer le menu"
@@ -51,8 +51,8 @@ export default function Burger({
 					>
 						<X className="h-7 w-7 text-primary  active:bg-primary/40" />
 					</button>
-
-					<ul className="mt-8 flex flex-grow flex-col gap-6">
+					{/* Navigation links list */}
+					<ul className="mt-8 flex flex-grow flex-col gap-6 items-end">
 						{links.map(({ href, label }) => (
 							<li key={href}>
 								<Link
@@ -64,6 +64,7 @@ export default function Burger({
 								</Link>
 							</li>
 						))}
+						{/* Profile icon for xs devices (already visible on sm+) */}
 						<li className="block sm:hidden">
 							<BurgerProfil onOpenProfil={() => setOpen(false)} />
 						</li>
