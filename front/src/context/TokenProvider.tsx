@@ -1,4 +1,5 @@
 "use client";
+Hello;
 
 import Cookies from "js-cookie";
 import type React from "react";
@@ -31,7 +32,7 @@ const TokenContext = createContext<TokenContextType>({
 
 export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 	const [token, setTokenState] = useState<string | null>(
-		() => Cookies.get("zombieland_token") || null
+		() => Cookies.get("zombieland_token") || null,
 	);
 	const [user, setUser] = useState<UserType>(null);
 	const [loading, setLoading] = useState(true); // ✅ charging state
@@ -48,11 +49,9 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 				const response = await fetch(
 					`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`,
 					{
-						headers: {
-							
-						},
+						headers: {},
 						credentials: "include",
-					}
+					},
 				);
 
 				if (!response.ok) {
@@ -97,6 +96,5 @@ export const TokenProvider = ({ children }: { children: React.ReactNode }) => {
 		</TokenContext.Provider>
 	);
 };
-
 
 export const useTokenContext = () => useContext(TokenContext);
