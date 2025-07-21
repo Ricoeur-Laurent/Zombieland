@@ -6,13 +6,13 @@ import {
 	ParkingSquare,
 	Ticket,
 } from "lucide-react";
-import MapWrapper from "@/components/map/MapWrraper";
+import MapWrapper from "@/components/map/MapWrraper"; //map component
 
 export const metadata = {
 	title: "Infos pratiques – Zombieland",
 	description: "Horaires, billets, accès, parking, contact et infos PMR",
 };
-
+//  Static definition of all the visitor info sections (to map and render them dynamically)
 const sections = [
 	{
 		id: "horaires",

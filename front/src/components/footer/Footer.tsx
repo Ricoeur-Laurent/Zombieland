@@ -3,7 +3,7 @@
 import { Facebook, Home, Instagram, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
-// on crée les links de mentions légales  qui vont toutes renvoyer sur la même page  mais avec une ancre # sur la page mentions-legales et on va mapper dessu ensuite.
+// List of legal links pointing to sections of the same page via anchors
 const legalLinks = [
 	{ href: "/mentions-legales#mentions-legales", label: ". Mentions légales" },
 	{ href: "/mentions-legales#cgu", label: ". Conditions" },
@@ -29,7 +29,7 @@ export default function Footer() {
 					</p>
 				</div>
 
-				{/* NOUS CONTACTER */}
+				{/* Contact information */}
 				<div>
 					<h3 className="text-primary-light font-subtitle uppercase mb-4">
 						Nous contacter
@@ -54,7 +54,7 @@ export default function Footer() {
 					</ul>
 				</div>
 
-				{/* SUIVEZ-NOUS */}
+				{/* Social media icons */}
 				<div>
 					<h3 className="text-primary-light font-subtitle uppercase mb-4">
 						Suivez-nous
@@ -69,7 +69,7 @@ export default function Footer() {
 					</div>
 				</div>
 
-				{/* INFOS LÉGALES */}
+				{/* Legal links mapped from array */}
 				<div>
 					<h3 className="text-primary-light font-subtitle uppercase mb-4">
 						Infos légales

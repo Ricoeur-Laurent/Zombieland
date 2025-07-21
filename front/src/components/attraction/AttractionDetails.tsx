@@ -11,7 +11,7 @@ export default function AttractionDetails({
 }) {
 	return (
 		<div className="max-w-3xl mx-auto px-4 py-10 space-y-8">
-			{/* Lien retour */}
+			{/* Navigation link to go back to the main attractions page */}
 			<Link href="/attractions" className="text-primary hover:underline">
 				← Retour aux attractions
 			</Link>
@@ -26,7 +26,7 @@ export default function AttractionDetails({
 				/>
 			</div>
 
-			{/* Titre */}
+			{/* Title */}
 			<h1 className="text-3xl md:text-4xl font-subtitle text-primary-light">
 				{attraction.name}
 			</h1>

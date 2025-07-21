@@ -7,15 +7,13 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
 import validator from "validator";
 import {
 	adminUserCreateSchema,
 	signUpSchema,
+	updatePswdSchema,
 	updateUserSchema,
-	updatePswdSchema
 } from "../schemas/user.js";
-
 
 const signUpControllers = {
 	// Get all users
@@ -122,9 +120,18 @@ const signUpControllers = {
 				expiresIn: process.env.JWT_EXPIRES_IN,
 			});
 
+			if (!isAdminRoute) {
+				res.cookie("zombieland_token", token, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === "production",
+					sameSite: "lax",
+					maxAge: 24 * 60 * 60 * 1000,
+				});
+			}
+
 			res.status(201).json({
 				message: "Utilisateur créé avec succès.",
-				token,
+
 				user: {
 					id,
 					firstname: fName,
@@ -251,7 +258,6 @@ const signUpControllers = {
 
 	// update user password
 	async editUserPswd(req, res) {
-
 		// validate incoming data using Zod
 		const { id } = req.checkedParams;
 		const pswdUpdate = updatePswdSchema.safeParse(req.body);
@@ -264,8 +270,8 @@ const signUpControllers = {
 		}
 
 		// sanitize input fields
-		const oldPassword = pswdUpdate.data.oldPswd.trim()
-		const newPassword = pswdUpdate.data.newPswd.trim()
+		const oldPassword = pswdUpdate.data.oldPswd.trim();
+		const newPassword = pswdUpdate.data.newPswd.trim();
 
 		// collect current pswd and match it against provided password
 		try {
@@ -278,25 +284,25 @@ const signUpControllers = {
 			const passwordMatch = await bcrypt.compare(oldPassword, user.password);
 
 			if (!passwordMatch) {
-				return res.status(401).json({ error: "le mot de passe fournit est incorrect" });
+				return res
+					.status(401)
+					.json({ error: "le mot de passe fournit est incorrect" });
 			}
 
 			// Hash new password before saving it in database
 			const hashedPassword = await bcrypt.hash(newPassword, 10);
 
 			// update user's password in database
-			user.password = hashedPassword
+			user.password = hashedPassword;
 
-			await user.save()
+			await user.save();
 			res.status(200).json({ message: "Mot de passe mis à jour avec succès" });
-
 		} catch (error) {
 			console.error("Erreur lors de la récupération du mot de passe :", error);
 			res.status(500).json({
 				error: "Erreur serveur lors de la récupération du mot de passe.",
 			});
 		}
-
 	},
 };
 

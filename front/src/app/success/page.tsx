@@ -12,6 +12,7 @@ export default function SuccessPage() {
 		}, 4000);
 		return () => clearTimeout(timer);
 	}, [router]);
+	
 	useEffect(() => {
 		localStorage.removeItem("zombieland_reservation");
 	}, []);
