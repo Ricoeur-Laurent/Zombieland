@@ -13,6 +13,18 @@ import stripeWebhookRouter from './src/routers/routes/stripeWebhook.routes.js';
 
 const app = express();
 
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', 'https://zombieland-front-vercel.vercel.app');
+	res.header('Access-Control-Allow-Credentials', 'true');
+	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	res.header('Vary', 'Origin');
+	if (req.method === 'OPTIONS') {
+		return res.sendStatus(204); // prévol OK
+	}
+	next();
+});
+
 const corsOptions = {
 	origin: [
 		'http://localhost:3000', // Allowed local frontend origins
