@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
 interface Reservation {
@@ -15,9 +15,9 @@ interface Reservation {
 }
 
 export default function ReservationList() {
-	const { token, user } = useTokenContext();
+	const { user, loading } = useAuthContext();
 	const [reservations, setReservations] = useState<Reservation[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [fetchingReservations, setFetchingReservations] = useState(true);
 	const [redirecting, setRedirecting] = useState(false);
 	const router = useRouter();
 	const searchParams = useSearchParams();
@@ -38,6 +38,12 @@ export default function ReservationList() {
 		const diffTime = visitDate.getTime() - today.getTime();
 		const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
+		// Prevent deletion if the reservation is less than 10 days away
+		if (diffDays <= 10) {
+			console.warn("Deletion not allowed within 10 days of the visit.");
+			return;
+		}
+
 		if (diffDays <= 10) {
 			console.warn("Suppression interdite à moins de 10 jours.");
 			return;
@@ -51,7 +57,6 @@ export default function ReservationList() {
 					method: "DELETE",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					credentials: "include",
 				},
@@ -77,10 +82,11 @@ export default function ReservationList() {
 		if (!selectedReservation || !newDate) return;
 
 		const today = new Date();
-		const visitDate = new Date(selectedReservation.visit_date);
+		const visitDate = new Date(newDate);
 		const diffTime = visitDate.getTime() - today.getTime();
 		const diffDays = diffTime / (1000 * 60 * 60 * 24);
 
+		// Prevent editing if the reservation is less than 10 days away
 		if (diffDays <= 10) {
 			console.warn("Modification interdite à moins de 10 jours.");
 			return;
@@ -88,17 +94,15 @@ export default function ReservationList() {
 
 		setIsEditing(true);
 		try {
-			const isoDate = new Date(newDate).toISOString();
+			const isoDate = visitDate.toISOString(); // déjà calculé
 			const response = await fetch(
 				`${getApiUrl()}/myReservations/${selectedReservation.id}`,
 				{
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify({ visit_date: isoDate }),
-					credentials: "include",
 				},
 			);
 
@@ -121,8 +125,11 @@ export default function ReservationList() {
 		}
 	};
 
+	// If the user is not authenticated, redirect to login after 3 seconds
 	useEffect(() => {
-		if (!token || !user || !user.id) {
+		if (loading) return; // ⛔️ do not take effect if loading
+
+		if (!user || !user.id) {
 			setRedirecting(true);
 			const timeout = setTimeout(() => {
 				const redirectPath =
@@ -131,7 +138,7 @@ export default function ReservationList() {
 			}, 3000);
 			return () => clearTimeout(timeout);
 		}
-	}, [token, user, router, searchParams]);
+	}, [loading, user, router, searchParams]);
 
 	useEffect(() => {
 		const fetchReservations = async () => {
@@ -140,7 +147,6 @@ export default function ReservationList() {
 					method: "GET",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					credentials: "include",
 				});
@@ -153,15 +159,15 @@ export default function ReservationList() {
 			} catch (error) {
 				console.error("Erreur lors de la récupération des réservations", error);
 			} finally {
-				setLoading(false);
+				setFetchingReservations(false);
 			}
 		};
-		if (token && user && user.id) {
+		if (user?.id) {
 			fetchReservations();
 		} else {
-			setLoading(false);
+			setFetchingReservations(false);
 		}
-	}, [token, user]);
+	}, [user]);
 
 	if (redirecting) {
 		return (
@@ -173,7 +179,7 @@ export default function ReservationList() {
 		);
 	}
 
-	if (loading) {
+	if (loading || fetchingReservations) {
 		return (
 			<p className="text-center text-primary mt-6">
 				Chargement des réservations...
@@ -187,6 +193,12 @@ export default function ReservationList() {
 				Vous n'avez pas encore de réservations.
 			</p>
 		);
+	}
+	// User can only select a new date at least 10 days from today
+	function getMinReservationDate(): string {
+		const today = new Date();
+		today.setDate(today.getDate() + 10);
+		return today.toISOString().split("T")[0];
 	}
 
 	return (
@@ -277,6 +289,7 @@ export default function ReservationList() {
 					type="date"
 					value={newDate}
 					onChange={(e) => setNewDate(e.target.value)}
+					min={getMinReservationDate()}
 					className="w-full mb-4 p-2 border rounded bg-bg text-text"
 				/>
 			</Modal>

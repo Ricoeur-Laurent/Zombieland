@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 import AttractionDetails from "@/components/attraction/AttractionDetails";
 import CarouselReviews from "@/components/attractionReview/CarouselReviews";
 import { getApiUrl } from "@/utils/getApi";
-
+// This is a dynamic route page for a single attraction, based on its slug.
 export default async function AttractionPage({
 	params,
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string }>; // TypeScript expects a promise resolving to an object with a slug string
 }) {
 	const { slug } = await params;
 
@@ -16,7 +16,7 @@ export default async function AttractionPage({
 		const httpResponse = await fetch(`${getApiUrl()}/attractions/slug/${slug}`);
 
 		if (httpResponse.status === 404) {
-			notFound(); // 404 automatic
+			notFound(); // Triggers Next.js' built-in 404 page
 		}
 		if (!httpResponse.ok) {
 			// (500, 403, etc.)
@@ -24,7 +24,7 @@ export default async function AttractionPage({
 		}
 
 		const data = await httpResponse.json();
-
+		// Render the details of the attraction and its reviews carousel
 		return (
 			<>
 				<AttractionDetails attraction={data.oneAttraction} />

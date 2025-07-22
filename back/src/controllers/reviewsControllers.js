@@ -50,7 +50,9 @@ const reviewsControllers = {
 	// Retrieve all reviews for a specific attraction
 	async getReviewsByAttraction(req, res) {
 		const { id } = req.checkedParams;
+
 		const attractionId = id;
+
 
 		try {
 			const reviews = await Reviews.findAll({

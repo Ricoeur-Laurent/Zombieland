@@ -1,0 +1,18 @@
+import MyProfile from "@/components/myProfile/MyProfile";
+
+export const metadata = {
+    title: "Mon profil – Zombieland",
+    description:
+        "Consultez et modifiez votre profil facilement depuis votre espace personnel"
+};
+
+export default function ProfilePage() {
+    return (
+        <div className="px-4 py-6 max-w-6xl mx-auto">
+            <h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
+                Gestion du profil
+            </h2>
+            <MyProfile />
+        </div>
+    )
+}

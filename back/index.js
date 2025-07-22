@@ -1,34 +1,44 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-import cookieParser from "cookie-parser";
-
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import express from 'express';
-import router from './src/routers/router.js';
 import seed from './src/migration/seed.js';
 import { initDatabase } from './src/migration/sync.js';
-import cors from "cors";
+import router from './src/routers/router.js';
+import stripeRouter from './src/routers/routes/stripe.routes.js';
+import stripeWebhookRouter from './src/routers/routes/stripeWebhook.routes.js';
 
 const app = express();
 
+
 const corsOptions = {
 	origin: [
-		"http://localhost:3000",
-		"http://localhost:3001",
+		'http://localhost:3000', // Allowed local frontend origins
+		'http://localhost:3001',
+		'https://zombieland-front-vercel.vercel.app', // ✅ domaine Vercel
 	],
-	credentials: true,
-	methods: ["GET", "POST", "PATCH", "DELETE", "PUT"],
+	credentials: true, // Allow credentials (cookies, auth headers)
+	methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'], // Allowed HTTP methods
 };
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // Apply CORS middleware with options
 
+//stripe webhook must come before the body parsers
+// Stripe requires the raw body for webhook signature verification
+app.use('/api/stripe', stripeWebhookRouter);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
-app.use('/api',router);
+app.use(express.urlencoded({ extended: true }));
+// Parse cookies from HTTP requests
+app.use(cookieParser());
+// Main Stripe API routes (for checkout, payments, etc)
+app.use('/api/stripe', stripeRouter);
+app.use('/api', router);
 const PORT = process.env.PORT || 5000;
 
+// Start the server asynchronously
 async function startServer() {
 	try {
 		await initDatabase();

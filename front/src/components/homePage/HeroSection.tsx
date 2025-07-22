@@ -20,7 +20,7 @@ export default function HeroSection() {
 					<h2 className="text-primary-light font-subtitle uppercase text-2xl sm:text-4xl mb-4">
 						BIENVENUE À ZOMBIELAND
 					</h2>
-					<p className="text-text font-body text-sm sm:text-base mb-6">
+					<p className="text-text font-body text-sm sm:text-base mb-6 text-justify">
 						Bienvenue à ZombieLand : entrez si vous l’osez... Dans un monde
 						ravagé par l’apocalypse, une seule zone a su résister au chaos :
 						ZombieLand. Ce parc d’attractions unique en son genre vous propose

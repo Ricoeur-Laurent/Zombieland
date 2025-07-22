@@ -1,9 +1,11 @@
+import { DataTypes, Model } from 'sequelize';
 import { sequelize } from './sequelize.js';
-import { Model, DataTypes } from 'sequelize';
 import { Users } from './users.js';
 
+// Define the Reservations model extending Sequelize's Model class
 export class Reservations extends Model {}
 
+// Initialize the Reservations model schema and options
 Reservations.init(
 	{
 		id: {
