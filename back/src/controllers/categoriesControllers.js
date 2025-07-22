@@ -1,5 +1,5 @@
 import validator from "validator";
-import { Categories } from "../models/categories.js";
+import { Categories } from "../models/index.js";
 import {
 	createCategorySchema,
 	updateCategorySchema,
@@ -12,7 +12,7 @@ const categoriesControllers = {
 			const categories = await Categories.findAll();
 
 			return res.status(200).json({
-				message: `Catégorie récupérées avec succès`,
+				message: `Catégories récupérées avec succès`,
 				categories,
 			});
 		} catch (error) {
