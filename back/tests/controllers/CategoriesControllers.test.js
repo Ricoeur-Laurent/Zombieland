@@ -1,193 +1,254 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import categoriesControllers from '../../src/controllers/categoriesControllers.js'
-
-// mocking index.js
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import categoriesControllers from '../../src/controllers/categoriesControllers.js';
+import { getMockReq, getMockRes } from '../testUtils.js';
 
 vi.mock('../../src/models/index.js', () => ({
-    Categories: {
-        findAll: vi.fn(),
-        findByPk: vi.fn(),
-        create: vi.fn(),
-        findOne: vi.fn(),
-        save: vi.fn()
-    },
-}))
+	Categories: {
+		findAll: vi.fn(),
+		findByPk: vi.fn(),
+		create: vi.fn(),
+		findOne: vi.fn(),
+		save: vi.fn()
+	},
+}));
 
-import { Categories } from '../../src/models/index.js'
+import { Categories } from '../../src/models/index.js';
 
-// ================= getAllCategorie ==================
-
+// ================= getAllCategories ==================
 
 describe('categoriesController.getAllCategories', () => {
-    let req, res
+	let req, res;
 
-    beforeEach(() => {
-        req = {}
-        res = {
-            status: vi.fn(() => res),
-            json: vi.fn(),
-        }
-    })
+	beforeEach(() => {
+		req = {};
+		res = getMockRes();
+	});
 
-    // calling for all categories
-    it('devrait retourner 200 avec un message et la liste de toutes les catégories', async () => {
-        const fakeCategories = [
-            { id: 1, name: 'Survival' },
-            { id: 2, name: 'Escape Game' },
-            { id: 3, name: 'Manege' },
-            { id: 4, name: 'Simulation urbaine' },
-            { id: 5, name: 'Paintball' },
-            { id: 6, name: 'VR' },
-        ]
+	it('should return 200 with a message and the list of all categories', async () => {
+		const fakeCategories = [
+			{ id: 1, name: 'Survival' },
+			{ id: 2, name: 'Escape Game' },
+			{ id: 3, name: 'Manege' },
+			{ id: 4, name: 'Simulation urbaine' },
+			{ id: 5, name: 'Paintball' },
+			{ id: 6, name: 'VR' },
+		];
 
-        Categories.findAll.mockResolvedValue(fakeCategories)
+		Categories.findAll.mockResolvedValue(fakeCategories);
 
-        await categoriesControllers.getAllCategories(req, res)
+		await categoriesControllers.getAllCategories(req, res);
 
-        expect(res.status).toHaveBeenCalledWith(200)
-        expect(res.json).toHaveBeenCalledWith({
-            message: 'Catégories récupérées avec succès',
-            categories: fakeCategories,
-        })
-    })
-})
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(res.json).toHaveBeenCalledWith({
+			message: 'Catégories récupérées avec succès',
+			categories: fakeCategories,
+		});
+	});
 
-//  =========================== GetOnecategory ==========================
+	it('should return 500 with an error message on failure', async () => {
+		Categories.findAll.mockRejectedValue(new Error());
 
-describe('categoriesController.getOneCategoriy', () => {
-    let req, res
+		await categoriesControllers.getAllCategories(req, res);
 
-    beforeEach(() => {
-        res = {
-            status: vi.fn(() => res),
-            json: vi.fn(),
-        }
-    })
+		expect(res.status).toHaveBeenCalledWith(500);
+		expect(res.json).toHaveBeenCalledWith({
+			error: 'Erreur serveur lors de la récupération des catégories.',
+		});
+	});
+});
 
-// Lokking for a category that exists in the database
-    it('devrait retourner 200 avec un message et la catégorie demandée', async () => {
-        req = {
-            checkedParams: { id: 1 },
-        }
-        const fakeCategory = [
-            { id: 1, name: 'Survival' },
-        ]
+// =========================== getOneCategory ==========================
 
-        Categories.findByPk.mockResolvedValue(fakeCategory)
+describe('categoriesController.getOneCategory', () => {
+	let req, res;
 
-        await categoriesControllers.getOneCategory(req, res)
+	beforeEach(() => {
+		res = getMockRes();
+	});
 
-        expect(res.status).toHaveBeenCalledWith(200)
-        expect(res.json).toHaveBeenCalledWith({
-            message: `Catégorie récupérée avec succès`,
-            oneCategory: fakeCategory,
-        })
-    })
+	it('should return 200 with a message and the requested category', async () => {
+		req = getMockReq({
+			checkedParams: { id: 1 },
+		});
+		const fakeCategory = [{ id: 1, name: 'Survival' }];
 
-    // looking for a category that does not exist in the Database
-    it("devrait retourner 404 si la catégorie n'existe pas", async () => {
-        req = {
-            checkedParams: { id: 999 },
-        }
+		Categories.findByPk.mockResolvedValue(fakeCategory);
 
-        Categories.findByPk.mockResolvedValue(null)
+		await categoriesControllers.getOneCategory(req, res);
 
-        await categoriesControllers.getOneCategory(req, res)
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(res.json).toHaveBeenCalledWith({
+			message: 'Catégorie récupérée avec succès',
+			oneCategory: fakeCategory,
+		});
+	});
 
-        expect(res.status).toHaveBeenCalledWith(404)
-        expect(res.json).toHaveBeenCalledWith({
-            message: `Catégorie non trouvée`,
-        })
-    })
-})
+	it('should return 404 if the category does not exist', async () => {
+		req = getMockReq({
+			checkedParams: { id: 999 },
+		});
 
-//  =========================== createCategory ==========================
+		Categories.findByPk.mockResolvedValue(null);
+
+		await categoriesControllers.getOneCategory(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(404);
+		expect(res.json).toHaveBeenCalledWith({
+			message: 'Catégorie non trouvée',
+		});
+	});
+
+	it('should return 500 with an error message on failure', async () => {
+		Categories.findByPk.mockRejectedValue(new Error());
+
+		await categoriesControllers.getOneCategory(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(500);
+		expect(res.json).toHaveBeenCalledWith({
+			message: 'Erreur serveur interne lors de la récupération de la catégorie',
+		});
+	});
+});
+
+// =========================== createCategory ==========================
 
 describe('categoriesController.createCategory', () => {
-    let req, res
+	let req, res;
 
-    beforeEach(() => {
-        res = {
-            status: vi.fn(() => res),
-            json: vi.fn(),
-        }
-    })
+	beforeEach(() => {
+		res = getMockRes();
+	});
 
-        // testing proper category creation
-    it('devrait retourner 201 avec la nouvelle catégorie', async () => {
-        req = {
-            body: { name: 'Simulation urbaine' },
-        }
-        const fakeCreated = { id: 7, name: 'Simulation urbaine' }
+	it('should return 201 with the newly created category', async () => {
+		req = getMockReq({
+			body: { name: 'Simulation urbaine' },
+		});
+		const fakeCreated = { id: 7, name: 'Simulation urbaine' };
 
-        Categories.create.mockResolvedValue(fakeCreated)
+		Categories.create.mockResolvedValue(fakeCreated);
 
-        await categoriesControllers.createCategory(req, res)
+		await categoriesControllers.createCategory(req, res);
 
-        expect(Categories.create).toHaveBeenCalledWith({ name: 'Simulation urbaine' })
-        expect(res.status).toHaveBeenCalledWith(201)
-        expect(res.json).toHaveBeenCalledWith({
-            message: "Catégorie créée avec succès.",
-            category: fakeCreated,
-        })
-    })
-    
-    // testing creation with a category name that already exists in the database
-    it('devrait retourner 409 si la catégorie existe déjà', async () => {
-        req = {
-            body: { name: 'VR' },
-        }
-        const fakeCreated = { name: 'VR' }
+		expect(Categories.create).toHaveBeenCalledWith({ name: 'Simulation urbaine' });
+		expect(res.status).toHaveBeenCalledWith(201);
+		expect(res.json).toHaveBeenCalledWith({
+			message: 'Catégorie créée avec succès.',
+			category: fakeCreated,
+		});
+	});
 
-        Categories.findOne.mockResolvedValue(fakeCreated)
+	it('should return 500 with an error message if creation fails', async () => {
+		req = getMockReq({
+			body: { name: 'new category' },
+		});
 
-          await categoriesControllers.createCategory(req, res)
+		Categories.create.mockRejectedValue(new Error());
 
-        expect(Categories.findOne).toHaveBeenCalledWith({ where: { name: 'VR' } })
-        expect(res.status).toHaveBeenCalledWith(409)
-        expect(res.json).toHaveBeenCalledWith({
-            error: "Nom de catégorie déjà utilisé." 
-        })
-    })
-})
+		await categoriesControllers.createCategory(req, res);
 
-//  =========================== updateCategory ==========================
+		expect(Categories.create).toHaveBeenCalledWith({ name: 'new category' });
+		expect(res.status).toHaveBeenCalledWith(500);
+		expect(res.json).toHaveBeenCalledWith({
+			error: 'Erreur serveur lors de la création de la catégorie.',
+		});
+	});
+
+	it('should return 409 if the category name already exists', async () => {
+		req = getMockReq({
+			body: { name: 'VR' },
+		});
+		const fakeCreated = { name: 'VR' };
+
+		Categories.findOne.mockResolvedValue(fakeCreated);
+
+		await categoriesControllers.createCategory(req, res);
+
+		expect(Categories.findOne).toHaveBeenCalledWith({ where: { name: 'VR' } });
+		expect(res.status).toHaveBeenCalledWith(409);
+		expect(res.json).toHaveBeenCalledWith({
+			error: 'Nom de catégorie déjà utilisé.',
+		});
+	});
+
+	it('should return 500 with an error message if findOne fails', async () => {
+		Categories.findOne.mockRejectedValue(new Error());
+
+		await categoriesControllers.createCategory(req, res);
+
+		expect(res.status).toHaveBeenCalledWith(500);
+		expect(res.json).toHaveBeenCalledWith({
+			error: 'Erreur serveur lors de la création de la catégorie.',
+		});
+	});
+});
+
+// =========================== updateCategory ==========================
 
 describe('categoriesController.updateCategory', () => {
-    let req, res
+	let req, res;
 
-    beforeEach(() => {
-        req = {
-            body: { name: 'Attaque souterraine' },
-            checkedParams: { id: 7 }
-        }
-        res = {
-            status: vi.fn(() => res),
-            json: vi.fn(),
-        }
-    })
+	beforeEach(() => {
+		req = getMockReq({
+			body: { name: 'Attaque souterraine' },
+			checkedParams: { id: 7 },
+		});
+		res = getMockRes();
+	});
 
-    // testing regular category update
-    it('devrait retourner 200 avec la catégorie mise à jour', async () => {
-        const fakeUpdated = {
-            id: 7,
-            name: 'Attaque souterraine',
-            save: vi.fn().mockResolvedValue()
-        }
+	it('should return 200 with the updated category', async () => {
+		const fakeUpdated = {
+			id: 7,
+			name: 'Attaque souterraine',
+			save: vi.fn().mockResolvedValue(),
+		};
 
-        Categories.findByPk.mockResolvedValue(fakeUpdated)
-        Categories.findOne.mockResolvedValue(null)
+		Categories.findByPk.mockResolvedValue(fakeUpdated);
+		Categories.findOne.mockResolvedValue(null);
 
-        await categoriesControllers.updateCategory(req, res)
+		await categoriesControllers.updateCategory(req, res);
 
-        // check that the save method has been called
-        expect(fakeUpdated.save).toHaveBeenCalled()
+		expect(fakeUpdated.save).toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(res.json).toHaveBeenCalledWith({
+			message: 'Catégorie mise à jour avec succès.',
+			category: fakeUpdated,
+		});
+	});
 
-        // check the control result
-        expect(res.status).toHaveBeenCalledWith(200)
-        expect(res.json).toHaveBeenCalledWith({
-            message: "Catégorie mise à jour avec succès.",
-            category: fakeUpdated,
-        })
-    })
-})
+	it('should return 404 if the category to update does not exist', async () => {
+		const fakeUpdated = {
+			id: 7,
+			name: 'Attaque souterraine',
+			save: vi.fn().mockResolvedValue(),
+		};
+
+		Categories.findByPk.mockResolvedValue(null);
+
+		await categoriesControllers.updateCategory(req, res);
+
+		expect(fakeUpdated.save).not.toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(404);
+		expect(res.json).toHaveBeenCalledWith({
+			error: 'Catégorie non trouvée.',
+		});
+	});
+
+	it('should return 500 with an error message on failure', async () => {
+		const fakeUpdated = {
+			id: 7,
+			name: 'Attaque souterraine',
+			save: vi.fn().mockResolvedValue(),
+		};
+
+		Categories.findByPk.mockRejectedValue(new Error());
+		Categories.findOne.mockRejectedValue(new Error());
+
+		await categoriesControllers.updateCategory(req, res);
+
+		expect(fakeUpdated.save).not.toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(500);
+		expect(res.json).toHaveBeenCalledWith({
+			error: 'Erreur serveur lors de la mise à jour de la catégorie.',
+		});
+	});
+});
