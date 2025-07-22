@@ -10,6 +10,10 @@ import { initDatabase } from './src/migration/sync.js';
 import router from './src/routers/router.js';
 import stripeRouter from './src/routers/routes/stripe.routes.js';
 import stripeWebhookRouter from './src/routers/routes/stripeWebhook.routes.js';
+import swaggerUi from 'swagger-ui-express';
+import pkg from 'swagger-ui-express';
+import { swaggerSpec } from './src/docs/swagger.js';
+const { setup } = pkg;
 
 const app = express();
 
@@ -35,6 +39,10 @@ app.use(cookieParser());
 // Main Stripe API routes (for checkout, payments, etc)
 app.use('/api/stripe', stripeRouter);
 app.use('/api', router);
+// Route to document API with Swagger
+app.use('/api-docs', swaggerUi.serve, setup(swaggerSpec));
+
+
 const PORT = process.env.PORT || 5000;
 
 // Start the server asynchronously

@@ -5,6 +5,16 @@ import { checkParams } from "../../middlewares/checkParams.js";
 const router = express.Router();
 
 // Retrieve all attractions
+/**
+ * @openapi
+ * /attractions:
+ *   get:
+ *     summary: retrieves all attractions
+ *     responses:
+ *       200:
+ *         description: all attractions retrieved
+ *       400: attractions could not be found
+ */
 router.get("/", attractionsController.getAllAttractions);
 
 // retrieve one attraction
