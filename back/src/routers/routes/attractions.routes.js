@@ -7,18 +7,82 @@ const router = express.Router();
 // Retrieve all attractions
 /**
  * @openapi
- * /attractions:
+ * /api/attractions:
  *   get:
- *     summary: retrieves all attractions
+ *     summary: etrieves all attractions
+ *     tags:
+ *       - Attractions
  *     responses:
  *       200:
- *         description: all attractions retrieved
- *       400: attractions could not be found
+ *         description: List of all attractions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   image:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   slug:
+ *                     type: string
+ *                   created_at:
+ *                     type: string
+ *                     format: date-time
+ *                   updated_at:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Attractions not found
+ *       500:
+ *         description: Erreur serveur
  */
 router.get("/", attractionsController.getAllAttractions);
 
+// // Retrieve one attraction by id
+// /**
+//  * @openapi
+//  * /attractions/{id}:
+//  *   get:
+//  *     summary: retrieves one attraction per id
+//  *     parameters :
+//  *      -in: path
+//  *      name: id
+//  *      required: true
+//  *      schema : 
+//  *          type : integer
+//  *     responses:
+//  *       200:
+//  *         description:  attraction retrieved
+//  *       400: attraction could not be found
+//  */
+
 // retrieve one attraction
 router.get("/:id", checkParams, attractionsController.getOneAttraction);
+
+// // Retrieve one attraction by slug
+// /**
+//  * @openapi
+//  * /attractions/slug/{slug}:
+//  *   get:
+//  *     summary: retrieves one attraction per id
+//  *     parameters :
+//  *      -in: path
+//  *      name: slug
+//  *      required: true
+//  *      schema : 
+//  *          type : string
+//  *     responses:
+//  *       200:
+//  *         description:  attraction retrieved
+//  *       400: attraction could not be found
+//  */
 
 // retrieve one attraction by slug
 router.get("/slug/:slug", checkParams, attractionsController.getOneAttractionBySlug);
