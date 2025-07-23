@@ -53,11 +53,11 @@ export default function Burger({
 					{/* Close (X) button, top right */}
 					<button
 						type="button"
-						aria-label="Fermer le menu"
+						aria-label="Fermer"
 						onClick={() => setOpen(false)}
-						className="self-end rounded p-2 transition"
+						className="self-end rounded p-2 text-primary  active:bg-primary/40"
 					>
-						<X className="h-7 w-7 text-primary  active:bg-primary/40" />
+						<X className="h-7 w-7" />
 					</button>
 					{/* Navigation links list */}
 					<ul className="mt-8 flex flex-grow flex-col gap-6 ">
