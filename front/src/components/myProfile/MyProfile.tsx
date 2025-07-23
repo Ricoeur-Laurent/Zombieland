@@ -44,8 +44,8 @@ export default function MyProfile() {
         firstname?: string;
         lastname?: string;
         password?: string;
+        general?: string;
     }>({});
-    const [error, setError] = useState("");
 
     const fieldTitles = {
         firstname: "du prénom",
@@ -107,15 +107,15 @@ export default function MyProfile() {
     // edit user paswword
     const handlePswdEdit = async () => {
         setErrors({});
-        setError("");
+
 
         if (oldPswd === "") {
-            setError("L'ancien mot de passe est obligatoire")
+            setErrors({ password: "L'ancien mot de passe est obligatoire" })
             return
         }
 
         if (newPswd !== newPswdConfirm) {
-            setError("Echec lors de la confirmation du nouveau mot de passe")
+            setErrors({ password: "Echec lors de la confirmation du nouveau mot de passe" })
             return
         }
 
@@ -136,7 +136,7 @@ export default function MyProfile() {
                 }
             )
             if (!response.ok) {
-                console.error("erreur serveur lors de la mise à jour du mot de passe", error)
+                console.error("erreur serveur lors de la mise à jour du mot de passe", errors.password)
             }
 
             setShowPswdEditModal(false)
@@ -149,74 +149,55 @@ export default function MyProfile() {
     // edit profile in database with user update
     const handleEdit = async () => {
         setErrors({});
-        setError("");
         if (!champActif) return;
+
         if (champActif === "phone") {
             const digits = name.replace(/\D/g, "");
             if (!/^0[1-9]\d{8}$/.test(digits)) {
-                setError("Numéro de téléphone invalide.");
+                setErrors({ phone: "Numéro de téléphone invalide." });
                 return;
             }
         }
 
         try {
-            const response = await fetch(
-                `${getApiUrl()}/myProfile/${user?.id}`,
-                {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-
-                    body: JSON.stringify({
-                        [champActif]: name,
-                    }),
-                    credentials: "include",
+            const response = await fetch(`${getApiUrl()}/myProfile/${user?.id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
                 },
-            );
+                body: JSON.stringify({ [champActif]: name }),
+                credentials: "include",
+            });
+
             const data = await response.json();
-            // TODO: à améliorer quand l'API renverra un objet `errors`
+
             if (!response.ok) {
                 if (response.status === 400 && Array.isArray(data.errors)) {
                     const zodErrors = Object.fromEntries(
-                        data.errors.map((err: any) => [err.path[0], err.message]),
+                        data.errors.map((err: any) => [err.path[0], err.message])
                     );
                     setErrors(zodErrors);
                     return;
                 }
 
                 if (response.status === 409 && typeof data.error === "string") {
-                    if (data.error.toLowerCase().includes("email")) {
-                        setErrors({ email: data.error });
-                    } else if (data.error.toLowerCase().includes("téléphone")) {
-                        setErrors({ phone: data.error });
-                    } else {
-                        setError(data.error);
-                    }
+                    setErrors({ [champActif]: data.error });
                     return;
                 }
 
-                setError(data.error || "Erreur lors de la modification des données du profil.");
+                setErrors({ general: data.error || "Erreur lors de la modification." });
                 return;
             }
-            if (response.ok) {
 
-                setShowEditModal(false)
-                displayProfil()
-            }
+            setShowEditModal(false);
+            displayProfil();
 
         } catch (e) {
-            if (e instanceof Error) {
-                console.error(e);
-                setError("Identifiants invalides ou erreur serveur.");
-            } else {
-                console.error("Unknown error", e);
-                setError("Erreur inconnue.");
-            }
+            setErrors({ general: "Erreur réseau ou serveur." });
+            console.error(e);
         }
     };
-
 
     // delete user from database
     const handleDelete = async () => {
@@ -233,21 +214,14 @@ export default function MyProfile() {
             );
             if (!response.ok) {
                 const data = await response.json().catch(() => null);
-                const message = data?.error || "Échec de la suppression du profil.";
-                console.error("Erreur API :", message);
-                setError(message);
+                setErrors({ general: data.error || "Échec de la suppression du compte." });
                 return;
             }
 
             setshowDeleteModal(false);
             handleLogout();
         } catch (e) {
-            console.error("Erreur réseau :", e);
-            setError(
-                e instanceof Error
-                    ? "Erreur serveur : " + e.message
-                    : "Une erreur inconnue est survenue."
-            );
+            setErrors({ general: "Erreur réseau ou serveur." });
         }
     };
     // Check if the client is logged in, otherwise redirect him on the connexion page
@@ -266,7 +240,6 @@ export default function MyProfile() {
 
 
     // Retrieve user's data to display it on the page
-
 
     useEffect(() => {
         if (token && user && user.id) {
@@ -413,9 +386,7 @@ export default function MyProfile() {
             {/* edit profile modale */}
             <Modal
                 isOpen={showEditModal}
-                onClose={() => {
-                    setShowEditModal(false);
-                }}
+                onClose={() => setShowEditModal(false)}
                 title={`Modification ${fieldTitles[champActif]}`}
                 confirmText="Confirmer"
                 onConfirm={handleEdit}
@@ -424,14 +395,21 @@ export default function MyProfile() {
                     value={name}
                     onChange={(e) => {
                         const raw = e.target.value;
-                        setName(
-                            champActif === "phone" ? formatPhone(raw) : raw
-                        );
+                        setName(champActif === "phone" ? formatPhone(raw) : raw);
                     }}
                     inputMode={champActif === "phone" ? "numeric" : undefined}
-                    className="w-full mb-2 p-2 border rounded"
+                    className="w-full mb-1 p-2 border rounded"
                 />
-                {error && <p className="text-red-500 text-sm font-body">{error}</p>}
+
+                {/* Erreur liée au champ actif (ex: email ou phone) */}
+                {errors[champActif] && (
+                    <p className="text-red-500 text-sm font-body">{errors[champActif]}</p>
+                )}
+
+                {/* Erreur générale éventuelle */}
+                {errors.general && (
+                    <p className="text-red-500 text-sm font-body mt-1">{errors.general}</p>
+                )}
             </Modal>
             {/* edit password modale */}
             <Modal
@@ -483,7 +461,7 @@ export default function MyProfile() {
                         className="text-primary mr-2"
                         onClick={() => { setShowNewPswdConf(!showNewPswdConf) }} />
                 </div>
-                {error && <p className="text-red-500 text-sm font-body">{error}</p>}
+                {errors.password && <p className="text-red-500 text-sm font-body">{errors.password}</p>}
             </Modal>
             {/* delete modal */}
             <Modal
@@ -498,6 +476,10 @@ export default function MyProfile() {
                 <p className="text-text font-body">
                     Êtes-vous certain de vouloir supprimer votre compte ? Toute
                     suppression sera définitive.</p>
+                {errors.general && (
+                    <p className="text-red-500 text-sm font-body mt-1">{errors.general}</p>
+                )}
+
             </Modal>
         </>
     )
