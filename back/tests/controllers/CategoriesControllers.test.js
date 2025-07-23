@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import categoriesControllers from '../../src/controllers/categoriesControllers.js';
 import { getMockReq, getMockRes } from '../testUtils.js';
 
@@ -13,6 +13,20 @@ vi.mock('../../src/models/index.js', () => ({
 }));
 
 import { Categories } from '../../src/models/index.js';
+
+// ================= GLOBAL SETUP FOR console.error MOCKING ==================
+// Avoid display of console.error in the terminal among test results
+let consoleErrorSpy;
+
+beforeEach(() => {
+	// Espionne console.error et empêche sa sortie en le remplaçant par une fonction vide
+	consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+});
+
+afterEach(() => {
+	// Restaure la fonction console.error originale après chaque test
+	consoleErrorSpy.mockRestore();
+});
 
 // ================= getAllCategories ==================
 
@@ -171,6 +185,11 @@ describe('categoriesController.createCategory', () => {
 	});
 
 	it('should return 500 with an error message if findOne fails', async () => {
+		// Note : `req` doit être défini ici pour ce test si `req.body.name` est utilisé dans le contrôleur.
+		// Si `req` n'est pas nécessaire pour ce cas de figure précis où `findOne` échoue
+		// (c'est-à-dire si le contrôleur gère l'erreur avant d'accéder à `req.body.name`),
+		// vous pouvez le laisser tel quel. Sinon, ajoutez :
+		// req = getMockReq({ body: { name: 'any category' } });
 		Categories.findOne.mockRejectedValue(new Error());
 
 		await categoriesControllers.createCategory(req, res);
@@ -241,7 +260,7 @@ describe('categoriesController.updateCategory', () => {
 		};
 
 		Categories.findByPk.mockRejectedValue(new Error());
-		Categories.findOne.mockRejectedValue(new Error());
+		// Categories.findOne.mockRejectedValue(new Error()); // Cette ligne peut être supprimée si la logique du contrôleur ne l'appelle pas dans ce cas d'erreur spécifique
 
 		await categoriesControllers.updateCategory(req, res);
 
