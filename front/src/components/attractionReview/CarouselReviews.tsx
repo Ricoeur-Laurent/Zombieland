@@ -8,18 +8,24 @@ import ReviewCard from "./ReviewCard";
 import ReviewModal from "./ReviewModal";
 
 type Props = {
-	attractionId: number;
+	attractionId: number; // ID of the attraction to fetch reviews for
 };
 
 export default function CarouselReviews({ attractionId }: Props) {
+	// Embla carousel hook with loop mode enabled
 	const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+	// List of fetched reviews
 	const [reviews, setReviews] = useState<Review[]>([]);
+
+	// Index of the currently selected review in the carousel
 	const [selectedIndex, setSelectedIndex] = useState(0);
+	// Modal visibility state
 	const [showModal, setShowModal] = useState(false);
+	// Initial values when restoring a review from localStorage (draft recovery)
 	const [initialComment, setInitialComment] = useState("");
 	const [initialRating, setInitialRating] = useState(5);
 
-	/* fetch attraction reviews*/
+	// Fetch reviews from the API for the current attraction
 	useEffect(() => {
 		async function fetchReviews() {
 			try {
@@ -52,13 +58,13 @@ export default function CarouselReviews({ attractionId }: Props) {
 		}
 	}, [attractionId]);
 
-	/* Embla change (color)*/
+	// When the carousel changes, update the current selected index
 	const onSelect = useCallback(() => {
 		if (!emblaApi) return;
 		setSelectedIndex(emblaApi.selectedScrollSnap());
 	}, [emblaApi]);
 
-	/* Register / unregister the “select” listener on mount / unmount */
+	// Attach / detach the carousel's select listener
 	useEffect(() => {
 		if (!emblaApi) return;
 
@@ -68,7 +74,7 @@ export default function CarouselReviews({ attractionId }: Props) {
 		};
 	}, [emblaApi, onSelect]);
 
-	/* add review */
+	// Add a new review to the top of the list and reset the carousel position
 	const handleNewReview = (newReview: Review) => {
 		setReviews((prev) => [newReview, ...prev]);
 		setShowModal(false);
@@ -89,6 +95,7 @@ export default function CarouselReviews({ attractionId }: Props) {
 				)}
 			</div>
 
+			{/* Carousel content */}
 			<div ref={emblaRef} className="max-w-3xl  w-full mx-auto">
 				<div className="flex gap-4 mx-auto ">
 					{reviews.map((r) => (
@@ -97,7 +104,7 @@ export default function CarouselReviews({ attractionId }: Props) {
 				</div>
 			</div>
 
-			{/* pastilles */}
+			{/* Dots navigation */}
 			<ul className="mt-4 flex justify-center gap-2">
 				{reviews.map((_, i) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: usage de l’index ok (liste statique, carrousel embla)
@@ -113,7 +120,7 @@ export default function CarouselReviews({ attractionId }: Props) {
 				))}
 			</ul>
 
-			{/* add button */}
+			{/* Button to open the review modal */}
 			<div className="text-center mt-6">
 				<button
 					type="button"
@@ -123,7 +130,7 @@ export default function CarouselReviews({ attractionId }: Props) {
 					Ajouter un avis
 				</button>
 			</div>
-
+			{/* Modal for submitting a review */}
 			{showModal && (
 				<ReviewModal
 					attractionId={attractionId}

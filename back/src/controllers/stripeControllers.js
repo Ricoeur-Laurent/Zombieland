@@ -1,7 +1,9 @@
+
 import Stripe from 'stripe';
 import { Reservations } from '../models/index.js';
 
 // Initialize the Stripe instance with your secret key and API version
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
 	apiVersion: '2023-10-16',
 });
@@ -40,9 +42,11 @@ export const createCheckoutSession = async (req, res) => {
 				userId,
 				amount: calculated_price,
 			},
+
 			// Redirect URLs after payment
 			success_url: 'https://zombieland-front-vercel.vercel.app/success',
 			cancel_url: 'https://zombieland-front-vercel.vercel.app/cancel',
+
 		});
 
 		res.status(200).json({ id: session.id });

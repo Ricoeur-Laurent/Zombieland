@@ -9,12 +9,12 @@ import { getApiUrl } from "@/utils/getApi";
 
 export default function AttractionsPage() {
 	/* State search + category  */
-	const [query, setQuery] = useState("");
-	const [selectedCategory, setSelectedCategory] = useState("");
-	const [categories, setCategories] = useState<Category[]>([]);
-	const [attractions, setAttractions] = useState<Attraction[]>([]);
-	const [visible, setVisible] = useState(4);
-	const step = 4;
+	const [query, setQuery] = useState(""); // Search input
+	const [selectedCategory, setSelectedCategory] = useState(""); // Selected category
+	const [categories, setCategories] = useState<Category[]>([]); // All available categories
+	const [attractions, setAttractions] = useState<Attraction[]>([]); // All fetched attractions
+	const [visible, setVisible] = useState(4); // Number of visible cards
+	const step = 4; // Load more increment
 
 	/*fetch attractions */
 	useEffect(() => {
@@ -99,7 +99,7 @@ export default function AttractionsPage() {
 				</select>
 			</div>
 
-			{/* filter list */}
+			{/* attractions list */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				{visibleItems.map((a) => (
 					<Link key={a.id} href={`/attractions/${a.slug}`} className="block">
