@@ -9,7 +9,7 @@ const router = express.Router();
  * @openapi
  * /api/attractions:
  *   get:
- *     summary: etrieves all attractions
+ *     summary: retrieves all attractions
  *     tags:
  *       - Attractions
  *     responses:
@@ -46,24 +46,44 @@ const router = express.Router();
 router.get("/", attractionsController.getAllAttractions);
 
 // // Retrieve one attraction by id
-// /**
-//  * @openapi
-//  * /attractions/{id}:
-//  *   get:
-//  *     summary: retrieves one attraction per id
-//  *     parameters :
-//  *      -in: path
-//  *      name: id
-//  *      required: true
-//  *      schema : 
-//  *          type : integer
-//  *     responses:
-//  *       200:
-//  *         description:  attraction retrieved
-//  *       400: attraction could not be found
-//  */
-
-// retrieve one attraction
+/**
+ * @openapi
+ * /api/attractions/1:
+ *   get:
+ *     summary: retrieves all attractions
+ *     tags:
+ *       - Attractions
+ *     responses:
+ *       200:
+ *         description: Detail for one attraction
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                   name:
+ *                     type: string
+ *                   image:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   slug:
+ *                     type: string
+ *                   created_at:
+ *                     type: string
+ *                     format: date-time
+ *                   updated_at:
+ *                     type: string
+ *                     format: date-time
+ *       400:
+ *         description: Attraction not found
+ *       500:
+ *         description: Erreur serveur
+ */
 router.get("/:id", checkParams, attractionsController.getOneAttraction);
 
 // // Retrieve one attraction by slug

@@ -39,6 +39,7 @@ app.use(cookieParser());
 // Main Stripe API routes (for checkout, payments, etc)
 app.use('/api/stripe', stripeRouter);
 app.use('/api', router);
+
 // Route to document API with Swagger
 app.use('/api-docs', swaggerUi.serve, setup(swaggerSpec));
 
