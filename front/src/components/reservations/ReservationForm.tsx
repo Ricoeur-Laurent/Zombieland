@@ -83,7 +83,7 @@ export default function ReservationForm() {
 				}}
 				placeholder="Entrez le nombre de visiteurs"
 				required
-				className="p-2 rounded bg-background border border-primary text-text"
+				className="p-2 rounded bg-background border border-muted  text-text"
 			/>
 
 			<label
@@ -99,7 +99,7 @@ export default function ReservationForm() {
 				min={today}
 				onChange={(e) => setDate(e.target.value)}
 				required
-				className="p-2 rounded bg-background border border-primary text-text"
+				className="p-2 rounded bg-background border border-muted  text-text"
 			/>
 
 			<p className="text-lg font-semibold text-text">

@@ -213,7 +213,7 @@ export default function ReservationList() {
 					return (
 						<div
 							key={reservation.id}
-							className="bg-surface rounded-lg p-4 shadow-md flex flex-col gap-2"
+							className="bg-surface/70 rounded-lg border-l-4 border-primary p-4 shadow-md flex flex-col gap-2"
 						>
 							<h2 className="text-primary-light font-subtitle text-xl">
 								Réservation du {visitDate.toLocaleDateString()}
@@ -229,7 +229,7 @@ export default function ReservationList() {
 								<div className="flex gap-2 mt-2">
 									<button
 										type="button"
-										className="bg-primary text-bg rounded px-4 py-2 font-subtitle uppercase w-1/2"
+										className="bg-primary text-bg rounded px-3 py-1.5 font-bold  w-1/2"
 										onClick={() => {
 											setSelectedReservation(reservation);
 											setNewDate(reservation.visit_date.slice(0, 10));
@@ -240,7 +240,7 @@ export default function ReservationList() {
 									</button>
 									<button
 										type="button"
-										className="bg-red-600 text-bg rounded px-4 py-2 font-subtitle uppercase w-1/2"
+										className="bg-red-600 text-bg rounded px-4 py-2 font-bold  w-1/2"
 										onClick={() => {
 											setSelectedReservation(reservation);
 											setShowDeleteModal(true);
