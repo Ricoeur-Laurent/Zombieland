@@ -24,7 +24,6 @@ router.use("/reviews", reviewsRoutes);
 
 router.use("/myProfile", verifyToken, signUpRoutes);
 
-
 // =================== Admin routes =====================
 
 router.use("/admin/reservations", verifyToken, verifyAdmin, reservationsRoutes);
