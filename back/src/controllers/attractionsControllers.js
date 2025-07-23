@@ -1,9 +1,6 @@
-import validator from "validator";
-import { Attractions, Categories } from "../models/index.js";
-import {
-	createAttractionSchema,
-	updateAttractionSchema,
-} from "../schemas/attractions.js";
+import validator from 'validator';
+import { Attractions, Categories } from '../models/index.js';
+import { createAttractionSchema, updateAttractionSchema } from '../schemas/attractions.js';
 
 const attractionsController = {
 	// retrieve all attractions
@@ -12,8 +9,8 @@ const attractionsController = {
 			const allAttractions = await Attractions.findAll({
 				include: {
 					model: Categories,
-					as: "categories",
-					attributes: ["id", "name"],
+					as: 'categories',
+					attributes: ['id', 'name'],
 				},
 			});
 			return res.status(200).json({
@@ -21,10 +18,9 @@ const attractionsController = {
 				allAttractions,
 			});
 		} catch (error) {
-			console.error("Erreur lors de la récupération des attractions : ", error);
+			console.error('Erreur lors de la récupération des attractions : ', error);
 			res.status(500).json({
-				message:
-					"Erreur serveur interne lors de la récupération de toutes les attractions",
+				message: 'Erreur serveur interne lors de la récupération de toutes les attractions',
 			});
 		}
 	},
@@ -36,13 +32,9 @@ const attractionsController = {
 		try {
 			const oneAttraction = await Attractions.findByPk(id);
 			if (!oneAttraction) {
-				return res
-					.status(404)
-					.json({ message: `L'attraction est introuvable` });
+				return res.status(404).json({ message: `L'attraction est introuvable` });
 			}
-			return res
-				.status(200)
-				.json({ message: `Attraction récupérée avec succès`, oneAttraction });
+			return res.status(200).json({ message: `Attraction récupérée avec succès`, oneAttraction });
 		} catch (error) {
 			console.error(`Erreur lors de la récupération de l'attraction`, error);
 			res.status(500).json({
@@ -59,18 +51,14 @@ const attractionsController = {
 				where: { slug },
 				include: {
 					model: Categories,
-					as: "categories",
-					attributes: ["id", "name"],
+					as: 'categories',
+					attributes: ['id', 'name'],
 				},
 			});
 			if (!oneAttraction) {
-				return res
-					.status(404)
-					.json({ message: `L'attraction est introuvable` });
+				return res.status(404).json({ message: `L'attraction est introuvable` });
 			}
-			return res
-				.status(200)
-				.json({ message: `Attraction récupérée avec succès`, oneAttraction });
+			return res.status(200).json({ message: `Attraction récupérée avec succès`, oneAttraction });
 		} catch (error) {
 			console.error(`Erreur lors de la récupération de l'attraction`, error);
 			res.status(500).json({
@@ -85,7 +73,7 @@ const attractionsController = {
 		const newAttraction = createAttractionSchema.safeParse(req.body);
 		if (!newAttraction.success) {
 			return res.status(400).json({
-				message: "Erreur lors de la validation des données via Zod",
+				message: 'Erreur lors de la validation des données via Zod',
 				errors: newAttraction.error.issues,
 			});
 		}
@@ -94,11 +82,9 @@ const attractionsController = {
 		const rawImage = newAttraction.data.image.trim();
 
 		// Allow only .jpeg, .jpg, or .webp image file extensions
-		const allowedExtensions = [".jpeg", ".jpg", ".webp"];
+		const allowedExtensions = ['.jpeg', '.jpg', '.webp'];
 		const lowerImage = rawImage.toLowerCase();
-		const hasValidExtension = allowedExtensions.some((ext) =>
-			lowerImage.endsWith(ext),
-		);
+		const hasValidExtension = allowedExtensions.some((ext) => lowerImage.endsWith(ext));
 		if (!hasValidExtension) {
 			return res.status(400).json({
 				message: "L'URL de l'image doit se terminer par .jpeg, .jpg ou .webp.",
@@ -110,10 +96,7 @@ const attractionsController = {
 			name: validator.whitelist(newAttraction.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-"),
 			image: rawImage,
 			description: validator.escape(newAttraction.data.description.trim()),
-			slug: validator.whitelist(
-				newAttraction.data.slug.trim().toLowerCase(),
-				"a-z0-9-",
-			),
+			slug: validator.whitelist(newAttraction.data.slug.trim().toLowerCase(), 'a-z0-9-'),
 		};
 
 		// Check if the name already exists
@@ -129,15 +112,13 @@ const attractionsController = {
 			where: { image: sanitizedData.image },
 		});
 		if (imageExists) {
-			return res.status(409).json({ error: "URL déjà utilisé." });
+			return res.status(409).json({ error: 'URL déjà utilisé.' });
 		}
 
 		// New attraction creation
 		try {
 			const attraction = await Attractions.create(sanitizedData);
-			return res
-				.status(201)
-				.json({ message: "Attraction créée avec succès", attraction });
+			return res.status(201).json({ message: 'Attraction créée avec succès', attraction });
 		} catch (error) {
 			console.error(`Erreur lors de la création de l'attraction `, error);
 			res.status(500).json({
@@ -154,7 +135,7 @@ const attractionsController = {
 		const attractionUpdate = updateAttractionSchema.safeParse(req.body);
 		if (!attractionUpdate.success) {
 			return res.status(400).json({
-				message: "Erreur lors de la validation des données via Zod",
+				message: 'Erreur lors de la validation des données via Zod',
 				errors: attractionUpdate.error.issues,
 			});
 		}
@@ -162,31 +143,23 @@ const attractionsController = {
 		try {
 			const attraction = await Attractions.findByPk(id);
 			if (!attraction) {
-				return res
-					.status(404)
-					.json({ message: `L'attraction est introuvable` });
+				return res.status(404).json({ message: `L'attraction est introuvable` });
 			}
 
 			const sanitizedData = {
 				name: validator.whitelist(attractionUpdate.data.name.trim(), "a-zA-ZÀ-ÿ0-9 '!.,()-"),
 				description: validator.escape(attractionUpdate.data.description.trim()),
-				slug: validator.whitelist(
-					attractionUpdate.data.slug.trim().toLowerCase(),
-					"a-z0-9-",
-				),
+				slug: validator.whitelist(attractionUpdate.data.slug.trim().toLowerCase(), 'a-z0-9-'),
 				image: attractionUpdate.data.image.trim(),
 			};
 
 			// Check allowed extensions
-			const allowedExtensions = [".jpeg", ".jpg", ".webp"];
+			const allowedExtensions = ['.jpeg', '.jpg', '.webp'];
 			const lowerImage = sanitizedData.image.toLowerCase();
-			const hasValidExtension = allowedExtensions.some((ext) =>
-				lowerImage.endsWith(ext),
-			);
+			const hasValidExtension = allowedExtensions.some((ext) => lowerImage.endsWith(ext));
 			if (!hasValidExtension) {
 				return res.status(400).json({
-					message:
-						"L'URL de l'image doit se terminer par .jpeg, .jpg ou .webp.",
+					message: "L'URL de l'image doit se terminer par .jpeg, .jpg ou .webp.",
 				});
 			}
 
@@ -196,9 +169,7 @@ const attractionsController = {
 					where: { name: sanitizedData.name },
 				});
 				if (nameExists) {
-					return res
-						.status(409)
-						.json({ error: "Nom d'attraction déjà utilisé." });
+					return res.status(409).json({ error: "Nom d'attraction déjà utilisé." });
 				}
 			}
 
@@ -207,13 +178,13 @@ const attractionsController = {
 					where: { image: sanitizedData.image },
 				});
 				if (imageExists) {
-					return res.status(409).json({ error: "URL déjà utilisée." });
+					return res.status(409).json({ error: 'URL déjà utilisée.' });
 				}
 			}
 
 			await attraction.update(sanitizedData);
 			return res.status(200).json({
-				message: "Attraction modifiée avec succès.",
+				message: 'Attraction modifiée avec succès.',
 				attraction,
 			});
 		} catch (error) {
@@ -231,13 +202,11 @@ const attractionsController = {
 		try {
 			const attraction = await Attractions.findByPk(id);
 			if (!attraction) {
-				return res
-					.status(404)
-					.json({ error: "L'attraction demandée n'existe pas" });
+				return res.status(404).json({ error: "L'attraction demandée n'existe pas" });
 			}
 			await attraction.destroy();
 			return res.status(200).json({
-				message: "Attraction supprimée avec succès.",
+				message: 'Attraction supprimée avec succès.',
 			});
 		} catch (error) {
 			console.error(`Erreur lors de la suppression de l'attraction `, error);
@@ -254,13 +223,13 @@ const attractionsController = {
 			const category = await Categories.findByPk(id, {
 				include: {
 					model: Attractions,
-					as: "attractions",
+					as: 'attractions',
 					through: { attributes: [] },
 				},
 			});
 
 			if (!category) {
-				return res.status(404).json({ error: "Catégorie non trouvée." });
+				return res.status(404).json({ error: 'Catégorie non trouvée.' });
 			}
 
 			res.status(200).json({
@@ -269,12 +238,9 @@ const attractionsController = {
 				attractions: category.attractions,
 			});
 		} catch (error) {
-			console.error(
-				"Erreur lors de la récupération des attractions par catégorie :",
-				error,
-			);
+			console.error('Erreur lors de la récupération des attractions par catégorie :', error);
 			res.status(500).json({
-				error: "Erreur serveur lors de la récupération des attractions.",
+				error: 'Erreur serveur lors de la récupération des attractions.',
 			});
 		}
 	},
