@@ -2,7 +2,7 @@ import Link from "next/link";
 import Burger from "./Burger";
 import BurgerProfil from "./BurgerProfil";
 
-/* Liens qui DOIVENT apparaître dans la nav (et le burger) */
+// List of navigation links shown in both the navbar and the mobile burger menu
 const links = [
 	{ href: "/attractions", label: "Attractions" },
 	{ href: "/infos-pratiques", label: "Infos pratiques" },
@@ -20,8 +20,7 @@ export default function Header() {
 				>
 					ZombieLand
 				</Link>
-
-				{/* Bouton “Réserver” — visible partout  */}
+				{/* Right-side navigation: booking button, menu (mobile), full nav (desktop) */}
 				<div className="flex gap-3 sm:gap-6">
 					<Link
 						href="/reservations"

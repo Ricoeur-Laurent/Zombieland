@@ -3,14 +3,15 @@ import { LogIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
+// Registration form with validation, error handling and auto login on success
 export default function RegistrationForm() {
-	const { setToken } = useTokenContext();
+	const { refreshUser } = useAuthContext();
 	const router = useRouter();
 	const searchParams = useSearchParams();
-
+	// Controlled form state
 	const [firstname, setFirstName] = useState("");
 	const [lastname, setLastName] = useState("");
 	const [phone, setPhone] = useState("");
@@ -23,18 +24,21 @@ export default function RegistrationForm() {
 		lastname?: string;
 		password?: string;
 	}>({});
-	const [error, setError] = useState("");
 
+	// Generic error (global server message)
+	const [error, setError] = useState("");
+	// Format phone number with spacing (XX XX XX XX XX)
 	function formatPhone(value: string) {
 		const digits = value.replace(/\D/g, "").slice(0, 10);
 		return digits.replace(/(\d{2})(?=\d)/g, "$1 ").trim();
 	}
 
+	// Handle form submit
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setErrors({});
 		setError("");
-
+		// Validate raw phone number format
 		const rawPhone = phone.replace(/\D/g, "");
 		if (!/^0[1-9]\d{8}$/.test(rawPhone)) {
 			setError("Numéro de téléphone invalide.");
@@ -52,12 +56,13 @@ export default function RegistrationForm() {
 					password,
 					phone: phone.replace(/\D/g, ""),
 				}),
-				credentials: "include",
+				credentials: "include", // important for cookie-based sessions
 			});
 
 			const data = await response.json();
 
 			if (!response.ok) {
+				// Handle validation errors from Zod
 				if (response.status === 400 && Array.isArray(data.errors)) {
 					const zodErrors = Object.fromEntries(
 						// biome-ignore lint: explicit any
@@ -66,7 +71,7 @@ export default function RegistrationForm() {
 					setErrors(zodErrors);
 					return;
 				}
-
+				// Handle known conflicts like email or phone already used
 				if (response.status === 409 && typeof data.error === "string") {
 					if (data.error.toLowerCase().includes("email")) {
 						setErrors({ email: data.error });
@@ -78,11 +83,13 @@ export default function RegistrationForm() {
 					return;
 				}
 
+				// Unknown error fallback
 				setError(data.error || "Erreur lors de l'inscription.");
 				return;
 			}
 
-			setToken(data.token);
+			// Registration successful – refresh user context & redirect
+			await refreshUser();
 			const redirectPath = searchParams.get("redirect") || "/reservations";
 			router.push(redirectPath);
 		} catch (e) {
@@ -95,12 +102,14 @@ export default function RegistrationForm() {
 			}
 		}
 	};
-
+	// JSX rendering the full registration form with real-time error display
 	return (
 		<form
 			onSubmit={handleSubmit}
 			className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg"
 		>
+			{/* Each field block includes label, input and error display if applicable */}
+			{/* First name */}
 			<div className="flex flex-col gap-1">
 				<label
 					htmlFor="firstName"
@@ -124,6 +133,7 @@ export default function RegistrationForm() {
 					<p className="text-red-500 text-sm font-body">{errors.firstname}</p>
 				)}
 			</div>
+			{/* Last name */}
 			<div className="flex flex-col gap-1">
 				<label
 					htmlFor="lastName"
@@ -147,6 +157,7 @@ export default function RegistrationForm() {
 					<p className="text-red-500 text-sm font-body">{errors.lastname}</p>
 				)}
 			</div>
+			{/* Email */}
 			<div className="flex flex-col gap-1">
 				<label
 					htmlFor="email"
@@ -170,6 +181,7 @@ export default function RegistrationForm() {
 					<p className="text-red-500 text-sm font-body">{errors.email}</p>
 				)}
 			</div>
+			{/* Phone */}
 			<div className="flex flex-col gap-1">
 				<label
 					htmlFor="phone"
@@ -193,7 +205,7 @@ export default function RegistrationForm() {
 					<p className="text-red-500 text-sm font-body">{errors.phone}</p>
 				)}
 			</div>
-
+			{/* Password */}
 			<div className="flex flex-col gap-1">
 				<label
 					htmlFor="password"
@@ -218,6 +230,7 @@ export default function RegistrationForm() {
 				)}
 			</div>
 
+			{/* Privacy checkbox */}
 			<div className="flex items-start gap-2 mt-4">
 				<input
 					type="checkbox"
@@ -241,9 +254,9 @@ export default function RegistrationForm() {
 					</Link>
 				</label>
 			</div>
-
+			{/* Generic error message */}
 			{error && <p className="text-red-500 text-sm font-body">{error}</p>}
-
+			{/* Submit button */}
 			<button
 				type="submit"
 				className="bg-primary text-black font-subtitle uppercase tracking-wide py-2 rounded-lg hover:bg-primary-dark transition flex items-center justify-center gap-2"

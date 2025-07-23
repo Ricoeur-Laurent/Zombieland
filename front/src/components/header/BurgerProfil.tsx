@@ -1,11 +1,10 @@
 "use client";
 
-import Cookies from "js-cookie";
 import { User, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function BurgerProfil({
 	onOpenProfil,
@@ -13,39 +12,31 @@ export default function BurgerProfil({
 	onOpenProfil?: () => void;
 }) {
 	const [open, setOpen] = useState(false);
+	// Toggles drawer visibility and optionally triggers parent action
 	const handleOpen = () => {
 		if (onOpenProfil) onOpenProfil?.();
 		setOpen(false);
 	};
-	/* Bloque le scroll quand le drawer est ouvert */
+	// Locks page scroll when the drawer is open
 	useEffect(() => {
 		document.body.style.overflow = open ? "hidden" : "";
 	}, [open]);
 	// we get the token in the burger to check if the user is connected and swap the  burger optin connect/disconnect
-	const { user, token, setToken } = useTokenContext();
+	const { user, logout } = useAuthContext();
 	const router = useRouter();
 
-	// ...
-
-	const handleLogout = () => {
-		// Remove the token from the cookies
-		Cookies.remove("zombieland_token");
-		// Remove localstorage with logout
-		localStorage.removeItem("zombieland_reservation");
-		// Clear the token from the context
-		setToken(null);
-
-		// Close the burger menu
+	// disconnect function, we call the backend to clear the cookie and we use the authcontext to refresh it after.
+	const handleLogout = async () => {
+		await logout(); // clears the cookie via API and resets user context
+		localStorage.removeItem("zombieland_reservation"); // optional: clear any local data
 		setOpen(false);
 		handleOpen();
-
-		// Redirect the user to the home page after logout
 		router.push("/");
 	};
 
 	return (
 		<>
-			{/* bouton User qui déclenche l’ouverture */}
+			{/* Trigger button (User icon) */}
 			<button
 				type="button"
 				aria-label="Profil"
@@ -57,10 +48,10 @@ export default function BurgerProfil({
 				<User className="h-6 w-6" />
 			</button>
 
-			{/* drawer Profil */}
+			{/* Drawer menu - appears over full screen when open */}
 			{open && (
 				<div className="fixed inset-0 z-50 flex flex-col bg-bg/95 backdrop-blur px-6 py-8 text-xl font-subtitle uppercase">
-					{/* close */}
+					{/* Close button (top right) */}
 					<button
 						type="button"
 						aria-label="Fermer"
@@ -70,15 +61,13 @@ export default function BurgerProfil({
 						<X className="h-7 w-7" />
 					</button>
 
-					{token ? (
-						<ul className="mt-8 flex flex-grow flex-col gap-6">
+					{user ? (
+						<ul className="mt-8 flex flex-grow flex-col gap-6 ">
 							<li>
 								<Link
-
 									href="/mon-profil"
-									onClick={() => setOpen(false)}
-
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									onClick={handleOpen}
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Mon profil
 								</Link>
@@ -88,7 +77,7 @@ export default function BurgerProfil({
 								<Link
 									href="/mes-reservations"
 									onClick={handleOpen}
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Mes réservations
 								</Link>
@@ -99,7 +88,7 @@ export default function BurgerProfil({
 									<Link
 										href="/admin"
 										onClick={handleOpen}
-										className="flex items-center gap-3 py-2 text-red-500 font-bold transition-colors hover:text-red-700"
+										className="flex gap-3 py-2 text-red-500 font-bold transition-colors hover:text-red-700"
 									>
 										Espace Admin
 									</Link>
@@ -110,19 +99,19 @@ export default function BurgerProfil({
 								<button
 									type="button"
 									onClick={handleLogout}
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Déconnexion
 								</button>
 							</li>
 						</ul>
 					) : (
-						<ul className="mt-8 flex flex-grow flex-col gap-6">
+						<ul className="mt-8 flex flex-grow flex-col gap-6 ">
 							<li>
 								<Link
 									href="/connexion"
 									onClick={handleOpen}
-									className="flex items-center gap-3 py-2 text-primary-light transition-colors hover:text-primary"
+									className="flex gap-3 py-2 text-primary-light transition-colors hover:text-primary"
 								>
 									Connexion
 								</Link>

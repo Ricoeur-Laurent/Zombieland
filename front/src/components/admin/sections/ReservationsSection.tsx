@@ -3,10 +3,10 @@
 import { Edit, Search, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
 import ShowMoreButton from "../ui/ShowMoreButton";
 
+// Reservation type returned by the backend
 type Reservation = {
 	id: number;
 	visit_date: string;
@@ -22,12 +22,12 @@ type Reservation = {
 };
 
 export default function ReservationsSection() {
-	const { token } = useTokenContext();
 	const [reservations, setReservations] = useState<Reservation[]>([]);
 	const [query, setQuery] = useState("");
 	const [visible, setVisible] = useState(4);
 	const [filterDate, setFilterDate] = useState("");
 	const step = 4;
+
 
 	async function handleDeleteReservation() {
 		if (!selectedReservation) return;
@@ -38,14 +38,13 @@ export default function ReservationsSection() {
 				`${getApiUrl()}/admin/reservations/${selectedReservation.id}`,
 				{
 					method: "DELETE",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
+					headers: {},
 					credentials: "include",
 				},
 			);
 
 			if (res.ok) {
+				// Remove the deleted reservation from state
 				setReservations((prev) =>
 					prev.filter((r) => r.id !== selectedReservation.id),
 				);
@@ -73,7 +72,6 @@ export default function ReservationsSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify({ visit_date: isoDate }),
 					credentials: "include",
@@ -81,6 +79,7 @@ export default function ReservationsSection() {
 			);
 
 			if (res.ok) {
+				// Update the reservation in state
 				setReservations((prev) =>
 					prev.map((r) =>
 						r.id === selectedReservation.id ? { ...r, visit_date: isoDate } : r,
@@ -96,15 +95,13 @@ export default function ReservationsSection() {
 			setIsEditing(false);
 		}
 	}
-
+// Fetch all reservations when component mounts
 	useEffect(() => {
 		async function fetchReservations() {
 			try {
 				const res = await fetch(`${getApiUrl()}/admin/reservations`, {
 					method: "GET",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
+					headers: {},
 					credentials: "include",
 				});
 				const data = await res.json();
@@ -113,9 +110,10 @@ export default function ReservationsSection() {
 				console.error("Erreur lors du fetch des réservations :", err);
 			}
 		}
-		if (token) fetchReservations();
-	}, [token]);
+		fetchReservations();
+	}, []);
 
+	// Filter by name and date
 	const filtered = reservations.filter((r) => {
 		const matchesName =
 			r.User &&
@@ -136,12 +134,14 @@ export default function ReservationsSection() {
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 
+	// Open edit modal
 	function handleEdit(reservation: Reservation) {
 		setSelectedReservation(reservation);
 		setNewDate(reservation.visit_date.slice(0, 10));
 		setShowEditModal(true);
 	}
 
+	// Open delete confirmation modal
 	function handleDelete(reservationId: number) {
 		const reservation = reservations.find((r) => r.id === reservationId);
 		if (reservation) {
@@ -151,7 +151,6 @@ export default function ReservationsSection() {
 	}
 
 	return (
-
 		<>
 			<section className="mb-10 text-text font-body">
 				<div className="flex justify-between items-center mb-3">
@@ -260,6 +259,5 @@ export default function ReservationsSection() {
 				/>
 			</Modal>
 		</>
-
 	);
 }

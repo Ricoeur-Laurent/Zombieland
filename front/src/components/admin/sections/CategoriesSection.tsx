@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
 import { getApiUrl } from "@/utils/getApi";
 import AdminSection from "../ui/AdminSection";
 import ItemList from "../ui/ItemList";
@@ -14,7 +13,7 @@ interface Category {
 }
 
 export default function CategoriesSection() {
-	const { token } = useTokenContext();
+	// ========== State Management ==========
 	const [categories, setCategories] = useState<Category[]>([]);
 	const [visible, setVisible] = useState(4);
 	const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -27,13 +26,11 @@ export default function CategoriesSection() {
 	const [loading, setLoading] = useState(false);
 	const [formError, setFormError] = useState<string | null>(null);
 	const [formErrors, setFormErrors] = useState<Record<string, string>>({});
-
+	// ========== Fetch Categories ==========
 	const fetchCategories = useCallback(async () => {
 		try {
 			const res = await fetch(`${getApiUrl()}/admin/categories`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
+				headers: {},
 				credentials: "include",
 			});
 			const data = await res.json();
@@ -41,14 +38,15 @@ export default function CategoriesSection() {
 		} catch (err) {
 			console.error("Erreur lors du fetch des catégories :", err);
 		}
-	}, [token]);
-
+	}, []);
+	// we use an use effect here so each time we patch post or delete its changed by an api call
 	useEffect(() => {
-		if (token) fetchCategories();
-	}, [token, fetchCategories]);
+		fetchCategories();
+	}, [fetchCategories]);
 
 	const handleEdit = (category: Category) => {
 		setSelectedCategory(category);
+		// an admin can only update a category name so that's what we 'll send to the api with the function handleUpdate.
 		setCategoryName(category.name);
 		setFormErrors({});
 		setFormError(null);
@@ -56,6 +54,7 @@ export default function CategoriesSection() {
 	};
 
 	const handleDelete = (id: number) => {
+		//we find a c(ategory) by its id so we can open the modal to remove this category.
 		const category = categories.find((c) => c.id === id);
 		if (category) {
 			setSelectedCategory(category);
@@ -75,7 +74,6 @@ export default function CategoriesSection() {
 					method: "PATCH",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify({ name: categoryName }),
 					credentials: "include",
@@ -87,6 +85,7 @@ export default function CategoriesSection() {
 			if (!res.ok) {
 				if (res.status === 400 && Array.isArray(data.error)) {
 					const errors = Object.fromEntries(
+						// biome-ignore lint/suspicious/noExplicitAny: error object structure is dynamic (from Zod)
 						data.error.map((err: any) => [err.path[0], err.message]),
 					);
 					setFormErrors(errors);
@@ -115,9 +114,7 @@ export default function CategoriesSection() {
 				`${getApiUrl()}/admin/categories/${selectedCategory.id}`,
 				{
 					method: "DELETE",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
+					headers: {},
 					credentials: "include",
 				},
 			);
@@ -133,7 +130,7 @@ export default function CategoriesSection() {
 			setLoading(false);
 		}
 	};
-
+	// when we create a category we don't need previous data, that's why there isn't a handle... before we can directly call the function with the modal and the + button is in the SectionHeader of the AdminSection
 	const handleCreate = async () => {
 		if (!categoryName) return;
 		setLoading(true);
@@ -144,7 +141,6 @@ export default function CategoriesSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify({ name: categoryName }),
 				credentials: "include",
@@ -154,6 +150,7 @@ export default function CategoriesSection() {
 			if (!res.ok) {
 				if (res.status === 400 && Array.isArray(data.error)) {
 					const errors = Object.fromEntries(
+						// biome-ignore lint/suspicious/noExplicitAny: error object structure is dynamic (from Zod)
 						data.error.map((err: any) => [err.path[0], err.message]),
 					);
 					setFormErrors(errors);
@@ -178,6 +175,7 @@ export default function CategoriesSection() {
 	const hasMore = visible < categories.length;
 
 	return (
+		// we use <> and </> at the end so we can write our AdminSection, then the modals that 'll be opened by the + pencil and trash to create, update or delete
 		<>
 			<AdminSection
 				title="Gestion des catégories"
@@ -200,6 +198,7 @@ export default function CategoriesSection() {
 			</AdminSection>
 
 			{/* Modale Edition */}
+			{/* here I use the modal component and fill it with the childrens I need */}
 			<Modal
 				isOpen={showEditModal}
 				title="Modifier la catégorie"

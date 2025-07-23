@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 
+// Header for an admin section, with optional "create" button
 type Props = {
 	title: string;
 	onCreate?: () => void;

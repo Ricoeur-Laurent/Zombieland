@@ -1,9 +1,10 @@
 type Props = {
-	hasMore: boolean;
-	onClick: () => void;
+	hasMore: boolean; // Whether there are more items to show
+	onClick: () => void; // Called when user clicks "Show more"
 };
 
 export default function ShowMoreButton({ hasMore, onClick }: Props) {
+	// Hide the button if there's nothing more to load
 	if (!hasMore) return null;
 
 	return (
