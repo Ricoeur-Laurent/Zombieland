@@ -75,23 +75,19 @@ export default function CarouselAttractions() {
 							key={a.id}
 							className="min-w-full md:min-w-[50%] lg:min-w-[33.3333%] flex-shrink-0"
 						>
-							<Link href={`/attractions/${a.slug}`} className="block h-full">
-								<article className="relative aspect-video overflow-hidden border-2 border-primary rounded-lg m-3">
+							<Link
+								href={`/attractions/${a.slug}`}
+								className="block h-full group"
+							>
+								<article className="relative aspect-video overflow-hidden border-2 border-primary rounded-lg m-3 transition-transform duration-300 ease-in-out group-hover:-translate-y-1 group-hover:shadow-xl">
 									<Image
 										src={`/images/desktop/${a.id}.webp`}
 										alt={a.name}
 										fill
-										sizes="(min-width:1024px) 33vw,
-                       (min-width:768px) 50vw,
-                       100vw"
-										className="object-cover"
+										sizes="(min-width:1024px) 33vw, (min-width:768px) 50vw, 100vw"
+										className="object-cover transition-transform duration-300 ease-in-out group-hover:scale-110 group-hover:brightness-110"
 									/>
-
-									{/* Title overlay at the bottom */}
-									<span
-										className="absolute inset-0 flex items-end justify-center p-4 text-center bg-gradient-to-t from-black/80 to-transparent
-            		 text-white text-xl font-title tracking-wider"
-									>
+									<span className="absolute inset-0 flex items-end justify-center p-4 text-center bg-gradient-to-t from-black/80 to-transparent text-white text-xl font-title tracking-wider">
 										{a.name}
 									</span>
 								</article>

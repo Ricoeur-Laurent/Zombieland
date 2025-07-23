@@ -1,7 +1,12 @@
-"use client";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata = {
+	title: "Page introuvable – Zombieland",
+	description:
+		"Oups ! Cette page semble avoir été dévorée par les zombies... Vérifiez l’URL ou retournez à la page d’accueil si vous voulez survivre.",
+};
 
 export default function NotFound() {
 	return (

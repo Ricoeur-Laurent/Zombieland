@@ -12,10 +12,15 @@ export default function Burger({
 	links: { href: string; label: string }[];
 }) {
 	const [open, setOpen] = useState(false);
+	const [visible, setVisible] = useState(false);
 
-	// Prevent background scrolling when the drawer is open
 	useEffect(() => {
-		document.body.style.overflow = open ? "hidden" : "";
+		if (open) {
+			setVisible(true);
+		} else {
+			const timeout = setTimeout(() => setVisible(false), 400); // wait animation end
+			return () => clearTimeout(timeout);
+		}
 	}, [open]);
 
 	return (
@@ -40,8 +45,11 @@ export default function Burger({
 			</div>
 
 			{/* Full-screen drawer shown when open is true */}
-			{open && (
-				<div className="fixed inset-0 z-50 flex flex-col bg-bg/95 px-6 py-8 text-xl font-subtitle uppercase backdrop-blur">
+			{visible && (
+				<div
+					className={`fixed inset-0 z-50 flex flex-col bg-bg/95 px-6 py-8 text-xl font-subtitle uppercase backdrop-blur
+			${open ? "animate-slide-in-right" : "animate-slide-out-right"}`}
+				>
 					{/* Close (X) button, top right */}
 					<button
 						type="button"

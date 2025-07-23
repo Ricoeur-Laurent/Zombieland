@@ -28,7 +28,6 @@ export default function ReservationsSection() {
 	const [filterDate, setFilterDate] = useState("");
 	const step = 4;
 
-
 	async function handleDeleteReservation() {
 		if (!selectedReservation) return;
 
@@ -95,7 +94,7 @@ export default function ReservationsSection() {
 			setIsEditing(false);
 		}
 	}
-// Fetch all reservations when component mounts
+	// Fetch all reservations when component mounts
 	useEffect(() => {
 		async function fetchReservations() {
 			try {
@@ -152,7 +151,7 @@ export default function ReservationsSection() {
 
 	return (
 		<>
-			<section className="mb-10 text-text font-body">
+			<section className="mb-10 text-text ">
 				<div className="flex justify-between items-center mb-3">
 					<h2 className="text-xl font-subtitle text-primary-light">
 						Gestion des réservations

@@ -1,9 +1,6 @@
-// src/components/Footer.tsx
-
 import { Facebook, Home, Instagram, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 
-// List of legal links pointing to sections of the same page via anchors
 const legalLinks = [
 	{ href: "/mentions-legales#mentions-legales", label: ". Mentions légales" },
 	{ href: "/mentions-legales#cgu", label: ". Conditions" },
@@ -16,65 +13,75 @@ const legalLinks = [
 
 export default function Footer() {
 	return (
-		<footer className="py-8 px-6">
-			<div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 text-sm">
+		<footer className="bg-black/40 text-text px-6 pt-12 pb-6 border-t border-primary/30 mt-16">
+			<div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-sm">
 				{/* ZOMBIELAND */}
 				<div>
-					<h3 className="text-primary-light font-subtitle uppercase mb-4">
+					<h3 className="text-primary-light font-subtitle uppercase text-base mb-4">
 						Zombieland
 					</h3>
-					<p className="text-text font-body max-w-xs">
+					<p className="max-w-xs font-body text-sm">
 						ZombieLand, une expérience post-apocalyptique qui ne vous lâchera
-						pas... même en bas de page
+						pas... même en bas de page.
 					</p>
 				</div>
 
-				{/* Contact information */}
+				{/* Contact */}
 				<div>
-					<h3 className="text-primary-light font-subtitle uppercase mb-4">
-						Nous contacter
+					<h3 className="text-primary-light font-subtitle uppercase text-base mb-4">
+						Contact
 					</h3>
-					<ul className="text-text font-body space-y-2">
-						<li className="flex items-center gap-2">
-							<Phone className="text-primary w-5 h-5" />
-							<span>0666.66.66.66</span>
+					<ul className="space-y-2">
+						<li className="flex items-start gap-2">
+							<Phone className="text-primary w-5 h-5 mt-0.5" />
+							<span>06 66 66 66 66</span>
 						</li>
-						<li className="flex items-center gap-2">
-							<Mail className="text-primary w-5 h-5" />
-							<span>zombie@zombie.com</span>
+						<li className="flex items-start gap-2">
+							<Mail className="text-primary w-5 h-5 mt-0.5" />
+							<span>contact@zombieland.fr</span>
 						</li>
-						<li className="flex items-center gap-2">
-							<Home className="text-primary w-5 h-5" />
-							<span>
-								zombie
+						<li className="flex items-start gap-2">
+							<Home className="text-primary w-5 h-5 mt-0.5" />
+							<address className="not-italic">
+								Zombieland
 								<br />
-								6666 zombie
-							</span>
+								13 Rue des Morts-Vivants
+								<br />
+								45200 Amilly
+							</address>
 						</li>
 					</ul>
 				</div>
 
-				{/* Social media icons */}
+				{/* Réseaux sociaux */}
 				<div>
-					<h3 className="text-primary-light font-subtitle uppercase mb-4">
+					<h3 className="text-primary-light font-subtitle uppercase text-base mb-4">
 						Suivez-nous
 					</h3>
-					<div className="flex gap-4 text-primary text-2xl">
-						<a href="/" aria-label="Instagram">
+					<div className="flex gap-4">
+						<a
+							href="/"
+							aria-label="Instagram"
+							className="text-primary hover:text-primary-dark transition-colors"
+						>
 							<Instagram className="w-6 h-6" />
 						</a>
-						<a href="/" aria-label="Facebook">
+						<a
+							href="/"
+							aria-label="Facebook"
+							className="text-primary hover:text-primary-dark transition-colors"
+						>
 							<Facebook className="w-6 h-6" />
 						</a>
 					</div>
 				</div>
 
-				{/* Legal links mapped from array */}
+				{/* Liens légaux */}
 				<div>
-					<h3 className="text-primary-light font-subtitle uppercase mb-4">
+					<h3 className="text-primary-light font-subtitle uppercase text-base mb-4">
 						Infos légales
 					</h3>
-					<ul className="text-text font-body space-y-2">
+					<ul className="space-y-2">
 						{legalLinks.map(({ href, label }) => (
 							<li key={href}>
 								<Link
@@ -87,6 +94,14 @@ export default function Footer() {
 						))}
 					</ul>
 				</div>
+			</div>
+
+			{/* Bas de footer */}
+			<div className="mt-10 pt-6 border-t border-zinc-800 text-center text-xs text-zinc-500">
+				<p>
+					&copy; {new Date().getFullYear()} Zombieland. Tous droits réservés.
+					Pas responsable en cas de morsure.
+				</p>
 			</div>
 		</footer>
 	);
