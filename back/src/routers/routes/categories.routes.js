@@ -2,6 +2,8 @@ import express from 'express';
 import categoriesControllers from '../../controllers/categoriesControllers.js';
 import attractionsControllers from '../../controllers/attractionsControllers.js';
 import { checkParams } from '../../middlewares/checkParams.js';
+import { verifyToken } from '../../middlewares/verifyToken.js';
+import { verifyAdmin } from '../../middlewares/verifyAdmin.js';
 
 const router = express.Router();
 
@@ -119,6 +121,7 @@ router.get('/', categoriesControllers.getAllCategories);
 router.get('/:id', checkParams, categoriesControllers.getOneCategory);
 
 // create one category
+
 /**
  * @swagger
  * /api/categories:
@@ -193,7 +196,7 @@ router.get('/:id', checkParams, categoriesControllers.getOneCategory);
  *           type: string
  *           example: "Survival"
  */
-router.post('/', categoriesControllers.createCategory);
+router.post('/',verifyToken, verifyAdmin, categoriesControllers.createCategory);
 
 // update one category
 /**
@@ -280,7 +283,7 @@ router.post('/', categoriesControllers.createCategory);
  *           type: string
  *           example: "VR"
  */
-router.patch('/:id', checkParams, categoriesControllers.updateCategory);
+router.patch('/:id',verifyToken, verifyAdmin, checkParams,categoriesControllers.updateCategory);
 
 // delete one category
 /**
@@ -339,7 +342,8 @@ router.patch('/:id', checkParams, categoriesControllers.updateCategory);
  *                   type: string
  *                   example: Internal server error while deleting category
  */
-router.delete('/:id', checkParams, categoriesControllers.deleteCategory);
+router.delete('/:id', verifyToken, verifyAdmin, checkParams,categoriesControllers.deleteCategory);
+
 
 router.get('/:id/attractions', checkParams, attractionsControllers.getAttractionsByCategory);
 
