@@ -151,6 +151,11 @@ const signUpControllers = {
 
 	// Update an existing user
 	async updateUser(req, res) {
+
+		// Check if the user is authenticated
+		if (!req.user) {
+			return res.status(401).json({ error: 'Utilisateur non authentifié' });
+		}
 		const userUpdate = updateUserSchema.safeParse(req.body);
 		if (!userUpdate.success) {
 			return res.status(400).json({
@@ -160,7 +165,7 @@ const signUpControllers = {
 		}
 
 		try {
-			const { id } = req.checkedParams;
+			const { id } = req.user;
 
 			// Sanitize inputs
 			const firstname = userUpdate.data.firstname
@@ -239,8 +244,13 @@ const signUpControllers = {
 
 	// Delete a user
 	async deleteUser(req, res) {
+
+		// Check if the user is authenticated
+		if (!req.user) {
+			return res.status(401).json({ error: 'Utilisateur non authentifié' });
+		}
+		const { id } = req.user;
 		try {
-			const { id } = req.checkedParams;
 			const user = await Users.findByPk(id);
 			if (!user) {
 				return res.status(404).json({ error: "Utilisateur non trouvé." });
@@ -258,8 +268,13 @@ const signUpControllers = {
 
 	// update user password
 	async editUserPswd(req, res) {
+
+		// Check if the user is authenticated
+		if (!req.user) {
+			return res.status(401).json({ error: 'Utilisateur non authentifié' });
+		}
 		// validate incoming data using Zod
-		const { id } = req.checkedParams;
+		const { id } = req.user;
 		const pswdUpdate = updatePswdSchema.safeParse(req.body);
 
 		if (!pswdUpdate.success) {
