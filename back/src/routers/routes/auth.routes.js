@@ -3,6 +3,7 @@ import { verifyToken } from '../../middlewares/verifyToken.js';
 
 const router = express.Router();
 
+
 router.get('/verify', verifyToken, (req, res) => {
 
 
