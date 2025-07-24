@@ -123,8 +123,8 @@ const signUpControllers = {
 			if (!isAdminRoute) {
 				res.cookie("zombieland_token", token, {
 					httpOnly: true,
-					secure: process.env.NODE_ENV === "production",
-					sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+					// secure: process.env.NODE_ENV === "production",
+					// sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
 					maxAge: 24 * 60 * 60 * 1000,
 				});
 			}
@@ -152,6 +152,9 @@ const signUpControllers = {
 	// Update an existing user
 	async updateUser(req, res) {
 		// Check if the user is authenticated
+
+		const isAdmin = req.user?.admin;
+		const id = isAdmin ? req.checkedParams.id : req.user?.id;
 		if (!req.user) {
 			return res.status(401).json({ error: "Utilisateur non authentifié" });
 		}
@@ -164,8 +167,6 @@ const signUpControllers = {
 		}
 
 		try {
-			const { id } = req.user;
-
 			// Sanitize inputs
 			const firstname = userUpdate.data.firstname
 				? validator.escape(validator.trim(userUpdate.data.firstname))
@@ -190,7 +191,9 @@ const signUpControllers = {
 			if (!user) {
 				return res.status(404).json({ error: "Utilisateur non trouvé." });
 			}
-
+			if (!isAdmin && admin !== undefined) {
+				return res.status(403).json({ error: "Accès interdit à ce champ." });
+			}
 			// Vérification email déjà utilisé
 			if (email) {
 				const existingEmailUser = await Users.findOne({ where: { email } });
@@ -214,7 +217,7 @@ const signUpControllers = {
 			if (lastname) user.lastname = lastname;
 			if (email) user.email = email;
 			if (phone) user.phone = phone;
-			if (admin !== undefined) user.admin = admin;
+			if (isAdmin && admin !== undefined) user.admin = admin;
 
 			if (password) {
 				const hashedPassword = await bcrypt.hash(password, 10);
@@ -247,7 +250,10 @@ const signUpControllers = {
 		if (!req.user) {
 			return res.status(401).json({ error: "Utilisateur non authentifié" });
 		}
-		const { id } = req.user;
+		const id =
+			req.user.admin && req.checkedParams?.id
+				? req.checkedParams.id
+				: req.user.id;
 		try {
 			const user = await Users.findByPk(id);
 			if (!user) {
