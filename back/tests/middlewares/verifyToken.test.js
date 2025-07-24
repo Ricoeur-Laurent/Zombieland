@@ -1,94 +1,85 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import jwt from 'jsonwebtoken';
-import { verifyToken } from '../../src/middlewares/verifyToken.js';
 
-// Mock the jsonwebtoken module to control its behavior in tests
-vi.mock('jsonwebtoken');
+// Mock jsonwebtoken BEFORE importing the middleware
+vi.mock('jsonwebtoken', () => ({
+	default: {
+		verify: vi.fn(), // Create a spy/mock for the verify function
+	}
+}));
+
+// Import the mocked version of jsonwebtoken
+import jwt from 'jsonwebtoken';
+// Now import the middleware, which will use the mocked jwt
+import { verifyToken } from '../../src/middlewares/verifyToken.js';
 
 describe('verifyToken middleware', () => {
 	let req;
 	let res;
 	let next;
 
-	// Fake payload representing a valid decoded JWT user object
+	// Sample decoded token payload for a valid user
 	const fakeUserPayload = {
 		id: 1,
-		firstname: 'Test',
-		lastname: 'Test',
-		email: 'test@example.com',
+		firstname: 'Jane',
+		lastname: 'Doe',
+		email: 'jane.doe@example.com',
 		admin: false,
 	};
 
-	// By default, mock jwt.verify to return the fake user payload
-	jwt.verify.mockImplementation(() => fakeUserPayload);
-
-	// Initialize mock request with empty headers and cookies
 	beforeEach(() => {
+		// Mock request with empty headers and cookies
 		req = {
 			headers: {},
 			cookies: {},
 		};
-		// Mock response with status and json methods (status returns this for chaining)
+
+		// Mock response with chainable .status() and .json()
 		res = {
 			status: vi.fn().mockReturnThis(),
 			json: vi.fn(),
 		};
-		// Mock next function to track if middleware calls it
+
+		// Mock next function (Express)
 		next = vi.fn();
 
-		// Reset mock calls and implementations of jwt.verify before each test
-		jwt.verify.mockReset();
+		// Clear all previous mocks before each test
+		vi.clearAllMocks(); 
 	});
 
-	it("devrait renvoyer 401 si aucun token n'est fourni", () => {
+	it('devrait renvoyer 401 si aucun token nest fourni', () => {
 		verifyToken(req, res, next);
+
 		expect(res.status).toHaveBeenCalledWith(401);
 		expect(res.json).toHaveBeenCalledWith({ error: 'Token manquant' });
-	});
-
-	it("devrait autoriser l'accès si le token est valide dans l'en-tête", () => {
-		// Set a valid token in the Authorization header
-		req.headers.authorization = 'Bearer valid.token.header';
-		jwt.verify.mockReturnValue(fakeUserPayload);
-
-		verifyToken(req, res, next);
-
-		// Check jwt.verify was called with correct token and secret
-		expect(jwt.verify).toHaveBeenCalledWith('valid.token.header', process.env.JWT_SECRET);
-		// Confirm user info is attached to req object
-		expect(req.user).toEqual(fakeUserPayload);
-		// Confirm next middleware was called
-		expect(next).toHaveBeenCalled();
+		expect(next).not.toHaveBeenCalled();
 	});
 
 	it("devrait autoriser l'accès si le token est valide dans les cookies", () => {
-		// Set a valid token in cookies
-		req.cookies.token = 'valid.token.cookie';
-		jwt.verify.mockReturnValue(fakeUserPayload);
+		req.cookies.zombieland_token = 'valid.token'; // Provide a fake token
+
+		jwt.verify.mockReturnValue(fakeUserPayload); // Simulate jwt verifying the token successfully
 
 		verifyToken(req, res, next);
 
-		// Check jwt.verify was called with correct token and secret
-		expect(jwt.verify).toHaveBeenCalledWith('valid.token.cookie', process.env.JWT_SECRET);
-		// Confirm user info is attached to req object
+		expect(jwt.verify).toHaveBeenCalledWith('valid.token', process.env.JWT_SECRET);
 		expect(req.user).toEqual(fakeUserPayload);
-		// Confirm next middleware was called
 		expect(next).toHaveBeenCalled();
 	});
 
 	it('devrait renvoyer 403 si le token est invalide', () => {
-		// Set an invalid token in the Authorization header
-		req.headers.authorization = 'Bearer invalid.token';
-		// Make jwt.verify throw an error to simulate invalid token
+		req.cookies.zombieland_token = 'invalid.token'; // Provide a bad token
+
+		// Simulate jwt throwing an error when trying to verify
 		jwt.verify.mockImplementation(() => {
-			throw new Error('Invalid token');
+			throw new Error('Token invalide');
 		});
 
 		verifyToken(req, res, next);
 
 		expect(res.status).toHaveBeenCalledWith(403);
 		expect(res.json).toHaveBeenCalledWith({ error: 'Token invalide ou expiré' });
+		expect(next).not.toHaveBeenCalled();
 	});
 });
