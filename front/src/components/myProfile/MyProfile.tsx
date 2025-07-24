@@ -342,29 +342,39 @@ return (
                         />
                     </div>
                 </li>
-            </ul>
+                    <div className="flex justify-between items-center mb-1">
+                        <h2 className="text-xl font-subtitle text-primary-light">
+                            Mot de Passe
+                        </h2>
+                    </div>
+                    <li className="bg-bg text-text border rounded-lg px-3 py-2 mb-3 focus:outline-none font-body text xl focus:border-primary flex justify-between items-center  border-muted ">
+                        <span>**********</span>
+                        <div className="flex gap-2">
+                            <Edit
+                                onClick={() => {
+                                    setShowPswdEditModal(true)
+                                    setName(password);
+                                    setChampActif("password")
+                                }}
+                                className="size-4 text-primary cursor-pointer"
+                            />
+                        </div>
+                    </li>
+                </ul>
+                {/* Account deletion */}
+                <p className="mt-4 text-sm text-center">
+                    Pour supprimer votre compte, {" "}
+                    <a href=""
+                        onClick={(e) => {
+                            e.preventDefault()
+                            setshowDeleteModal(true)
+                        }}
+                        className="text-primary hover:underline">
 
-            {/* Password modification */}
-            <button
-                type="button"
-                onClick={() => setShowPswdEditModal(true)}
-                className="bg-primary text-bg px-6 py-2 rounded-lg font-bold hover:bg-primary-dark"
-            >
-                Modifier mon mot de passe
-            </button>
-
-            {/* Account deletion */}
-            <p className="mt-4 text-sm text-center">
-                Pour supprimer votre compte,{" "}
-                <button
-                    type="button"
-                    onClick={() => setshowDeleteModal(true)}
-                    className="text-primary hover:underline p-0 border-none bg-transparent font-inherit"
-                >
-                    cliquez ici !
-                </button>
-            </p>
-        </section>
+                        cliquez ici !
+                    </a>
+                </p>
+            </section>
         {/* edit profile modale */}
         <Modal
             isOpen={showEditModal}
@@ -456,7 +466,7 @@ return (
                     }}
                 />
             </div>
-            {error && <p className="text-red-500 text-sm font-body">{error}</p>}
+                {errors.password && <p className="text-red-500 text-sm font-body">{errors.password}</p>}
         </Modal>
         {/* delete modal */}
         <Modal
