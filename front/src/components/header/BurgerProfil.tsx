@@ -49,7 +49,7 @@ export default function BurgerProfil({
 				aria-label="Profil"
 				onClick={() => setOpen(true)}
 				className="rounded-full p-2 text-primary 
-                    active:bg-primary/40
+                    active:bg-primary/40 hover:text-primary-dark
                    "
 			>
 				<User className="h-6 w-6" />

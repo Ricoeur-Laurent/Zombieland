@@ -61,8 +61,8 @@ export default function ReservationForm() {
 			onSubmit={handleSubmit}
 			className="
 				flex flex-col gap-4 w-full max-w-sm mx-auto
-				bg-surface bg-opacity-90 backdrop-blur-sm
-				p-6 rounded-lg border border-primary shadow-lg
+				bg-surface/70 
+				p-6 rounded-lg border-l-4 border-primary shadow-lg
 			"
 		>
 			<label

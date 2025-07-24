@@ -38,9 +38,9 @@ export default function Burger({
 					type="button"
 					aria-label="Ouvrir le menu"
 					onClick={() => setOpen(true)}
-					className="rounded p-2  active:bg-primary/40 "
+					className="rounded p-2  active:bg-primary/40"
 				>
-					<Menu className="h-7 w-7 text-primary" />
+					<Menu className="h-7 w-7 text-primary  hover:text-primary-dark" />
 				</button>
 			</div>
 
