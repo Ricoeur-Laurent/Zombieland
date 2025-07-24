@@ -124,7 +124,7 @@ const signUpControllers = {
 				res.cookie("zombieland_token", token, {
 					httpOnly: true,
 					secure: process.env.NODE_ENV === "production",
-					sameSite: "none",
+					sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
 					maxAge: 24 * 60 * 60 * 1000,
 				});
 			}
@@ -151,10 +151,9 @@ const signUpControllers = {
 
 	// Update an existing user
 	async updateUser(req, res) {
-
 		// Check if the user is authenticated
 		if (!req.user) {
-			return res.status(401).json({ error: 'Utilisateur non authentifié' });
+			return res.status(401).json({ error: "Utilisateur non authentifié" });
 		}
 		const userUpdate = updateUserSchema.safeParse(req.body);
 		if (!userUpdate.success) {
@@ -244,10 +243,9 @@ const signUpControllers = {
 
 	// Delete a user
 	async deleteUser(req, res) {
-
 		// Check if the user is authenticated
 		if (!req.user) {
-			return res.status(401).json({ error: 'Utilisateur non authentifié' });
+			return res.status(401).json({ error: "Utilisateur non authentifié" });
 		}
 		const { id } = req.user;
 		try {
@@ -268,10 +266,9 @@ const signUpControllers = {
 
 	// update user password
 	async editUserPswd(req, res) {
-
 		// Check if the user is authenticated
 		if (!req.user) {
-			return res.status(401).json({ error: 'Utilisateur non authentifié' });
+			return res.status(401).json({ error: "Utilisateur non authentifié" });
 		}
 		// validate incoming data using Zod
 		const { id } = req.user;
