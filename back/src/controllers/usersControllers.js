@@ -178,7 +178,7 @@ const signUpControllers = {
 				? validator.normalizeEmail(userUpdate.data.email)
 				: undefined;
 			const phone = userUpdate.data.phone
-				? validator.escape(validator.trim(userUpdate.data.phone))
+				? validator.whitelist(userUpdate.data.phone, "0-9")
 				: undefined;
 			const password = userUpdate.data.password || undefined;
 			const admin =
