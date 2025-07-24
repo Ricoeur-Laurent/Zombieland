@@ -1,4 +1,3 @@
-
 import express from "express";
 import { verifyAdmin } from "../middlewares/verifyAdmin.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
@@ -21,9 +20,7 @@ router.use("/attractions", attractionsRoutes);
 router.use("/categories", categoriesRoutes);
 router.use("/myReservations", verifyToken, reservationsRoutes);
 router.use("/reviews", reviewsRoutes);
-
 router.use("/myProfile", verifyToken, signUpRoutes);
-
 
 // =================== Admin routes =====================
 

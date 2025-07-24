@@ -3,7 +3,7 @@ import { verifyToken } from '../../middlewares/verifyToken.js';
 
 const router = express.Router();
 
-// Route de vérification du token
+
 router.get('/verify', verifyToken, (req, res) => {
 
 

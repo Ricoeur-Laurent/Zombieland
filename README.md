@@ -19,18 +19,21 @@ Elle propose une expérience immersive côté visiteur et un back-office complet
 ## ⚙️ Stack Technique
 
 ### Frontend
+
 - Next.js + React
 - TypeScript
 - Context API (auth & token)
 - TailwindCSS + Lucide Icons
 
 ### Backend
+
 - Node.js + Express
 - PostgreSQL avec Sequelize ORM
 - JWT Auth + gestion des sessions
 - API RESTful documentée
 
 ### Containerisation
+
 - Docker & Docker Compose pour l’environnement de dev
 
 ---
@@ -45,9 +48,9 @@ docker-compose up --build
 
 Cela va builder et lancer automatiquement le front-end et le back-end :
 
-🌐 Front-end : http://localhost:3000
+🌐 Front-end : <http://localhost:3000>
 
-🔙 Back-end API : http://localhost:5000
+🔙 Back-end API : <http://localhost:5000>
 
 🛑  Arrêter les containers
 Dans le terminal où Docker tourne, fais Ctrl + C, puis :
@@ -94,18 +97,24 @@ projet-zombieland/
 👩‍💻 Contributeur
 Fork ce repo
 
-Crée une branche : 
+Crée une branche :
+
 ```bash
 git checkout -b feature/TonFeature
 ```
-Commit : 
+
+Commit :
+
 ```bash
 git commit -m 'Ajout de ton feature'
 ```
+
 Push :
+
 ```bash
  git push origin feature/TonFeature
 ```
+
 Ouvre une Pull Request ☕
 
 🪄 Roadmap
@@ -122,8 +131,13 @@ Authentication system
 
 PostgreSQL integration
 
-🔜 À venir :
-Unit and integration testing
+Suite de test (controleurs, middelwares, modèle Sequelize et schema de validation Zod)
+
+```bash
+npm run test
+```
+
+Documentation de l'API avec OpenAPI [disponible ici](https://projet-zombieland-sco4.onrender.com/api-docs/#/)
 
 🧩 Licence
 Ce projet est sous licence MIT.
