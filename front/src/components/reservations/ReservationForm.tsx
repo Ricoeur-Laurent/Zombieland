@@ -2,10 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 
 export default function ReservationForm() {
-	const { token } = useTokenContext();
+	const { user } = useAuthContext();
 	const router = useRouter();
 
 	const [date, setDate] = useState<string>("");
@@ -17,10 +17,19 @@ export default function ReservationForm() {
 
 	useEffect(() => {
 		const storedReservation = localStorage.getItem("zombieland_reservation");
-		if (token && storedReservation) {
+		if (user && storedReservation) {
 			router.push("/paiement");
 		}
-	}, [token, router]);
+	}, [user, router]);
+
+	useEffect(() => {
+		if (visitors && visitors > 0) {
+			const pricePerVisitor = 66;
+			setCalculatedPrice(visitors * pricePerVisitor);
+		} else {
+			setCalculatedPrice(0);
+		}
+	}, [visitors]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -28,16 +37,11 @@ export default function ReservationForm() {
 		if (!date || !visitors || visitors <= 0) {
 			return;
 		}
-		const pricePerVisitor = 66;
-		// here we need to check if visitors is not undefined or 0
-		const visitorsNumber = visitors ?? 0;
-		const price = visitorsNumber * pricePerVisitor;
-		setCalculatedPrice(price);
 
 		const reservationData = {
 			date,
 			visitors,
-			calculatedPrice: price,
+			calculatedPrice,
 		};
 		// we store the data in the local storage so when the user is later redirected to "paiement" he won't have to do it all over again
 		localStorage.setItem(
@@ -45,7 +49,7 @@ export default function ReservationForm() {
 			JSON.stringify(reservationData),
 		);
 
-		if (token) {
+		if (user) {
 			router.push("/paiement");
 		} else {
 			router.push("/connexion?redirect=/paiement");
@@ -57,8 +61,8 @@ export default function ReservationForm() {
 			onSubmit={handleSubmit}
 			className="
 				flex flex-col gap-4 w-full max-w-sm mx-auto
-				bg-surface bg-opacity-90 backdrop-blur-sm
-				p-6 rounded-lg border border-primary shadow-lg
+				bg-surface/70 
+				p-6 rounded-lg border-l-4 border-primary shadow-lg
 			"
 		>
 			<label
@@ -79,7 +83,7 @@ export default function ReservationForm() {
 				}}
 				placeholder="Entrez le nombre de visiteurs"
 				required
-				className="p-2 rounded bg-background border border-primary text-text"
+				className="p-2 rounded bg-background border border-muted  text-text"
 			/>
 
 			<label
@@ -95,7 +99,7 @@ export default function ReservationForm() {
 				min={today}
 				onChange={(e) => setDate(e.target.value)}
 				required
-				className="p-2 rounded bg-background border border-primary text-text"
+				className="p-2 rounded bg-background border border-muted  text-text"
 			/>
 
 			<p className="text-lg font-semibold text-text">

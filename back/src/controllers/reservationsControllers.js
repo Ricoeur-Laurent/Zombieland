@@ -89,11 +89,9 @@ const reservationsControllers = {
 				},
 			});
 			if (!userReservations || userReservations.length === 0) {
-				return res
-					.status(404)
-					.json({
-						message: `Aucune réservation trouvée pour l'utilisateur n°${userId}`,
-					});
+				return res.status(404).json({
+					message: `Aucune réservation trouvée pour l'utilisateur n°${userId}`,
+				});
 			}
 			return res.status(200).json({
 				message: "Réservations récupérées avec succès",
@@ -174,19 +172,19 @@ const reservationsControllers = {
 		const { id } = req.checkedParams;
 		const isAdmin = req.user.admin;
 		const userId = req.user.id;
-	
+
 		// Interdiction for an user to modify the price
 		if (!isAdmin && "amount" in req.body) {
 			return res.status(403).json({
 				error: "Vous n'êtes pas autorisé à modifier le prix.",
 			});
 		}
-	
+
 		// Validation Schema is different for admin
 		const schema = isAdmin
 			? updateReservationAdminSchema
 			: updateReservationUserSchema;
-	
+
 		const updateReservation = schema.safeParse(req.body);
 		if (!updateReservation.success) {
 			console.log("Échec de validation Zod :", req.body);
@@ -195,13 +193,13 @@ const reservationsControllers = {
 				error: updateReservation.error.issues,
 			});
 		}
-	
+
 		try {
 			const reservation = await Reservations.findByPk(id);
 			if (!reservation) {
 				return res.status(404).json({ error: "Réservation non trouvée" });
 			}
-	
+
 			// if not and admin user1 can only modify user1 resa
 			if (!isAdmin && reservation.userId !== userId) {
 				return res.status(403).json({
@@ -209,12 +207,12 @@ const reservationsControllers = {
 						"Accès refusé : vous ne pouvez modifier que vos propres réservations",
 				});
 			}
-	
+
 			// Restricted to 10 days only for user, not admin
 			if (!isAdmin) {
 				const today = dayjs();
 				const newVisitDate = dayjs(updateReservation.data.visit_date); // ✅ checking the updated date and not the first one
-			
+
 				if (newVisitDate.diff(today, "day") < 10) {
 					return res.status(400).json({
 						message:
@@ -222,22 +220,25 @@ const reservationsControllers = {
 					});
 				}
 			}
-	
+
 			const updateData = { ...updateReservation.data };
-	
+
 			// we check the price for users
 			if (!isAdmin && "nb_participants" in updateData) {
 				const price = 66;
 				updateData.amount = updateData.nb_participants * price;
 			}
-	
+
 			await reservation.update(updateData);
 			return res.status(200).json({
 				message: "Réservation modifiée avec succès.",
 				reservation,
 			});
 		} catch (error) {
-			console.error("Erreur lors de la modification de la réservation :", error);
+			console.error(
+				"Erreur lors de la modification de la réservation :",
+				error,
+			);
 			res.status(500).json({
 				error: "Erreur serveur lors de la modification de la réservation.",
 			});
@@ -246,7 +247,7 @@ const reservationsControllers = {
 	// delete a reservation
 	async deleteReservation(req, res) {
 		const { id } = req.checkedParams;
-
+		const isAdmin = req.user.admin;
 		const userId = req.user.id;
 		// deleting reservation
 		try {
@@ -256,22 +257,23 @@ const reservationsControllers = {
 					.status(404)
 					.json({ error: "La réservation demandée n'existe pas" });
 			}
-			if (reservation.userId !== userId) {
-				return res
-					.status(403)
-					.json({
-						error:
-							"Accès refusé : vous ne pouvez supprimer que vos propres réservations",
-					});
-			}
-			const today = dayjs();
-			const visitDate = dayjs(reservation.visit_date);
-			if (visitDate.diff(today, "day") < 10) {
-				return res.status(400).json({
+			if (!isAdmin && reservation.userId !== userId) {
+				return res.status(403).json({
 					error:
-						"La réservation ne peut pas être annulée moins de 10 jours avant la date de visite.",
+						"Accès refusé : vous ne pouvez supprimer que vos propres réservations",
 				});
 			}
+			if (!isAdmin) {
+				const today = dayjs();
+				const visitDate = dayjs(reservation.visit_date);
+				if (visitDate.diff(today, "day") < 10) {
+					return res.status(400).json({
+						error:
+							"La réservation ne peut pas être annulée moins de 10 jours avant la date de visite.",
+					});
+				}
+			}
+
 			await reservation.destroy();
 			return res.status(200).json({
 				message: "Réservation supprimée avec succès.",

@@ -2,15 +2,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import type { Review } from "@/@types";
 import Modal from "@/components/modal/Modal";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
+// Props for the modal component
 interface Props {
-	attractionId: number;
-	onClose: () => void;
-	onSubmit: (review: Review) => void;
-	initialComment?: string;
-	initialRating?: number;
+	attractionId: number; // The ID of the attraction to post the review for
+	onClose: () => void; // Callback when the modal closes
+	onSubmit: (review: Review) => void; // Callback when a review is successfully submitted
+	initialComment?: string; // Optional comment pre-filled (e.g., from localStorage)
+	initialRating?: number; // Optional rating pre-filled
 }
 
 export default function ReviewModal({
@@ -20,17 +21,21 @@ export default function ReviewModal({
 	initialComment,
 	initialRating,
 }: Props) {
-	const { token } = useTokenContext();
+	// Retrieve authenticated user from context
+	const { user } = useAuthContext();
+
+	// Local state for form inputs
 	const [comment, setComment] = useState(initialComment || "");
 	const [rating, setRating] = useState(initialRating || 5);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-
+	// Used to redirect user back to current page after login
 	const pathname = usePathname();
 	const router = useRouter();
-
+	// Handle form submission
 	const handleSend = async () => {
-		if (!token) {
+		// If the user is not authenticated, store the review in localStorage and redirect
+		if (!user) {
 			localStorage.setItem(
 				"pendingReview",
 				JSON.stringify({ comment, rating, attractionId }),
@@ -49,8 +54,8 @@ export default function ReviewModal({
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization: `Bearer ${token}`,
 					},
+					credentials: "include", // Include session cookie (HttpOnly)
 					body: JSON.stringify({ comment, rating }),
 				},
 			);
@@ -62,6 +67,7 @@ export default function ReviewModal({
 
 			const { review } = await httpResponse.json();
 			onSubmit(review);
+			// biome-ignore lint/suspicious/noExplicitAny : cast temporary
 		} catch (err: any) {
 			setError(err.message);
 		} finally {
@@ -80,14 +86,14 @@ export default function ReviewModal({
 			disableConfirm={comment.trim() === ""}
 		>
 			{error && <p className="text-red-600 mb-2">{error}</p>}
-
+			{/* Comment input */}
 			<textarea
 				className="w-full mb-2 p-2 border rounded bg-bg text-text"
 				placeholder="Votre commentaire"
 				value={comment}
 				onChange={(e) => setComment(e.target.value)}
 			/>
-
+			{/* Rating selector */}
 			<select
 				className="w-full mb-4 p-2 border rounded bg-bg text-text"
 				value={rating}

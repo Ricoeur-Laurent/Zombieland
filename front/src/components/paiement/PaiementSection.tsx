@@ -3,15 +3,20 @@
 import { loadStripe } from "@stripe/stripe-js";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useTokenContext } from "@/context/TokenProvider";
+import { useAuthContext } from "@/context/AuthContext";
 import { getApiUrl } from "@/utils/getApi";
 
-const stripePromise = loadStripe(
-	process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
-);
+// Initialize Stripe with the public key from the environment
+const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+if (!stripeKey) {
+	throw new Error("Missing Stripe public key");
+}
+
+// Load Stripe later when needed
+const stripePromise = loadStripe(stripeKey);
 
 export default function PaiementSection() {
-	const { token, loading, user } = useTokenContext();
+	const { loading, user } = useAuthContext();
 	const router = useRouter();
 	const [paymentLoading, setPaymentLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -22,12 +27,14 @@ export default function PaiementSection() {
 		calculatedPrice: number;
 	} | null>(null);
 
+	// Redirect to login if user is not authenticated
 	useEffect(() => {
-		if (!loading && !token) {
+		if (!loading && !user) {
 			router.push("/connexion?redirect=/paiement");
 		}
-	}, [token, loading, router]);
+	}, [user, loading, router]);
 
+	// Load reservation data from localStorage
 	useEffect(() => {
 		const stored = localStorage.getItem("zombieland_reservation");
 		if (stored) {
@@ -37,8 +44,9 @@ export default function PaiementSection() {
 		}
 	}, [router]);
 
+	// Create Stripe Checkout session and redirect to Stripe
 	const handlePayment = async () => {
-		if (!reservation || !token) return;
+		if (!reservation || !user) return;
 
 		setPaymentLoading(true);
 		setError(null);
@@ -48,8 +56,8 @@ export default function PaiementSection() {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
 				},
+				credentials: "include",
 				body: JSON.stringify({
 					visit_date: reservation.date,
 					nb_participants: reservation.visitors,
@@ -69,6 +77,7 @@ export default function PaiementSection() {
 				throw new Error("Stripe n’a pas pu être initialisé.");
 			}
 
+			// Redirect user to Stripe checkout page
 			await stripe.redirectToCheckout({ sessionId: data.id }); // back end send back the id
 		} catch (err) {
 			console.error(err);
@@ -77,11 +86,13 @@ export default function PaiementSection() {
 			setPaymentLoading(false);
 		}
 	};
+	// Cancel reservation (clears local storage and redirects home)
 	const handleCancel = () => {
 		localStorage.removeItem("zombieland_reservation");
 		router.push("/");
 	};
 
+	// No reservation found
 	if (!reservation) {
 		return (
 			<p className="text-center text-text">
@@ -92,7 +103,7 @@ export default function PaiementSection() {
 	}
 
 	return (
-		<div className="bg-background p-6 rounded shadow-lg text-text text-center border-2 border-primary">
+		<div className="bg-surface/70  p-6 rounded-lg shadow-lg text-text text-center border-l-4 border-primary">
 			<h2 className="text-2xl font-bold text-primary-light mb-4">
 				Confirmation de votre réservation
 			</h2>
@@ -134,7 +145,7 @@ export default function PaiementSection() {
 				<button
 					type="button"
 					onClick={handleCancel}
-					className="mt-6 mx-auto bg-red-600 text-bg flex items-center justify-center rounded-lg font-bold transition px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base"
+					className="mt-6 mx-auto bg-red-600 hover:bg-red-700 text-bg flex items-center justify-center rounded-lg font-bold transition px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base"
 				>
 					Annuler
 				</button>

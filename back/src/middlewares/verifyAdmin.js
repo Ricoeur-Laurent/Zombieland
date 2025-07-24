@@ -1,9 +1,15 @@
+401// Middleware to restrict access to admin users only
 export function verifyAdmin(req, res, next) {
+
+	// Check if the user is authenticated
 	if (!req.user) {
 		return res.status(401).json({ error: 'Utilisateur non authentifié' });
 	}
-	if (!req.user.admin) {
+
+	// Check if the user has admin privileges
+	if (!req.user.admin || req.user.admin !== true) {
 		return res.status(403).json({ error: 'Accès refusé : rôle admin requis' });
 	}
+	
 	next();
 }

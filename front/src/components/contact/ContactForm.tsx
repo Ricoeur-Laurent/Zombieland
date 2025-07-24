@@ -1,10 +1,7 @@
 "use client";
 
-
-import emailjs from '@emailjs/browser';
-import { useState, FormEvent } from "react";
-
-
+import emailjs from "@emailjs/browser";
+import { type FormEvent, useState } from "react";
 
 export default function ContactForm() {
 	const [firstname, setFirstName] = useState("");
@@ -54,7 +51,7 @@ export default function ContactForm() {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg"
+			className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface/70  p-6 rounded-lg border-l-4 border-primary shadow-lg"
 		>
 			{/* Champ prénom */}
 			<div className="flex flex-col">

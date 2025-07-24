@@ -6,32 +6,38 @@ export const metadata = {
 
 export default function LegalPage() {
 	return (
-		<main className="max-w-3xl mx-auto px-6 py-12 text-text font-body space-y-12">
-			{/* MENTIONS LEGALES , les id servent pour l'ancrage sur le footer*/}
-			<section id="mentions-legales">
-				<h1 className="text-3xl font-subtitle text-primary-light uppercase mb-4">
-					Mentions légales
-				</h1>
-				<p className="text-justify">
-					<b>Identification de l'éditeur du site</b>
+		<main className="max-w-4xl mx-auto px-6 py-12 text-text font-body space-y-8">
+			<h2 className="text-3xl sm:text-5xl font-subtitle uppercase text-primary text-center mb-12">
+				Informations légales
+			</h2>
+
+			{/* MENTIONS LÉGALES */}
+			<section
+				id="mentions-legales"
+				className="bg-surface/70 rounded border-l-4 border-primary p-6 shadow"
+			>
+				<h3 className="text-xl font-subtitle text-primary-light uppercase mb-4">
+					Mentions Légales
+				</h3>
+				<p className="text-justify leading-relaxed">
+					<b>Nom :</b> Zombieland
 					<br />
-					Nom : Zombieland
+					<b>Forme juridique :</b> Société par actions simplifiée (SAS)
 					<br />
-					Forme juridique : Société par actions simplifiée (SAS)
+					<b>Capital social :</b> 66 666 €<br />
+					<b>Siège social :</b> 666 Rue des Cerveaux Affamés, 6666 Zombie,
+					France
 					<br />
-					Capital social : 66 666 €<br />
-					Siège social : 666 Rue des Cerveaux Affamés, 6666 Zombie, France
+					<b>SIRET :</b> 666 666 666 00066
 					<br />
-					Numéro SIRET : 666 666 666 00066
+					<b>Directeur de la publication :</b> Zombie McBrainless
 					<br />
-					Directeur de la publication : Zombie McBrainless
+					<b>Email :</b> contact@zombieland.fr
 					<br />
-					Email : contact@zombieland.fr
-					<br />
-					Téléphone : +33 6 66 66 66 66
+					<b>Téléphone :</b> +33 6 66 66 66 66
 				</p>
-				<p className="mt-4 text-justify">
-					<b>Hébergement</b>
+				<p className="mt-4 text-justify leading-relaxed">
+					<b>Hébergement :</b>
 					<br />
 					Hébergeur : HostBrain
 					<br />
@@ -42,11 +48,14 @@ export default function LegalPage() {
 			</section>
 
 			{/* CGU */}
-			<section id="cgu">
-				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
+			<section
+				id="cgu"
+				className="bg-surface/70 rounded border-l-4 border-primary p-6 shadow"
+			>
+				<h3 className="text-xl font-subtitle text-primary-light uppercase mb-4">
 					Conditions Générales d'Utilisation
-				</h2>
-				<p className="text-justify">
+				</h3>
+				<p className="text-justify leading-relaxed">
 					L’utilisation de ce site implique l’acceptation pleine et entière des
 					conditions générales d’utilisation décrites ici. Celles-ci peuvent
 					être modifiées ou complétées à tout moment, les utilisateurs du site
@@ -54,30 +63,36 @@ export default function LegalPage() {
 				</p>
 			</section>
 
-			{/* CONFIDENTIALITE */}
-			<section id="confidentialite">
-				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
+			{/* CONFIDENTIALITÉ */}
+			<section
+				id="confidentialite"
+				className="bg-surface/70 rounded border-l-4 border-primary p-6 shadow"
+			>
+				<h3 className="text-xl font-subtitle text-primary-light uppercase mb-4">
 					Politique de Confidentialité
-				</h2>
-				<p className="text-justify">
+				</h3>
+				<p className="text-justify leading-relaxed">
 					Zombieland collecte des informations personnelles relatives à
 					l’utilisateur uniquement pour le besoin des services proposés par le
 					site. L’utilisateur fournit ces informations en toute connaissance de
 					cause, notamment lorsqu’il procède par lui-même à leur saisie.
 				</p>
-				<p className="mt-2 text-justify">
+				<p className="mt-2 text-justify leading-relaxed">
 					Conformément aux dispositions des articles 38 et suivants de la loi
 					78-17, tout utilisateur dispose d’un droit d’accès, de rectification
 					et d’opposition aux données personnelles le concernant.
 				</p>
 			</section>
 
-			{/* ACCESSIBILITE */}
-			<section id="accessibilite">
-				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
+			{/* ACCESSIBILITÉ */}
+			<section
+				id="accessibilite"
+				className="bg-surface/70 rounded border-l-4 border-primary p-6 shadow"
+			>
+				<h3 className="text-xl font-subtitle text-primary-light uppercase mb-4">
 					Accessibilité
-				</h2>
-				<p className="text-justify">
+				</h3>
+				<p className="text-justify leading-relaxed">
 					Zombieland s’engage à rendre son site accessible conformément à
 					l’article 47 de la loi n°2005-102. Pour toute demande ou signalement
 					concernant l’accessibilité, veuillez nous contacter à
@@ -85,26 +100,32 @@ export default function LegalPage() {
 				</p>
 			</section>
 
-			{/* PROPRIETE INTELLECTUELLE */}
-			<section id="propriete-intellectuelle">
-				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
+			{/* PROPRIÉTÉ INTELLECTUELLE */}
+			<section
+				id="propriete-intellectuelle"
+				className="bg-surface/70 rounded border-l-4 border-primary p-6 shadow"
+			>
+				<h3 className="text-xl font-subtitle text-primary-light uppercase mb-4">
 					Propriété Intellectuelle
-				</h2>
-				<p className="text-justify">
+				</h3>
+				<p className="text-justify leading-relaxed">
 					Le contenu du site Zombieland, incluant mais non limité aux textes,
 					images, graphismes, logo et icônes, est la propriété exclusive de
 					Zombieland. Toute reproduction, représentation, modification,
-					publication, adaptation de tout ou partie des éléments est interdite
-					sauf autorisation écrite préalable.
+					publication ou adaptation, même partielle, est interdite sauf
+					autorisation écrite préalable.
 				</p>
 			</section>
 
 			{/* COOKIES */}
-			<section id="cookies">
-				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
+			<section
+				id="cookies"
+				className="bg-surface/70 rounded border-l-4 border-primary p-6 shadow"
+			>
+				<h3 className="text-xl font-subtitle text-primary-light uppercase mb-4">
 					Cookies
-				</h2>
-				<p className="text-justify">
+				</h3>
+				<p className="text-justify leading-relaxed">
 					La navigation sur le site Zombieland est susceptible de provoquer
 					l’installation de cookie(s) sur l’ordinateur de l’utilisateur afin de
 					faciliter la navigation et de mesurer la fréquentation du site.
@@ -112,11 +133,14 @@ export default function LegalPage() {
 			</section>
 
 			{/* DROIT APPLICABLE */}
-			<section id="droit-applicable">
-				<h2 className="text-2xl font-subtitle text-primary-light uppercase mb-4">
+			<section
+				id="droit-applicable"
+				className="bg-surface/70 rounded border-l-4 border-primary p-6 shadow"
+			>
+				<h3 className="text-xl font-subtitle text-primary-light uppercase mb-4">
 					Droit Applicable
-				</h2>
-				<p className="text-justify">
+				</h3>
+				<p className="text-justify leading-relaxed">
 					Tout litige en relation avec l’utilisation du site Zombieland est
 					soumis au droit français. Il est fait attribution exclusive de
 					juridiction aux tribunaux compétents de Zombieville.

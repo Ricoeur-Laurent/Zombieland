@@ -6,7 +6,7 @@ import {
 	ParkingSquare,
 	Ticket,
 } from "lucide-react";
-import MapWrapper from "@/components/map/MapWrraper";
+import MapWrapper from "@/components/map/MapWrraper"; // attention à l'orthographe : MapWrapper
 
 export const metadata = {
 	title: "Infos pratiques – Zombieland",
@@ -21,7 +21,7 @@ const sections = [
 		content: (
 			<>
 				<p>Le parc est ouvert :</p>
-				<ul className="list-disc list-inside ml-4 mt-2">
+				<ul className="list-disc list-inside ml-4 mt-2 space-y-1">
 					<li>Du mercredi au dimanche : 10h – 22h</li>
 					<li>Vacances & jours fériés : 7j/7</li>
 					<li>Fermeture annuelle : janvier</li>
@@ -47,8 +47,10 @@ const sections = [
 					Zombieland se situe à seulement 20 minutes de la gare de Montargis.
 					Accès en voiture via la D2060, sortie Z.
 				</p>
-				<MapWrapper />
-				<p className="mt-2">
+				<div className="mt-4 rounded-lg overflow-hidden border border-muted shadow-sm">
+					<MapWrapper />
+				</div>
+				<p className="mt-4">
 					<strong>Adresse :</strong>
 					<br />
 					Zombieland
@@ -77,8 +79,21 @@ const sections = [
 		icon: HelpCircle,
 		content: (
 			<>
-				<p>Email : zombieland.zombieland666@gmail.com</p>
-				<p>Tél : 0666.66.66.66</p>
+				<p>
+					Email :{" "}
+					<a
+						href="mailto:zombieland.zombieland666@gmail.com"
+						className="text-primary hover:underline"
+					>
+						zombieland.zombieland666@gmail.com
+					</a>
+				</p>
+				<p>
+					Tél :{" "}
+					<a href="tel:0666666666" className="text-primary hover:underline">
+						0666.66.66.66
+					</a>
+				</p>
 			</>
 		),
 	},
@@ -97,14 +112,18 @@ const sections = [
 
 export default function VisitorInfoPage() {
 	return (
-		<div className="px-4 py-6 max-w-6xl mx-auto">
+		<div className="px-4 sm:px-6 md:px-8 py-10 max-w-6xl mx-auto">
 			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				Infos pratiques
 			</h2>
 
-			<div className="mt-12 space-y-12">
+			<div className="mt-12 grid gap-10 sm:gap-12">
 				{sections.map(({ id, title, icon: Icon, content }) => (
-					<section key={id} id={id} className="scroll-mt-20">
+					<section
+						key={id}
+						id={id}
+						className=" bg-surface/70 p-6 sm:p-8 rounded-lg border-l-4 border-primary shadow-md "
+					>
 						<div className="flex items-center gap-3 mb-4">
 							<Icon className="size-7 text-primary" aria-hidden />
 							<h3 className="text-xl sm:text-2xl font-subtitle uppercase tracking-wide text-text">

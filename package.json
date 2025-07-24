@@ -1,18 +1,19 @@
 {
-  "name": "projet-zombieland",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@biomejs/biome": "^2.0.6"
-  },
-  "dependencies": {
-    "@emailjs/browser": "^4.4.1"
-  }
+	"name": "projet-zombieland",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@biomejs/biome": "^2.0.6"
+	},
+	"type": "module",
+	"dependencies": {
+		"@emailjs/browser": "^4.4.1"
+	}
 }

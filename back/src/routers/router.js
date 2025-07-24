@@ -1,4 +1,3 @@
-
 import express from "express";
 import { verifyAdmin } from "../middlewares/verifyAdmin.js";
 import { verifyToken } from "../middlewares/verifyToken.js";
@@ -11,6 +10,8 @@ import reviewsRoutes from "./routes/reviews.routes.js";
 import signUpRoutes from "./routes/users.routes.js";
 
 const router = express.Router();
+
+// =================== Public routes =====================
 
 router.use("/signUp", signUpRoutes);
 router.use("/login", loginRoutes);

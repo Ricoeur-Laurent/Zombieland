@@ -1,8 +1,10 @@
 import { sequelize } from './sequelize.js';
 import { Model, DataTypes } from 'sequelize';
 
+// Define the Users model by extending Sequelize's Model class
 export class Users extends Model {}
 
+// Initialize the Users model schema and options
 Users.init(
 	{
 		id: {

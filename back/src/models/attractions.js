@@ -1,8 +1,10 @@
 import { sequelize } from './sequelize.js';
 import { Model, DataTypes } from 'sequelize';
 
+// Define a class that represents the 'Attractions' model
 export class Attractions extends Model {}
 
+// Initialize the model with fields (columns) and options
 Attractions.init(
 	{
 		id: {
@@ -24,10 +26,10 @@ Attractions.init(
 			type: DataTypes.TEXT,
 			allowNull: false,
 		},
-		slug :{
+		slug: {
 			type: DataTypes.TEXT,
-			allowNull: false
-		}
+			allowNull: false,
+		},
 	},
 	{
 		sequelize,

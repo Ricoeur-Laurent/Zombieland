@@ -1,73 +1,90 @@
-🧟‍♂️ Zombieland
-Zombieland is a full-stack application with a Next.js front-end and an Express API back-end, containerized using Docker for a clean and consistent development environment.
+# 🧟‍♂️ ZombieLand
 
-🚀 Features
-✅ Next.js front-end
-✅ Express API back-end
-✅ Docker & Docker Compose for easy setup
-✅ Hot reload during development
-✅ Clean project structure for scalability
+**ZombieLand** est une application web full-stack développée pour simuler la gestion d’un parc d’attractions horrifique (mais fun).  
+Elle propose une expérience immersive côté visiteur et un back-office complet côté admin.
 
-🛠️ Tech Stack
-Front-end: Next.js, React, TypeScript
+---
 
-Back-end: Node.js, Express
+## 🎢 Fonctionnalités
 
-Containerization: Docker, Docker Compose
+- 🎫 Réservation d’attractions avec gestion des disponibilités
+- 🔐 Authentification sécurisée via JWT + cookies HttpOnly
+- 🧑‍💼 Interface administrateur avec gestion CRUD des attractions
+- 🗓️ Affichage dynamique des horaires
+- 💬 Carrousel de témoignages clients
+- 📱 Design responsive & animations frontend
 
-⚙️ Prerequisites
-Docker Desktop installed and running
+---
 
-Basic knowledge of Docker and Git
+## ⚙️ Stack Technique
 
-Terminal access
+### Frontend
 
-🚀 Running with Docker
-Open your terminal, navigate to the root of the project, and run:
+- Next.js + React
+- TypeScript
+- Context API (auth & token)
+- TailwindCSS + Lucide Icons
+
+### Backend
+
+- Node.js + Express
+- PostgreSQL avec Sequelize ORM
+- JWT Auth + gestion des sessions
+- API RESTful documentée
+
+### Containerisation
+
+- Docker & Docker Compose pour l’environnement de dev
+
+---
+
+## 🚀 Lancer l'application
+
+### ✅ Avec Docker
 
 ```bash
 docker-compose up --build
 ```
 
-This will build and launch both the front-end and back-end automatically:
+Cela va builder et lancer automatiquement le front-end et le back-end :
 
-Front-end: http://localhost:3000
+🌐 Front-end : <http://localhost:3000>
 
-Back-end API: http://localhost:5000
+🔙 Back-end API : <http://localhost:5000>
 
-🛑 Stopping Containers
-To stop the containers gracefully, press Ctrl + C in your terminal where Docker is running, then:
+🛑  Arrêter les containers
+Dans le terminal où Docker tourne, fais Ctrl + C, puis :
 
 ```bash
 docker-compose down
 ```
 
-🪓 Useful Commands
-✅ View running containers:
+🪓 Commandes utiles
+✅ Voir les containers actifs
 
 ```bash
 docker ps
 ```
 
-✅ View logs:
+✅ Voir les logs
 
 ```bash
 docker-compose logs -f
 ```
 
-✅ Rebuild after changes in Docker configuration:
+✅ Rebuild complet
 
 ```bash
 docker-compose up --build
 ```
 
-✅ Remove unused images and free space:
+✅ Nettoyer les images inutiles
 
 ```bash
 docker system prune -af
 ```
 
-📂 Project Structure
+📂Structure du projet
 
 ```bash
 projet-zombieland/
@@ -77,31 +94,53 @@ projet-zombieland/
 └── README.md
 ```
 
-👩‍💻 Contributing
-Fork this repository
+👩‍💻 Contributeur
+Fork ce repo
 
-Create a new branch (git checkout -b feature/YourFeature)
+Crée une branche :
 
-Commit your changes (git commit -m 'Add your feature')
+```bash
+git checkout -b feature/TonFeature
+```
 
-Push to the branch (git push origin feature/YourFeature)
+Commit :
 
-Open a Pull Request
+```bash
+git commit -m 'Ajout de ton feature'
+```
+
+Push :
+
+```bash
+ git push origin feature/TonFeature
+```
+
+Ouvre une Pull Request ☕
 
 🪄 Roadmap
-✅ Docker integration for front and back
-✅ Development environment setup
 
-🛠️ Upcoming features:
+✅ Déjà en place :
+
+Docker pour front & back
+
+Authentification JWT
+
+Réservations + interface admin
 
 Authentication system
 
 PostgreSQL integration
 
-Unit and integration testing
+Suite de test (controleurs, middelwares, modèle Sequelize et schema de validation Zod)
 
-🧩 License
-This project is licensed under the MIT License.
+```bash
+npm run test
+```
+
+Documentation de l'API avec OpenAPI [disponible ici](https://projet-zombieland-sco4.onrender.com/api-docs/#/)
+
+🧩 Licence
+Ce projet est sous licence MIT.
 
 🙌 Credits
-Developed with ❤️ by [ZombieLand]
+Développé avec ❤️ par l’équipe ZombieLand.
