@@ -1,7 +1,12 @@
-"use client";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
+export const metadata = {
+	title: "Accès refusé – Zombieland",
+	description:
+		"Tu dois être connecté pour accéder à cette zone sécurisée de Zombieland. Les zombies ne laissent pas entrer n’importe qui…",
+};
 
 export default function unauthorizedPage() {
 	return (

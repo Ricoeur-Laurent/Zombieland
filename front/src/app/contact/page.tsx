@@ -1,7 +1,7 @@
 import ContactForm from "@/components/contact/ContactForm";
 
 export const metadata = {
-	title: "Zombieland Contact",
+	title: "Contact - Zombieland ",
 	description: "Formulaire de contact pour nous écrire facilement.",
 };
 

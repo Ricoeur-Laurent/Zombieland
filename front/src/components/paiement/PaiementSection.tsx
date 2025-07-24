@@ -15,7 +15,6 @@ if (!stripeKey) {
 // Load Stripe later when needed
 const stripePromise = loadStripe(stripeKey);
 
-
 export default function PaiementSection() {
 	const { loading, user } = useAuthContext();
 	const router = useRouter();
@@ -104,7 +103,7 @@ export default function PaiementSection() {
 	}
 
 	return (
-		<div className="bg-background p-6 rounded shadow-lg text-text text-center border-2 border-primary">
+		<div className="bg-surface/70  p-6 rounded-lg shadow-lg text-text text-center border-l-4 border-primary">
 			<h2 className="text-2xl font-bold text-primary-light mb-4">
 				Confirmation de votre réservation
 			</h2>
@@ -146,7 +145,7 @@ export default function PaiementSection() {
 				<button
 					type="button"
 					onClick={handleCancel}
-					className="mt-6 mx-auto bg-red-600 text-bg flex items-center justify-center rounded-lg font-bold transition px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base"
+					className="mt-6 mx-auto bg-red-600 hover:bg-red-700 text-bg flex items-center justify-center rounded-lg font-bold transition px-3 py-1.5 text-sm sm:px-5 sm:py-2 sm:text-base"
 				>
 					Annuler
 				</button>

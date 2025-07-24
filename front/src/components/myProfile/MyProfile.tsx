@@ -276,7 +276,7 @@ export default function MyProfile() {
 
 	return (
 		<>
-			<section className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg">
+			<section className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface/70 p-6 rounded-lg border-l-4 border-primary shadow-lg">
 				<ul className="space-y-2">
 					<div className="flex justify-between items-center mb-1">
 						<h2 className="text-xl font-subtitle text-primary-light">Prénom</h2>

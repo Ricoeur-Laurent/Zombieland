@@ -106,7 +106,7 @@ export default function RegistrationForm() {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface bg-opacity-90 backdrop-blur-sm p-6 rounded-lg border border-primary shadow-lg"
+			className="flex flex-col gap-4 w-full max-w-xl mx-auto bg-surface/70 p-6 rounded-lg border-l-4 border-primary shadow-lg"
 		>
 			{/* Each field block includes label, input and error display if applicable */}
 			{/* First name */}
