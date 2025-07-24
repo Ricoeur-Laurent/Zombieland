@@ -9,8 +9,8 @@ export const metadata = {
 
 export default function MesReservationsPage() {
 	return (
-		<div className="max-w-md mx-auto p-4 px-4 py-6 ">
-			<h2 className="text-primary font-subtitle text-3xl text-center mt-4">
+		<div className="px-4 sm:px-6 md:px-8 py-10 max-w-6xl mx-auto">
+			<h2 className="text-primary font-subtitle text-3xl text-center ">
 				Mes Réservations
 			</h2>
 			<Suspense fallback={<p className="text-center mt-6">Chargement...</p>}>

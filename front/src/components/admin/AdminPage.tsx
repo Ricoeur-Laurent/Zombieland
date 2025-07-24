@@ -6,7 +6,7 @@ import ReservationsSection from "./sections/ReservationsSection";
 // Main admin dashboard page
 export default function AdminPage() {
 	return (
-		<div className="max-w-7xl mx-auto px-4 py-8 text-text ">
+		<div className="px-4 sm:px-6 md:px-8 py-10 max-w-6xl mx-auto text-text ">
 			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				ADMIN PAGE
 			</h2>

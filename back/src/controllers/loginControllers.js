@@ -62,8 +62,8 @@ const loginControllers = {
 
 			res.cookie("zombieland_token", token, {
 				httpOnly: true,
-				sameSite: "none", // ✅ for Stripe compatibility
 				secure: process.env.NODE_ENV === "production",
+				sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
 				maxAge: 24 * 60 * 60 * 1000, // 1 day
 			});
 
@@ -98,8 +98,8 @@ const loginControllers = {
 	logout(req, res) {
 		res.clearCookie("zombieland_token", {
 			httpOnly: true,
-			sameSite: "none", // même config que pour le login
 			secure: process.env.NODE_ENV === "production",
+			sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
 		});
 		res.status(200).json({ message: "Déconnexion réussie" });
 	},
