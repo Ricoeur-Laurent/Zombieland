@@ -66,8 +66,19 @@ nextjs-portal * {
 }
 .scrollbar-hide::-webkit-scrollbar {
 	display: none;
-  }
-  .scrollbar-hide {
+}
+.scrollbar-hide {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
-  }
+}
+
+.leaflet-popup-content a {
+	all: unset;
+	color: #f97316 !important;
+	text-decoration: underline;
+	font-weight: 600;
+	cursor: pointer;
+}
+.leaflet-popup-content a:hover {
+	color: #ea580c !important;
+}

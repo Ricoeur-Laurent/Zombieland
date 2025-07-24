@@ -4,7 +4,6 @@ import { ImageOverlay, MapContainer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import Link from "next/link";
-import { useEffect } from "react";
 
 type Attraction = {
 	name: string;
@@ -91,17 +90,15 @@ const attractions: Attraction[] = [
 ];
 
 export default function InteractiveMap() {
-	useEffect(() => {
-		delete (L.Icon.Default.prototype as any)._getIconUrl;
-		L.Icon.Default.mergeOptions({
-			iconRetinaUrl: "/leaflet/marker-icon-2x.png",
-			iconUrl: "/leaflet/marker-icon.png",
-			shadowUrl: "/leaflet/marker-shadow.png",
-		});
-	}, []);
+	const zombieIcon = L.icon({
+		iconUrl: "leaflet/icon-map.png",
+		iconSize: [24, 36],
+		iconAnchor: [12, 36],
+		popupAnchor: [0, -36],
+	});
 
 	return (
-		<div className="w-full max-w-[1200px] mx-auto h-[80vh]">
+		<div className="w-full h-[60vh] overflow-hidden rounded-md">
 			<MapContainer
 				crs={L.CRS.Simple}
 				center={center}
@@ -111,6 +108,7 @@ export default function InteractiveMap() {
 				maxBounds={imageBounds}
 				maxBoundsViscosity={1.0}
 				style={{ width: "100%", height: "100%" }}
+				className="z-0"
 			>
 				<ImageOverlay
 					url="/images/zombieland-map-isometric.webp"
@@ -118,16 +116,11 @@ export default function InteractiveMap() {
 				/>
 
 				{attractions.map((attr) => (
-					<Marker key={attr.slug} position={attr.position}>
+					<Marker key={attr.slug} position={attr.position} icon={zombieIcon}>
 						<Popup>
 							<strong>{attr.name}</strong>
 							<br />
-							<Link
-								href={`/attractions/${attr.slug}`}
-								className="text-blue-600 underline"
-							>
-								Voir l'attraction
-							</Link>
+							<Link href={`/attractions/${attr.slug}`}>Voir l'attraction</Link>
 						</Popup>
 					</Marker>
 				))}
