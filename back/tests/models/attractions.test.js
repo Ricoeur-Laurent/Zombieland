@@ -1,22 +1,14 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { sequelize } from '../../src/models/sequelize.js';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { Attractions } from '../../src/models/attractions.js';
 
 describe('Attractions Model', () => {
-	beforeAll(async () => {
-		// Before running all tests: sync the database and recreate tables
-		await sequelize.sync({ force: true });
-	});
+
 
 	beforeEach(async () => {
 		// Before each test: clear all records from the Attractions table
 		await Attractions.destroy({ where: {} });
 	});
 
-	// After all tests are done: close the database connection
-	afterAll(async () => {
-		await sequelize.close();
-	});
 
 	it('should create a valid attraction', async () => {
 		// Try to create a valid attraction

@@ -1,8 +1,6 @@
 import dotenv from 'dotenv';
 
-const env = process.env.NODE_ENV || 'development';
-const envPath = env === 'test' ? '.env.test' : '.env';
-dotenv.config({ path: envPath });
+dotenv.config()
 import { Sequelize } from 'sequelize';
 
 if (!process.env.DATABASE_URL) {
