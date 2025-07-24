@@ -22,71 +22,72 @@ const imageBounds: [[number, number], [number, number]] = [
 const center: [number, number] = [imageSize / 2, imageSize / 2];
 
 const attractions: Attraction[] = [
-	{
-		name: "Le Dédale Maudit",
-		slug: "le-dédale-maudit",
-		position: [567.3, 368.4],
-	},
-	{
-		name: "Speed Apocalypse",
-		slug: "speed-apocalypse",
-		position: [474.6, 479.46],
-	},
-	{
-		name: "Le Manoir des Ames Perdues",
-		slug: "le-manoir-des-âmes-perdues",
-		position: [52.46, 749.08],
-	},
-	{
-		name: "L’Enfer en Soins Intensifs",
-		slug: "lenfer-en-soins-intensifs",
-		position: [430.86, 718.58],
-	},
-	{
-		name: "Le Virus Express",
-		slug: "le-virus-express",
-		position: [195.2, 564.86],
-	},
-	{
-		name: "Vertige Mortel",
-		slug: "vertige-mortel",
-		position: [69.54, 399.76],
-	},
-	{
-		name: "Chasse Mortelle",
-		slug: "chasse-mortelle",
-		position: [135.42, 883.28],
-	},
-	{
-		name: "Prison Hors du Temps",
-		slug: "prison-hors-du-temps",
-		position: [705.94, 851.34],
-	},
-	{
-		name: "Clinique du Chaos",
-		slug: "clinique-du-chaos",
-		position: [787.9, 488],
-	},
-	{
-		name: "Les Ombres du Cimetière",
-		slug: "les-ombres-du-cimetière",
-		position: [1006.9, 671],
-	},
-	{
-		name: "Les Bois Maudits",
-		slug: "les-bois-maudits",
-		position: [344.04, 867.42],
-	},
-	{
-		name: "Route Z",
-		slug: "route-z",
-		position: [647.82, 651.48],
-	},
-	{
-		name: "Tunnel Sans Retour",
-		slug: "tunnel-sans-retour",
-		position: [481.9, 883.28],
-	},
+  {
+    name: "Le Dédale Maudit",
+    slug: "le-dédale-maudit",
+    position: [451.0, 584.0]
+  },
+  {
+    name: "Speed Apocalypse",
+    slug: "speed-apocalypse",
+    position: [600.0, 316.0]
+  },
+  {
+    name: "Le Manoir des Ames Perdues",
+    slug: "le-manoir-des-âmes-perdues",
+    position: [955.0, 695.0]
+  },
+  {
+    name: "L’Enfer en Soins Intensifs",
+    slug: "lenfer-en-soins-intensifs",
+    position: [548.0, 124.0]
+  },
+  {
+    name: "Le Virus Express",
+    slug: "le-virus-express",
+    position: [777.0, 443.0]
+  },
+  {
+    name: "Vertige Mortel",
+    slug: "vertige-mortel",
+    position: [957.0, 204.0]
+  },
+  {
+    name: "Chasse Mortelle",
+    slug: "chasse-mortelle",
+    position: [666.0, 712.0]
+  },
+  {
+    name: "Prison Hors du Temps",
+    slug: "prison-hors-du-temps",
+    position: [940.0, 498.0]
+  },
+  {
+    name: "Clinique du Chaos",
+    slug: "clinique-du-chaos",
+    position: [334.0, 360.0]
+  },
+  {
+    name: "Les Ombres du Cimetière",
+    slug: "les-ombres-du-cimetière",
+    position: [99.0, 589.0]
+  },
+  {
+    name: "Les Bois Maudits",
+    slug: "les-bois-maudits",
+    position: [727.0, 903.0],
+   
+  },
+  {
+    name: "Route Z",
+    slug: "route-z",
+    position: [184.0, 843.0]
+  },
+  {
+    name: "Tunnel Sans Retour",
+    slug: "tunnel-sans-retour",
+    position: [617.0, 907.0]
+  },
 ];
 
 export default function InteractiveMap() {

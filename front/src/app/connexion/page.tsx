@@ -1,4 +1,5 @@
 import ConnexionForm from "@/components/Login/LoginForm";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "Connexion – Zombieland",
@@ -12,7 +13,9 @@ export default function ConnexionPage() {
 			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				Connexion
 			</h2>
-			<ConnexionForm />
+			<Suspense  fallback={<div>Chargement...</div>}>
+				<ConnexionForm />
+			</Suspense>
 		</div>
 	);
 }

@@ -1,4 +1,5 @@
 import RegistrationForm from "@/components/registration/registrationForm";
+import { Suspense } from "react";
 
 export const metadata = {
 	title: "Inscription – Zombieland",
@@ -12,7 +13,9 @@ export default function ConnexionPage() {
 			<h2 className="text-center text-3xl sm:text-5xl font-subtitle uppercase text-primary mb-8">
 				Inscription
 			</h2>
-			<RegistrationForm />
+			<Suspense  fallback={<p className="text-center mt-6">Chargement...</p>}>
+				<RegistrationForm />
+			</Suspense>
 		</div>
 	);
 }
