@@ -5,15 +5,15 @@ import Link from "next/link";
 
 export default function HeroSection() {
 	return (
-		<section className="relative w-full h-[90vh] flex items-center justify-center">
+		<section className=" w-full h-[90vh] flex items-center justify-center section-bg relative z-0">
 			{/* Image */}
 			<Image
 				src="/images/desktop/entree.webp"
 				alt="ZombieLand - Parc post-apocalyptique"
 				fill
 				className="object-cover"
+				priority
 			/>
-
 			{/* Overlay */}
 			<div className="absolute inset-0 bg-black/40 flex items-center justify-center px-4">
 				<div className="bg-surface/80 p-6 sm:p-10 max-w-xl text-center rounded-lg">
@@ -38,6 +38,7 @@ export default function HeroSection() {
 					</Link>
 				</div>
 			</div>
+			<div className="absolute bottom-0 w-full h-48 bg-gradient-to-t from-zinc-900/95 to-transparent z-20 pointer-events-none" />
 		</section>
 	);
 }

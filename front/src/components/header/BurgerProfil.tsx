@@ -12,15 +12,22 @@ export default function BurgerProfil({
 	onOpenProfil?: () => void;
 }) {
 	const [open, setOpen] = useState(false);
+	const [visible, setVisible] = useState(false);
+
+	useEffect(() => {
+		if (open) {
+			setVisible(true);
+		} else {
+			const timeout = setTimeout(() => setVisible(false), 400); // wait animation end
+			return () => clearTimeout(timeout);
+		}
+	}, [open]);
 	// Toggles drawer visibility and optionally triggers parent action
 	const handleOpen = () => {
 		if (onOpenProfil) onOpenProfil?.();
 		setOpen(false);
 	};
-	// Locks page scroll when the drawer is open
-	useEffect(() => {
-		document.body.style.overflow = open ? "hidden" : "";
-	}, [open]);
+
 	// we get the token in the burger to check if the user is connected and swap the  burger optin connect/disconnect
 	const { user, logout } = useAuthContext();
 	const router = useRouter();
@@ -42,15 +49,18 @@ export default function BurgerProfil({
 				aria-label="Profil"
 				onClick={() => setOpen(true)}
 				className="rounded-full p-2 text-primary 
-                    active:bg-primary/40
+                    active:bg-primary/40 hover:text-primary-dark
                    "
 			>
 				<User className="h-6 w-6" />
 			</button>
 
 			{/* Drawer menu - appears over full screen when open */}
-			{open && (
-				<div className="fixed inset-0 z-50 flex flex-col bg-bg/95 backdrop-blur px-6 py-8 text-xl font-subtitle uppercase">
+			{visible && (
+				<div
+					className={`fixed inset-0 z-50 flex flex-col bg-bg/95 px-6 py-8 text-xl font-subtitle uppercase backdrop-blur
+			${open ? "animate-slide-in-right" : "animate-slide-out-right"}`}
+				>
 					{/* Close button (top right) */}
 					<button
 						type="button"

@@ -12,10 +12,15 @@ export default function Burger({
 	links: { href: string; label: string }[];
 }) {
 	const [open, setOpen] = useState(false);
+	const [visible, setVisible] = useState(false);
 
-	// Prevent background scrolling when the drawer is open
 	useEffect(() => {
-		document.body.style.overflow = open ? "hidden" : "";
+		if (open) {
+			setVisible(true);
+		} else {
+			const timeout = setTimeout(() => setVisible(false), 400); // wait animation end
+			return () => clearTimeout(timeout);
+		}
 	}, [open]);
 
 	return (
@@ -33,23 +38,26 @@ export default function Burger({
 					type="button"
 					aria-label="Ouvrir le menu"
 					onClick={() => setOpen(true)}
-					className="rounded p-2  active:bg-primary/40 "
+					className="rounded p-2  active:bg-primary/40"
 				>
-					<Menu className="h-7 w-7 text-primary" />
+					<Menu className="h-7 w-7 text-primary  hover:text-primary-dark" />
 				</button>
 			</div>
 
 			{/* Full-screen drawer shown when open is true */}
-			{open && (
-				<div className="fixed inset-0 z-50 flex flex-col bg-bg/95 px-6 py-8 text-xl font-subtitle uppercase backdrop-blur">
+			{visible && (
+				<div
+					className={`fixed inset-0 z-50 flex flex-col bg-bg/95 px-6 py-8 text-xl font-subtitle uppercase backdrop-blur
+			${open ? "animate-slide-in-right" : "animate-slide-out-right"}`}
+				>
 					{/* Close (X) button, top right */}
 					<button
 						type="button"
-						aria-label="Fermer le menu"
+						aria-label="Fermer"
 						onClick={() => setOpen(false)}
-						className="self-end rounded p-2 transition"
+						className="self-end rounded p-2 text-primary  active:bg-primary/40"
 					>
-						<X className="h-7 w-7 text-primary  active:bg-primary/40" />
+						<X className="h-7 w-7" />
 					</button>
 					{/* Navigation links list */}
 					<ul className="mt-8 flex flex-grow flex-col gap-6 ">

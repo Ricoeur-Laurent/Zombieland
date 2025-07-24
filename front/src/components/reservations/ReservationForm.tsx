@@ -61,8 +61,8 @@ export default function ReservationForm() {
 			onSubmit={handleSubmit}
 			className="
 				flex flex-col gap-4 w-full max-w-sm mx-auto
-				bg-surface bg-opacity-90 backdrop-blur-sm
-				p-6 rounded-lg border border-primary shadow-lg
+				bg-surface/70 
+				p-6 rounded-lg border-l-4 border-primary shadow-lg
 			"
 		>
 			<label
@@ -83,7 +83,7 @@ export default function ReservationForm() {
 				}}
 				placeholder="Entrez le nombre de visiteurs"
 				required
-				className="p-2 rounded bg-background border border-primary text-text"
+				className="p-2 rounded bg-background border border-muted  text-text"
 			/>
 
 			<label
@@ -99,7 +99,7 @@ export default function ReservationForm() {
 				min={today}
 				onChange={(e) => setDate(e.target.value)}
 				required
-				className="p-2 rounded bg-background border border-primary text-text"
+				className="p-2 rounded bg-background border border-muted  text-text"
 			/>
 
 			<p className="text-lg font-semibold text-text">
