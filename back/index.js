@@ -13,6 +13,7 @@ import stripeWebhookRouter from './src/routers/routes/stripeWebhook.routes.js';
 
 const app = express();
 
+
 const corsOptions = {
 	origin: [
 		'http://localhost:3000', // Allowed local frontend origins
