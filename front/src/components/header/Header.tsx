@@ -5,9 +5,9 @@ import BurgerProfil from "./BurgerProfil";
 // List of navigation links shown in both the navbar and the mobile burger menu
 const links = [
 	{ href: "/attractions", label: "Attractions" },
+	{ href: "/plan", label: "Plan" },
 	{ href: "/infos-pratiques", label: "Infos pratiques" },
 	{ href: "/contact", label: "Contact" },
-	{ href: "/plan", label: "Plan" },
 ];
 
 export default function Header() {
