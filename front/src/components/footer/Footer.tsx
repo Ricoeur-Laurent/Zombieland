@@ -13,8 +13,8 @@ const legalLinks = [
 
 export default function Footer() {
 	return (
-		<footer className="bg-black/40 text-text px-6 pt-12 pb-6 border-t border-primary/30 mt-16">
-			<div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-sm">
+		<footer className="bg-black/40 w-full  text-text  border-t border-primary/30 mt-16">
+			<div className="max-w-6xl mx-auto px-4 py-4 lg:px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 text-sm">
 				{/* ZOMBIELAND */}
 				<div>
 					<h3 className="text-primary-light font-subtitle uppercase text-base mb-4">

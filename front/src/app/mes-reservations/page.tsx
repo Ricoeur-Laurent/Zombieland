@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import ReservationList from "@/components/mes-reservations/ReservationList";
 
 export const metadata = {
@@ -12,7 +13,9 @@ export default function MesReservationsPage() {
 			<h2 className="text-primary font-subtitle text-3xl text-center ">
 				Mes Réservations
 			</h2>
-			<ReservationList />
+			<Suspense fallback={<p className="text-center mt-6">Chargement...</p>}>
+				<ReservationList />
+			</Suspense>
 		</div>
 	);
 }
